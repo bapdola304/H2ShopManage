@@ -18,13 +18,11 @@ import Spinner from './components/Spinner';
  * Main app component
  */
 
-const isLoading = false
-
 class App extends Component {
   render() {
     return <>
       <Routes></Routes>
-      {isLoading && <Spinner />}
+      <Spinner />
     </>;
   }
 }

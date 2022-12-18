@@ -1,13 +1,13 @@
 import React from "react";
-import { Spinner } from 'reactstrap';
+import { useSelector } from 'react-redux';
+import PreLoaderWidget from "./Loader";
 
 const SpinnerComponent = () => {
+    const { isLoading } = useSelector(state => state.loading);
     return (
-        <div className="preloader">
-            <div className="status">
-                <Spinner className="m-2" color="primary" />
-            </div>
-        </div>
+        isLoading && (
+            <PreLoaderWidget />
+        )
     );
 };
 

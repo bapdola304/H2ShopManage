@@ -11,7 +11,7 @@ const Login = React.lazy(() => import('../pages/auth/Login'));
 const Dashboard = React.lazy(() => import('../pages/dashboard'));
 
 // Items
-const Items = React.lazy(() => import('../pages/items/Items'));
+const Items = React.lazy(() => import('../pages/product/Products'));
 
 // Costs Incurred
 const CostsIncurred = React.lazy(() => import('../pages/costsIncurred/CostsIncurred'));

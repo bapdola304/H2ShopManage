@@ -40,7 +40,6 @@ function* initMenuAndItems() {
 function* changeActiveMenuFromLocation() {
     try {
         const menuItems = assignIds(routes);
-        console.log(menuItems)
         const activatedMenuItemIds = yield call(getActivatedMenuItemIds, menuItems);
         yield put(changeActiveMenuFromLocationSuccess(activatedMenuItemIds));
     } catch (error) {}

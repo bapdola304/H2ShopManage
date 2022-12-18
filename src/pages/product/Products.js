@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Card, CardBody, Input, Button } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider, { Search, CSVExport } from 'react-bootstrap-table2-toolkit';
@@ -9,6 +10,8 @@ import { AvForm, AvField } from "availity-reactstrap-validation";
 import FileUploader from '../../components/FileUploader';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import PageTitle from '../../components/PageTitle';
+import { getProducts } from '../../redux/product/actions';
+import { VNDCurrencyFormatting } from '../../helpers/format';
 
 const defaultSorted = [
     {
@@ -17,40 +20,28 @@ const defaultSorted = [
     },
 ];
 
-const records = []
+const Products = () => {
 
-const sizePerPageRenderer = ({ options, currSizePerPage, onSizePerPageChange }) => (
-    <React.Fragment>
-        <label className="d-inline mr-1">Hiển thị</label>
-        <Input type="select" color="select" id="no-entries" className="custom-select custom-select-sm d-inline col-1"
-            defaultValue={currSizePerPage}
-            onChange={(e) => onSizePerPageChange(e.target.value)}>
-            {options.map((option, idx) => {
-                return <option key={idx}>{option.text}</option>
-            })}
-        </Input>
-        <label className="d-inline ml-1">mặt hàng</label>
-    </React.Fragment>
-);
+    const dispatch = useDispatch();
+    const { items = [] } = useSelector(state => state.product);
 
-const Items = () => {
     const { SearchBar } = Search;
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
 
     const columns = [
         {
-            dataField: 'itemImage',
+            dataField: 'image',
             text: 'Hình ảnh',
             sort: false,
         },
         {
-            dataField: 'itemName',
+            dataField: 'productName',
             text: 'Tên mặt hàng',
             sort: true,
         },
         {
-            dataField: 'itemColor',
+            dataField: 'productColor',
             text: 'Màu sắc',
             sort: false,
         },
@@ -63,6 +54,7 @@ const Items = () => {
             dataField: 'sellPrice',
             text: 'Giá bán ra',
             sort: false,
+            formatter: (record) => VNDCurrencyFormatting(record)
         },
         {
             text: "Thao tác",
@@ -71,6 +63,10 @@ const Items = () => {
             headerStyle: { width: '15%' }
         }
     ];
+
+    useEffect(() => {
+        dispatch(getProducts())
+    }, []);
 
     const renderAction = (record) => {
         return (
@@ -102,6 +98,20 @@ const Items = () => {
     };
 
 
+    const sizePerPageRenderer = ({ options, currSizePerPage, onSizePerPageChange }) => (
+        <React.Fragment>
+            <label className="d-inline mr-1">Hiển thị</label>
+            <Input type="select" color="select" id="no-entries" className="custom-select custom-select-sm d-inline col-1"
+                defaultValue={currSizePerPage}
+                onChange={(e) => onSizePerPageChange(e.target.value)}>
+                {options.map((option, idx) => {
+                    return <option key={idx}>{option.text}</option>
+                })}
+            </Input>
+            <label className="d-inline ml-1">mặt hàng</label>
+        </React.Fragment>
+    );
+
     return (
         <React.Fragment>
             <Row className="page-title">
@@ -123,7 +133,7 @@ const Items = () => {
                             <ToolkitProvider
                                 bootstrap4
                                 keyField="id"
-                                data={[]}
+                                data={items}
                                 columns={columns}
                                 search
                                 exportCSV={{ onlyExportFiltered: true, exportAll: false }}>
@@ -142,7 +152,7 @@ const Items = () => {
                                             {...props.baseProps}
                                             bordered={false}
                                             defaultSorted={defaultSorted}
-                                            pagination={paginationFactory({ sizePerPage: 20, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '5', value: 5, }, { text: '10', value: 10 }, { text: '25', value: 25 }, { text: 'All', value: records.length }] })}
+                                            pagination={paginationFactory({ sizePerPage: 20, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '5', value: 5, }, { text: '10', value: 10 }, { text: '25', value: 25 }, { text: 'All', value: items.length }] })}
                                             wrapperClasses="table-responsive"
                                         />
                                     </React.Fragment>
@@ -200,10 +210,10 @@ const Items = () => {
                 onCancel={() => setIsOpenDialogConfirm(false)}
                 title={"Xác nhận xóa"}
                 description={"Bạn có chắc muốn xóa mặt hàng này"}
-                // onOk={onOk}
+            // onOk={onOk}
             />
         </React.Fragment>
     );
 };
 
-export default Items;
+export default Products;
