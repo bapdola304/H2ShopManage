@@ -10,7 +10,7 @@ import { AvForm, AvField } from "availity-reactstrap-validation";
 import FileUploader from '../../components/FileUploader';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import PageTitle from '../../components/PageTitle';
-import { createProduct, deleteProduct, getProducts, resetActionSuccess } from '../../redux/product/actions';
+import { createProduct, deleteProduct, getProducts, resetActionSuccess, updateProduct } from '../../redux/product/actions';
 import { isEmpty, VNDCurrencyFormatting } from '../../helpers/format';
 
 const defaultSorted = [
@@ -29,6 +29,7 @@ const Products = () => {
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
     const [productSelected, setProductSelected] = useState({});
+    const [isEditingProduct, setIsEditingProduct] = useState(false);
     const { _id, productName, productColor, warrantyPeriod, sellPrice } = productSelected;
 
     const columns = [
@@ -74,6 +75,7 @@ const Products = () => {
         dispatch(getProducts())
         setIsOpenDialog(false)
         setIsOpenDialogConfirm(false)
+        setIsEditingProduct(false)
         dispatch(resetActionSuccess())
     }, [isSuccess]);
 
@@ -83,7 +85,7 @@ const Products = () => {
                 <Button outline color="secondary" style={{ marginRight: 10 }} onClick={() => handleEditProduct(record)}>
                     <i className="uil-edit"></i>
                 </Button>
-                <Button onClick={() => handleEditProduct(record)} color="danger">
+                <Button onClick={() => handleDeleteProduct(record)} color="danger">
                     <i className="uil-trash"></i>
                 </Button>
             </div>
@@ -97,13 +99,32 @@ const Products = () => {
 
     const handleSubmit = (event, errors, values) => {
         if (!errors.length) {
-            dispatch(createProduct(values))
+            if (isEditingProduct) {
+                const payload = {
+                    id: _id,
+                    body: values
+                }
+                dispatch(updateProduct(payload))
+            } else {
+                dispatch(createProduct(values))
+            }
         }
     };
 
-    const handleEditProduct = (record) => {
+    const handleCancel = () => {
+        setIsOpenDialog(false)
+        setIsEditingProduct(false)
+    }
+
+    const handleDeleteProduct = (record) => {
         setProductSelected(record)
         setIsOpenDialogConfirm(true)
+    }
+
+    const handleEditProduct = (record) => {
+        setProductSelected(record)
+        setIsEditingProduct(true)
+        setIsOpenDialog(true)
     }
 
     const onDelete = () => {
@@ -130,10 +151,6 @@ const Products = () => {
             <Row className="page-title">
                 <Col md={12}>
                     <PageTitle
-                        breadCrumbItems={[
-                            { label: 'Tables', path: '/tables/advanced' },
-                            { label: 'Advanced Tables', path: '/tables/advanced', active: true },
-                        ]}
                         title={'Danh sách các mặt hàng'}
                     />
                 </Col>
@@ -165,7 +182,7 @@ const Products = () => {
                                             {...props.baseProps}
                                             bordered={false}
                                             defaultSorted={defaultSorted}
-                                            pagination={paginationFactory({ sizePerPage: 25, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '10', value: 10 }, { text: '25', value: 25 }, { text: '50', value: 50, }, { text: 'All', value: items.length }] })}
+                                            pagination={paginationFactory({ sizePerPage: 25, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '10', value: 10 }, { text: '25', value: 25 }, { text: '50', value: 50, }, { text: `${items.length} Tất cả`, value: items.length }] })}
                                             wrapperClasses="table-responsive"
                                         />
                                     </React.Fragment>
@@ -177,23 +194,23 @@ const Products = () => {
             </Row>
             <Dialog
                 visible={isOpenDialog}
-                title={"Thêm mặt hàng"}
-                onCancel={() => setIsOpenDialog(false)}
+                title={isEditingProduct ? "Chỉnh sửa mặt hàng" : "Thêm mặt hàng"}
+                onCancel={handleCancel}
                 isShowFooter={false}
             >
                 <AvForm onSubmit={handleSubmit}>
                     <Row>
                         <Col md={12}>
-                            <AvField name="productName" label="Tên mặt hàng" type="text" required value={isEmpty(productSelected) ? "" : productName} />
+                            <AvField name="productName" label="Tên mặt hàng" type="text" required value={!isEditingProduct ? "" : productName} />
                         </Col>
                         <Col md={12}>
-                            <AvField name="productColor" label="Màu sắc" type="text" required value={isEmpty(productSelected) ? "" : productColor} />
+                            <AvField name="productColor" label="Màu sắc" type="text" required value={!isEditingProduct ? "" : productColor} />
                         </Col>
                         <Col md={12}>
-                            <AvField name="warrantyPeriod" label="Thời gian bảo hành" type="number" required value={isEmpty(productSelected) ? "" : warrantyPeriod} />
+                            <AvField name="warrantyPeriod" label="Thời gian bảo hành" type="number" required value={!isEditingProduct ? "" : warrantyPeriod} />
                         </Col>
                         <Col md={12}>
-                            <AvField name="sellPrice" label="Giá bán ra" type="number" required value={isEmpty(productSelected) ? "" : sellPrice} />
+                            <AvField name="sellPrice" label="Giá bán ra" type="number" required value={!isEditingProduct ? "" : sellPrice} />
                         </Col>
                         <Col md={12}>
                             <p className="mb-1 font-weight-semibold">Hình ảnh</p>
@@ -207,12 +224,12 @@ const Products = () => {
                     <div style={{ float: "right", marginTop: 20 }}>
                         <Button
                             color="secondary mr-2"
-                            onClick={() => setIsOpenDialog(false)}
+                            onClick={handleCancel}
                         >
                             Hủy bỏ
                         </Button>
                         <Button color="primary" type="submit">
-                            Thêm
+                            { isEditingProduct ? "Cập nhật" : "Thêm" }
                         </Button>
                     </div>
                 </AvForm>

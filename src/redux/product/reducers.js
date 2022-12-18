@@ -3,7 +3,8 @@ import {
     GET_PRODUCTS_SUCCESS,
     CREATE_PRODUCT_SUCCESS,
     RESET_ACTION_SUCCESS,
-    DELETE_PRODUCT_SUCCESS
+    DELETE_PRODUCT_SUCCESS,
+    UPDATE_PRODUCT_SUCCESS
 } from './constants';
 
 const INITIAL_STATE = {
@@ -22,6 +23,10 @@ const product = (state = INITIAL_STATE, action) => {
                 draft.isSuccess = true
             });
         case DELETE_PRODUCT_SUCCESS:
+            return produce(state, draft => {
+                draft.isSuccess = true
+            });
+        case UPDATE_PRODUCT_SUCCESS:
             return produce(state, draft => {
                 draft.isSuccess = true
             });
