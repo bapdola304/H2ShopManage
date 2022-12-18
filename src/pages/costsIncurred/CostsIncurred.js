@@ -9,6 +9,7 @@ import { AvForm, AvField } from "availity-reactstrap-validation";
 import FileUploader from '../../components/FileUploader';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import PageTitle from '../../components/PageTitle';
+import { VNDCurrencyFormatting } from '../../helpers/format';
 
 const defaultSorted = [
     {
@@ -19,49 +20,35 @@ const defaultSorted = [
 
 const records = []
 
-const sizePerPageRenderer = ({ options, currSizePerPage, onSizePerPageChange }) => (
-    <React.Fragment>
-        <label className="d-inline mr-1">Hiển thị</label>
-        <Input type="select" color="select" id="no-entries" className="custom-select custom-select-sm d-inline col-1"
-            defaultValue={currSizePerPage}
-            onChange={(e) => onSizePerPageChange(e.target.value)}>
-            {options.map((option, idx) => {
-                return <option key={idx}>{option.text}</option>
-            })}
-        </Input>
-        <label className="d-inline ml-1">mặt hàng</label>
-    </React.Fragment>
-);
-
-const Items = () => {
+const CostsIncurred = () => {
     const { SearchBar } = Search;
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
 
     const columns = [
         {
-            dataField: 'itemImage',
-            text: 'Hình ảnh',
-            sort: false,
-        },
-        {
-            dataField: 'itemName',
-            text: 'Tên mặt hàng',
+            dataField: 'dateTime',
+            text: 'Thời gian',
             sort: true,
         },
         {
-            dataField: 'itemColor',
-            text: 'Màu sắc',
+            dataField: 'costsIncurredName',
+            text: 'Tên chi phí',
             sort: false,
         },
         {
-            dataField: 'warrantyPeriod',
-            text: 'Thời gian bảo hành',
+            dataField: 'price',
+            text: 'Đơn giá',
             sort: false,
         },
         {
-            dataField: 'sellPrice',
-            text: 'Giá bán ra',
+            dataField: 'quantity',
+            text: 'Số lượng',
+            sort: false,
+        },
+        {
+            dataField: 'total',
+            text: 'Thành tiền',
             sort: false,
         },
         {
@@ -99,7 +86,21 @@ const Items = () => {
             // dispatch(setPermissionsForUser({ id: _id, permission: role }));
             // setIsOpenDialog(false);
         }
-    };
+    }
+
+    const sizePerPageRenderer = ({ options, currSizePerPage, onSizePerPageChange }) => (
+        <React.Fragment>
+            <label className="d-inline mr-1">Hiển thị</label>
+            <Input type="select" color="select" id="no-entries" className="custom-select custom-select-sm d-inline col-1"
+                defaultValue={currSizePerPage}
+                onChange={(e) => onSizePerPageChange(e.target.value)}>
+                {options.map((option, idx) => {
+                    return <option key={idx}>{option.text}</option>
+                })}
+            </Input>
+            <label className="d-inline ml-1"></label>
+        </React.Fragment>
+    )
 
 
     return (
@@ -111,7 +112,7 @@ const Items = () => {
                             { label: 'Tables', path: '/tables/advanced' },
                             { label: 'Advanced Tables', path: '/tables/advanced', active: true },
                         ]}
-                        title={'Danh sách các mặt hàng'}
+                        title={'Danh sách các chi phí phát sinh'}
                     />
                 </Col>
             </Row>
@@ -131,10 +132,10 @@ const Items = () => {
                                     <React.Fragment>
                                         <Row>
                                             <Col>
-                                                <SearchBar {...props.searchProps} placeholder={"Tìm kiếm mặt hàng"} />
+                                                <SearchBar {...props.searchProps} placeholder={"Tìm kiếm..."} />
                                             </Col>
                                             <Col className="text-right">
-                                                <Button onClick={handleOpenDialog} color="primary" id="btn-new-event"><i className="uil-plus mr-1"></i>Thêm mặt hàng</Button>
+                                                <Button onClick={handleOpenDialog} color="primary" id="btn-new-event"><i className="uil-plus mr-1"></i>Thêm chi phí</Button>
                                             </Col>
                                         </Row>
 
@@ -154,31 +155,23 @@ const Items = () => {
             </Row>
             <Dialog
                 visible={isOpenDialog}
-                title={"Thêm mặt hàng"}
+                title={"Thêm chi phí"}
                 onCancel={() => setIsOpenDialog(false)}
                 isShowFooter={false}
             >
                 <AvForm onSubmit={handleSubmit}>
                     <Row>
                         <Col md={12}>
-                            <AvField name="itemName" label="Tên mặt hàng" type="text" required />
+                            <AvField name="costsIncurredName" label="Tên chi phí" type="text" required />
                         </Col>
                         <Col md={12}>
-                            <AvField name="itemColor" label="Màu sắc" type="text" required />
+                            <AvField name="price" label="Đơn giá" type="number" required />
                         </Col>
                         <Col md={12}>
-                            <AvField name="warrantyPeriod" label="Thời gian bảo hành" type="number" required />
+                            <AvField name="quantity" label="Số lượng" type="number" required />
                         </Col>
                         <Col md={12}>
-                            <AvField name="sellPrice" label="Giá bán ra" type="number" required />
-                        </Col>
-                        <Col md={12}>
-                            <p className="mb-1 font-weight-semibold">Hình ảnh</p>
-                            <FileUploader
-                                onFileUpload={files => {
-                                    console.log(files);
-                                }}
-                            />
+                            <AvField name="total" label="Thành tiền" type="text" value={VNDCurrencyFormatting(30000)} disabled={true} style={{fontWeight: 700}} />
                         </Col>
                     </Row>
                     <div style={{ float: "right", marginTop: 20 }}>
@@ -206,4 +199,4 @@ const Items = () => {
     );
 };
 
-export default Items;
+export default CostsIncurred;

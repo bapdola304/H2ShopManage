@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import Routes from './routes/Routes';
 
-// setup fake backend
-import { configureFakeBackend } from './helpers';
-
 // Themes
 
 // default
 import './assets/scss/theme.scss';
+import Spinner from './components/Spinner';
 
 // dark
 // import './assets/scss/theme-dark.scss';
@@ -16,15 +14,18 @@ import './assets/scss/theme.scss';
 // import './assets/scss/theme-rtl.scss';
 
 
-// configure fake backend
-configureFakeBackend();
-
 /**
  * Main app component
  */
+
+const isLoading = false
+
 class App extends Component {
   render() {
-    return <Routes></Routes>;
+    return <>
+      <Routes></Routes>
+      {isLoading && <Spinner />}
+    </>;
   }
 }
 

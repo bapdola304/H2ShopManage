@@ -59,14 +59,10 @@ class FileUploader extends Component {
                 <Dropzone onDrop={acceptedFiles => this.handleAcceptedFiles(acceptedFiles)} {...this.props}>
                     {({ getRootProps, getInputProps }) => (
                         <div className="dropzone text-center">
-                            <div className="dz-message py-5 needsclick" {...getRootProps()}>
+                            <div className="dz-message needsclick" {...getRootProps()}>
                                 <input {...getInputProps()} />
                                 <i className="h1 text-muted uil-cloud-upload"></i>
-                                <h3>Drop files here or click to upload.</h3>
-                                <span className="text-muted font-13">
-                                    (This is just a demo dropzone. Selected files are <strong>not</strong> actually
-                                    uploaded.)
-                                </span>
+                                <h5>Kéo thả file hoặc bấm vào để tải ảnh lên</h5>
                             </div>
                         </div>
                     )}

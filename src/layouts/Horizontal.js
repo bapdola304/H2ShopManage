@@ -23,7 +23,7 @@ class HorizontalLayout extends Component {
 
         this.openMenu = this.openMenu.bind(this);
         this.state = {
-            isMenuOpened: false,
+            isMenuOpened: true,
         }
     }
 

@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import PageTitle from '../../components/PageTitle';
 import { VNDCurrencyFormatting } from '../../helpers/format';
 
-const AddGoods = (props) => {
+const AddSoldItem = (props) => {
     return (
         <React.Fragment>
             <Row className="page-title">
@@ -17,7 +17,7 @@ const AddGoods = (props) => {
                             { label: 'Forms', path: '/forms/validation' },
                             { label: 'Form Validation', path: '/forms/validation', active: true },
                         ]}
-                        title={'Thêm hàng vào kho'}
+                        title={'Thêm thông tin hàng đã bán'}
                     />
                 </Col>
             </Row>
@@ -29,10 +29,16 @@ const AddGoods = (props) => {
                             <AvForm>
                                 <Row>
                                     <Col md={6}>
-                                        <AvField name="placeOfEntry" label="Nơi nhập hàng" type="text" required />
+                                        <AvField name="customer" label="Tên người mua" type="text" required />
                                     </Col>
                                     <Col md={6}>
-                                        <AvField name="price" label="Đơn giá" type="text" required />
+                                        <AvField name="price" label="Giá bán" type="number" required />
+                                    </Col>
+                                    <Col md={6}>
+                                        <AvField name="phoneNumber" label="SĐT người mua" type="number" required />
+                                    </Col>
+                                    <Col md={6}>
+                                        <AvField name="quantity" label="Số lượng" type="text" required />
                                     </Col>
                                     <Col md={6}>
                                         <p className="mb-1 font-weight-semibold">Tên mặt hàng</p>
@@ -46,13 +52,7 @@ const AddGoods = (props) => {
                                             ]}></Select>
                                     </Col>
                                     <Col md={6}>
-                                        <AvField name="quantity" label="Số lượng" type="number" required />
-                                    </Col>
-                                    <Col md={6}>
-                                        <AvField name="itemColor" label="Màu sắc" type="text" required />
-                                    </Col>
-                                    <Col md={6}>
-                                        <AvField name="total" label="Thành tiền" type="number" value={VNDCurrencyFormatting(30000)} disabled={true} style={{fontWeight: 700}} />
+                                        <AvField name="total" label="Thành tiền" type="text" value={VNDCurrencyFormatting(30000)} disabled={true} style={{fontWeight: 700}} />
                                     </Col>
                                 </Row>
                                 <div className="text-md-right">
@@ -72,4 +72,4 @@ const AddGoods = (props) => {
     );
 };
 
-export default withRouter(AddGoods);
+export default withRouter(AddSoldItem);

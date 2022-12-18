@@ -10,7 +10,7 @@ import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem } from
 import * as FeatherIcon from 'react-feather';
 
 import AppMenu from './AppMenu';
-import profilePic from '../assets/images/users/avatar-7.jpg';
+import profilePic from '../assets/images/logo.png';
 
 
 /**

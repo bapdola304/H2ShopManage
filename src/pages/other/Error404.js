@@ -33,10 +33,10 @@ class Error404 extends Component {
 
                         <Row>
                             <Col className="text-center">
-                                <h3 className="mt-3">We couldn’t connect the dots</h3>
-                                <p className="text-muted mb-5">This page was not found. <br /> You may have mistyped the address or the page may have moved.</p>
+                                <h3 className="mt-3">Không tìm thấy trang</h3>
+                                <p className="text-muted mb-5">Không tìm thấy trang. <br /> Bạn có thể đã nhập sai địa chỉ hoặc trang có thể đã bị xóa.</p>
 
-                                <Link to="/" className="btn btn-lg btn-primary mt-4">Take me back to Home</Link>
+                                <Link to="/" className="btn btn-lg btn-primary mt-4">Quay lại trang chủ</Link>
                             </Col>
                         </Row>
                     </Container>

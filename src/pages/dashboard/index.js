@@ -1,20 +1,10 @@
 import React, { Component } from 'react';
 import { Row, Col, UncontrolledButtonDropdown, DropdownMenu, DropdownItem, DropdownToggle } from 'reactstrap';
 import Flatpickr from 'react-flatpickr'
-import { ChevronDown, Mail, Printer, File, Users, Image, ShoppingBag } from 'react-feather';
-
+import { ChevronDown, Mail, Printer, File } from 'react-feather';
 import { getLoggedInUser } from '../../helpers/authUtils';
 import Loader from '../../components/Loader';
-import OverviewWidget from '../../components/OverviewWidget';
-
 import Statistics from './Statistics';
-import RevenueChart from './RevenueChart';
-import TargetChart from './TargetChart';
-import SalesChart from './SalesChart';
-import Orders from './Orders';
-import Performers from './Performers';
-import Tasks from './Tasks';
-import Chat from './Chat';
 
 
 class Dashboard extends Component {
@@ -41,7 +31,7 @@ class Dashboard extends Component {
 
                     <Row className="page-title align-items-center">
                         <Col sm={4} xl={6}>
-                            <h4 className="mb-1 mt-0">Báo cáo</h4>
+                            <h4 className="mb-1 mt-0">Doanh thu Tiệm H2</h4>
                         </Col>
                         <Col sm={8} xl={6}>
                             <form className="form-inline float-sm-right mt-3 mt-sm-0">
@@ -78,45 +68,6 @@ class Dashboard extends Component {
                     {/* stats */}
                     <Statistics></Statistics>
 
-                    {/* charts */}
-                    <Row>
-                        <Col xl={3}>
-                            <OverviewWidget items={[
-                                { title: '121,000', description: 'Total Visitors', icon: Users },
-                                { title: '21,000', description: 'Product Views', icon: Image },
-                                { title: '$21.5', description: 'Revenue Per Visitor', icon: ShoppingBag }
-                            ]}></OverviewWidget>
-                        </Col>
-
-                        <Col xl={6}>
-                            <RevenueChart />
-                        </Col>
-                        <Col xl={3}>
-                            <TargetChart />
-                        </Col>
-                    </Row>
-
-                    {/* charts */}
-                    <Row>
-                        <Col xl={5}>
-                            <SalesChart />
-                        </Col>
-                        <Col xl={7}>
-                            <Orders />
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Col xl={4}>
-                            <Performers />
-                        </Col>
-                        <Col xl={4}>
-                            <Tasks />
-                        </Col>
-                        <Col xl={4}>
-                            <Chat />
-                        </Col>
-                    </Row>
                 </div>
             </React.Fragment>
         )

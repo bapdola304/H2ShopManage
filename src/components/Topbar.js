@@ -5,12 +5,11 @@ import { Container } from 'reactstrap';
 import { Menu, X, Search, Settings, User, HelpCircle, Lock, LogOut } from 'react-feather';
 
 import { showRightSidebar } from '../redux/actions';
-import NotificationDropdown from './NotificationDropdown';
 import ProfileDropdown from './ProfileDropdown';
 import LanguageDropdown from './LanguageDropdown';
 
 import logo from '../assets/images/logo.png';
-import profilePic from '../assets/images/users/avatar-7.jpg';
+import profilePic from '../assets/images/logo.png';
 
 
 const ProfileMenus = [{
@@ -64,7 +63,7 @@ class Topbar extends Component {
             { /* menu*/}
             <ul className="navbar-nav bd-navbar-nav flex-row list-unstyled menu-left mb-0">
               <li className="">
-                <button className="button-menu-mobile open-left disable-btn" onClick={this.props.openLeftMenuCallBack}>
+                <button className="button-menu-mobile open-left" onClick={this.props.openLeftMenuCallBack}>
                   <Menu className="menu-icon" />
                   <X className="close-icon" />
                 </button>

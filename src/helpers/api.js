@@ -1,22 +1,19 @@
-/**
- * Fetch data from given url
- * @param {*} url
- * @param {*} options
- */
-const fetchJSON = (url, options = {}) => {
-    return fetch(url, options)
-        .then(response => {
-            if (!response.status === 200) {
-                throw response.json();
-            }
-            return response.json();
-        })
-        .then(json => {
-            return json;
-        })
-        .catch(error => {
-            throw error;
-        });
-};
+import axios from "axios";
+// import cookie from "react-cookies";
 
-export { fetchJSON };
+export async function fetchJSON(endpoint, method = "GET", body) {
+const API_URL = "http://localhost:8080";
+  try {
+    // const loginData = cookie.load("ADMIN_DATA") || {};
+    // const token = loginData.Token;
+    let res = await axios({
+      method: method,
+      url: `${API_URL}/${endpoint}`,
+      data: body,
+    //   headers: { Authorization: `Bearer ${token}` },
+    });
+    return res;
+  } catch (err) {
+    console.error(err);
+  }
+}
