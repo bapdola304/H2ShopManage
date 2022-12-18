@@ -10,8 +10,8 @@ import { AvForm, AvField } from "availity-reactstrap-validation";
 import FileUploader from '../../components/FileUploader';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import PageTitle from '../../components/PageTitle';
-import { getProducts } from '../../redux/product/actions';
-import { VNDCurrencyFormatting } from '../../helpers/format';
+import { createProduct, deleteProduct, getProducts, resetActionSuccess } from '../../redux/product/actions';
+import { isEmpty, VNDCurrencyFormatting } from '../../helpers/format';
 
 const defaultSorted = [
     {
@@ -23,11 +23,13 @@ const defaultSorted = [
 const Products = () => {
 
     const dispatch = useDispatch();
-    const { items = [] } = useSelector(state => state.product);
+    const { items = [], isSuccess } = useSelector(state => state.product);
 
     const { SearchBar } = Search;
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
+    const [productSelected, setProductSelected] = useState({});
+    const { _id, productName, productColor, warrantyPeriod, sellPrice } = productSelected;
 
     const columns = [
         {
@@ -47,7 +49,7 @@ const Products = () => {
         },
         {
             dataField: 'warrantyPeriod',
-            text: 'Thời gian bảo hành',
+            text: 'Thời gian bảo hành(tháng)',
             sort: false,
         },
         {
@@ -59,7 +61,7 @@ const Products = () => {
         {
             text: "Thao tác",
             dataField: 'action',
-            formatter: (record) => renderAction(record),
+            formatter: (record, data) => renderAction(data),
             headerStyle: { width: '15%' }
         }
     ];
@@ -68,13 +70,20 @@ const Products = () => {
         dispatch(getProducts())
     }, []);
 
+    useEffect(() => {
+        dispatch(getProducts())
+        setIsOpenDialog(false)
+        setIsOpenDialogConfirm(false)
+        dispatch(resetActionSuccess())
+    }, [isSuccess]);
+
     const renderAction = (record) => {
         return (
             <div className="wrap-action">
-                <Button outline color="secondary" style={{ marginRight: 10 }}>
+                <Button outline color="secondary" style={{ marginRight: 10 }} onClick={() => handleEditProduct(record)}>
                     <i className="uil-edit"></i>
                 </Button>
-                <Button onClick={() => setIsOpenDialogConfirm(true)} color="danger">
+                <Button onClick={() => handleEditProduct(record)} color="danger">
                     <i className="uil-trash"></i>
                 </Button>
             </div>
@@ -82,20 +91,24 @@ const Products = () => {
     }
 
     const handleOpenDialog = () => {
+        setProductSelected({})
         setIsOpenDialog(true)
     }
 
     const handleSubmit = (event, errors, values) => {
         if (!errors.length) {
-            // const { _id } = userSelected;
-            // let { role } = values;
-            // if (!role) {
-            //     role = PERMISSION.SELLER;
-            // }
-            // dispatch(setPermissionsForUser({ id: _id, permission: role }));
-            // setIsOpenDialog(false);
+            dispatch(createProduct(values))
         }
     };
+
+    const handleEditProduct = (record) => {
+        setProductSelected(record)
+        setIsOpenDialogConfirm(true)
+    }
+
+    const onDelete = () => {
+        dispatch(deleteProduct(_id))
+    }
 
 
     const sizePerPageRenderer = ({ options, currSizePerPage, onSizePerPageChange }) => (
@@ -152,7 +165,7 @@ const Products = () => {
                                             {...props.baseProps}
                                             bordered={false}
                                             defaultSorted={defaultSorted}
-                                            pagination={paginationFactory({ sizePerPage: 20, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '5', value: 5, }, { text: '10', value: 10 }, { text: '25', value: 25 }, { text: 'All', value: items.length }] })}
+                                            pagination={paginationFactory({ sizePerPage: 25, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '10', value: 10 }, { text: '25', value: 25 }, { text: '50', value: 50, }, { text: 'All', value: items.length }] })}
                                             wrapperClasses="table-responsive"
                                         />
                                     </React.Fragment>
@@ -171,16 +184,16 @@ const Products = () => {
                 <AvForm onSubmit={handleSubmit}>
                     <Row>
                         <Col md={12}>
-                            <AvField name="itemName" label="Tên mặt hàng" type="text" required />
+                            <AvField name="productName" label="Tên mặt hàng" type="text" required value={isEmpty(productSelected) ? "" : productName} />
                         </Col>
                         <Col md={12}>
-                            <AvField name="itemColor" label="Màu sắc" type="text" required />
+                            <AvField name="productColor" label="Màu sắc" type="text" required value={isEmpty(productSelected) ? "" : productColor} />
                         </Col>
                         <Col md={12}>
-                            <AvField name="warrantyPeriod" label="Thời gian bảo hành" type="number" required />
+                            <AvField name="warrantyPeriod" label="Thời gian bảo hành" type="number" required value={isEmpty(productSelected) ? "" : warrantyPeriod} />
                         </Col>
                         <Col md={12}>
-                            <AvField name="sellPrice" label="Giá bán ra" type="number" required />
+                            <AvField name="sellPrice" label="Giá bán ra" type="number" required value={isEmpty(productSelected) ? "" : sellPrice} />
                         </Col>
                         <Col md={12}>
                             <p className="mb-1 font-weight-semibold">Hình ảnh</p>
@@ -209,8 +222,8 @@ const Products = () => {
                 width={400}
                 onCancel={() => setIsOpenDialogConfirm(false)}
                 title={"Xác nhận xóa"}
-                description={"Bạn có chắc muốn xóa mặt hàng này"}
-            // onOk={onOk}
+                description={`Bạn có chắc muốn xóa mặt hàng: "${productName}"`}
+                onOk={onDelete}
             />
         </React.Fragment>
     );
