@@ -124,7 +124,7 @@ const SoldItems = () => {
                                                 <SearchBar {...props.searchProps} placeholder="Tìm kiếm hàng đã bán" />
                                             </Col>
                                             <Col className="text-right">
-                                                <Link to="/apps/addSoldItem">
+                                                <Link to="/apps/soldItemAdd">
                                                     <Button color="primary" id="btn-new-event"><i className="uil-plus mr-1"></i>Thêm hàng đã bán</Button>
                                                 </Link>
                                             </Col>

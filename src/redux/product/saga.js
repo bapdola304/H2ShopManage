@@ -11,7 +11,9 @@ import { DELETE, POST, PUT } from '../../constants/common';
 
 function* getProducts() {
     const response = yield call(fetchJSON, 'api/product');
-    yield put(getProductsSuccess(response.data));
+    if (response?.data) {
+        yield put(getProductsSuccess(response.data));
+    }
 }
 
 function* createProduct({ payload }) {
