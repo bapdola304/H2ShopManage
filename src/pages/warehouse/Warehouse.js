@@ -126,7 +126,7 @@ const Warehouse = () => {
                                                 <SearchBar {...props.searchProps} placeholder={"Tìm kiếm hàng"} />
                                             </Col>
                                             <Col className="text-right">
-                                                <Link to="/apps/addGoods">
+                                                <Link to="/apps/warehouseAdd">
                                                     <Button color="primary" id="btn-new-event"><i className="uil-plus mr-1"></i>Thêm hàng</Button>
                                                 </Link>
                                             </Col>

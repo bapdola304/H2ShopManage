@@ -24,6 +24,10 @@ const AddGoods = React.lazy(() => import('../pages/warehouse/AddGoods'));
 const SoldItems = React.lazy(() => import('../pages/soldItems/SoldItems'));
 const AddSoldItem = React.lazy(() => import('../pages/soldItems/AddSoldItem'));
 
+// Warehouse Manage
+const WarehouseManage = React.lazy(() => import('../pages/warehouseManage/WarehouseManage'));
+
+
 
 // handle auth and authorization
 const PrivateRoute = ({ component: Component, roles, ...rest }) => (
@@ -97,8 +101,8 @@ const warehouseAppRoutes = {
 };
 
 const addGoodsAppRoutes = {
-    path: '/apps/addGoods',
-    name: 'Warehouse',
+    path: '/apps/warehouseAdd',
+    name: 'Kho hàng',
     icon: FeatherIcon.Truck,
     component: AddGoods,
     route: PrivateRoute,
@@ -106,7 +110,7 @@ const addGoodsAppRoutes = {
 };
 
 const soldItemsAppRoutes = {
-    path: '/apps/calendar',
+    path: '/apps/soldItem',
     name: 'Đã bán',
     icon: FeatherIcon.Users,
     component: SoldItems,
@@ -115,10 +119,19 @@ const soldItemsAppRoutes = {
 };
 
 const addSoldItemAppRoutes = {
-    path: '/apps/addSoldItem',
+    path: '/apps/soldItemAdd',
     name: 'Đã bán',
     icon: FeatherIcon.Truck,
     component: AddSoldItem,
+    route: PrivateRoute,
+    roles: ['Admin'],
+};
+
+const warehouseManageAppRoutes = {
+    path: '/apps/manage/warehouse',
+    name: 'Danh sách kho hàng',
+    icon: FeatherIcon.Users,
+    component: WarehouseManage,
     route: PrivateRoute,
     roles: ['Admin'],
 };
@@ -157,6 +170,7 @@ const flattenRoutes = routes => {
 const allRoutes = [
     rootRoute,
     dashboardRoutes,
+    warehouseManageAppRoutes,
     typeOfItemAppRoutes,
     warehouseAppRoutes,
     soldItemsAppRoutes,
@@ -166,6 +180,6 @@ const allRoutes = [
     authRoutes,
 ];
 
-const authProtectedRoutes = [dashboardRoutes, typeOfItemAppRoutes, warehouseAppRoutes, soldItemsAppRoutes, costsIncurredAppRoutes];
+const authProtectedRoutes = [dashboardRoutes, warehouseManageAppRoutes, typeOfItemAppRoutes, warehouseAppRoutes, soldItemsAppRoutes, costsIncurredAppRoutes];
 const allFlattenRoutes = flattenRoutes(allRoutes);
 export { allRoutes, authProtectedRoutes, allFlattenRoutes };
