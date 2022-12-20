@@ -22,7 +22,7 @@ const Dialog = (props) => {
             <Modal
                 isOpen={visible}
                 className={classnames("dialog-wrapper", props.className)}
-                style={{ marginTop: "5%", width: "80%" }}
+                style={{ marginTop: "10%", width: "80%" }}
             >
                 <ModalHeader toggle={props.onCancel}>{title}</ModalHeader>
                 <ModalBody>{children}</ModalBody>

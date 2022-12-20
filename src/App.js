@@ -19,7 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 class App extends Component {
   render() {
     return <>
-      <ToastContainer autoClose={2000} style={{ fontWeight: 600 }} />
+      <ToastContainer autoClose={3000} style={{ fontWeight: 600 }} />
       <Routes></Routes>
       <Spinner />
     </>;

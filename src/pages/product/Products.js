@@ -30,7 +30,7 @@ const Products = () => {
     const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
     const [productSelected, setProductSelected] = useState({});
     const [isEditingProduct, setIsEditingProduct] = useState(false);
-    const { _id, productName, productColor, warrantyPeriod, sellPrice } = productSelected;
+    const { id, productName, productColor, warrantyPeriod, sellPrice } = productSelected;
 
     const columns = [
         {
@@ -102,7 +102,7 @@ const Products = () => {
         if (!errors.length) {
             if (isEditingProduct) {
                 const payload = {
-                    id: _id,
+                    id,
                     body: values
                 }
                 dispatch(updateProduct(payload))
@@ -129,7 +129,7 @@ const Products = () => {
     }
 
     const onDelete = () => {
-        dispatch(deleteProduct(_id))
+        dispatch(deleteProduct(id))
     }
 
 

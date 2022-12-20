@@ -27,7 +27,7 @@ const DialogConfirm = (props) => {
         >
             <ModalBody className="dialogConfirm">
                 {/* {!icon ? <FeatherIcon.XOctagon className={type} /> : icon} */}
-                <h4 className="title text-center">
+                <h4 className="title text-center font-weight-bold">
                     <span>{title}</span>
                 </h4>
                 <h5 className="text-center mt-3">{description}</h5>

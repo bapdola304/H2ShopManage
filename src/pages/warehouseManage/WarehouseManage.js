@@ -9,8 +9,7 @@ import DialogConfirm from '../../components/DialogConfirm';
 import { AvForm, AvField } from "availity-reactstrap-validation";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import PageTitle from '../../components/PageTitle';
-import { createProduct, deleteProduct, getProducts, resetActionSuccess } from '../../redux/product/actions';
-import { isEmpty } from '../../helpers/format';
+import { createWarehouse, deleteWarehouse, getWarehouseList, resetActionSuccess, updateWarehouse } from '../../redux/warehouse/actions';
 
 const defaultSorted = [
     {
@@ -22,18 +21,34 @@ const defaultSorted = [
 const WarehouseManage = () => {
 
     const dispatch = useDispatch();
-    const { items = [], isSuccess } = useSelector(state => state.product);
+    const { warehouseList = [], isSuccess } = useSelector(state => state.warehouse);
 
     const { SearchBar } = Search;
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
-    const [productSelected, setProductSelected] = useState({});
-    const { _id, productName, productColor, warrantyPeriod, sellPrice } = productSelected;
+    const [warehouseSelected, setWarehouseSelected] = useState({});
+    const [isEditingWarehouse, setIsEditingWarehouse] = useState(false);
+    const { id, warehouseName, address, contactName, contactPhone } = warehouseSelected;
 
     const columns = [
         {
             dataField: 'warehouseName',
             text: 'Tên kho hàng',
+            sort: false,
+        },
+        {
+            dataField: 'address',
+            text: 'Địa chỉ',
+            sort: false,
+        },
+        {
+            dataField: 'contactName',
+            text: 'Người liên hệ',
+            sort: false,
+        },
+        {
+            dataField: 'contactPhone',
+            text: 'SĐT liên hệ',
             sort: false,
         },
         {
@@ -44,16 +59,16 @@ const WarehouseManage = () => {
         }
     ];
 
-    // useEffect(() => {
-    //     dispatch(getProducts())
-    // }, []);
+    useEffect(() => {
+        dispatch(getWarehouseList())
+    }, []);
 
-    // useEffect(() => {
-    //     dispatch(getProducts())
-    //     setIsOpenDialog(false)
-    //     setIsOpenDialogConfirm(false)
-    //     dispatch(resetActionSuccess())
-    // }, [isSuccess]);
+    useEffect(() => {
+        dispatch(getWarehouseList())
+        setIsOpenDialog(false)
+        setIsOpenDialogConfirm(false)
+        dispatch(resetActionSuccess())
+    }, [isSuccess]);
 
     const renderAction = (record) => {
         return (
@@ -61,7 +76,7 @@ const WarehouseManage = () => {
                 <Button outline color="secondary" style={{ marginRight: 10 }} onClick={() => handleEditProduct(record)}>
                     <i className="uil-edit"></i>
                 </Button>
-                <Button onClick={() => handleEditProduct(record)} color="danger">
+                <Button onClick={() => handleDeleteProduct(record)} color="danger">
                     <i className="uil-trash"></i>
                 </Button>
             </div>
@@ -69,23 +84,42 @@ const WarehouseManage = () => {
     }
 
     const handleOpenDialog = () => {
-        setProductSelected({})
+        setWarehouseSelected({})
         setIsOpenDialog(true)
     }
 
     const handleSubmit = (event, errors, values) => {
         if (!errors.length) {
-            dispatch(createProduct(values))
+            if (isEditingWarehouse) {
+                const payload = {
+                    id,
+                    body: values
+                }
+                dispatch(updateWarehouse(payload))
+            } else {
+                dispatch(createWarehouse(values))
+            }
         }
     };
 
     const handleEditProduct = (record) => {
-        setProductSelected(record)
+        setWarehouseSelected(record)
+        setIsEditingWarehouse(true)
+        setIsOpenDialog(true)
+    }
+
+    const handleDeleteProduct = (record) => {
+        setWarehouseSelected(record)
         setIsOpenDialogConfirm(true)
     }
 
     const onDelete = () => {
-        dispatch(deleteProduct(_id))
+        dispatch(deleteWarehouse(id))
+    }
+
+    const onCancelEdit = () => {
+        setIsOpenDialog(false)
+        setIsEditingWarehouse(false)
     }
 
 
@@ -124,7 +158,7 @@ const WarehouseManage = () => {
                             <ToolkitProvider
                                 bootstrap4
                                 keyField="id"
-                                data={[]}
+                                data={warehouseList}
                                 columns={columns}
                                 search
                                 exportCSV={{ onlyExportFiltered: true, exportAll: false }}>
@@ -143,7 +177,7 @@ const WarehouseManage = () => {
                                             {...props.baseProps}
                                             bordered={false}
                                             defaultSorted={defaultSorted}
-                                            pagination={paginationFactory({ sizePerPage: 25, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '10', value: 10 }, { text: '25', value: 25 }, { text: '50', value: 50, }, { text: 'All', value: 0 }] })}
+                                            pagination={paginationFactory({ sizePerPage: 25, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '10', value: 10 }, { text: '25', value: 25 }, { text: '50', value: 50, }, { text: 'All', value: warehouseList.length }] })}
                                             wrapperClasses="table-responsive"
                                         />
                                     </React.Fragment>
@@ -155,25 +189,34 @@ const WarehouseManage = () => {
             </Row>
             <Dialog
                 visible={isOpenDialog}
-                title={"Thêm mặt hàng"}
+                title={!isEditingWarehouse ? "Thêm kho hàng" : "Chỉnh sửa kho hàng"}
                 onCancel={() => setIsOpenDialog(false)}
                 isShowFooter={false}
             >
                 <AvForm onSubmit={handleSubmit}>
                     <Row>
                         <Col md={12}>
-                            <AvField name="warehouseName" label="Tên kho hàng" type="text" required value={isEmpty(productSelected) ? "" : productName} />
+                            <AvField name="warehouseName" label="Tên kho hàng" type="text" required value={!isEditingWarehouse ? "" : warehouseName} />
+                        </Col>
+                        <Col md={12}>
+                            <AvField name="address" label="Địa chỉ" type="text" required value={!isEditingWarehouse ? "" : address} />
+                        </Col>
+                        <Col md={12}>
+                            <AvField name="contactName" label="Người liên hệ" type="text" required value={!isEditingWarehouse ? "" : contactName} />
+                        </Col>
+                        <Col md={12}>
+                            <AvField name="contactPhone" label="SĐT liên hệ" type="text" required value={!isEditingWarehouse ? "" : contactPhone} />
                         </Col>
                     </Row>
                     <div style={{ float: "right", marginTop: 20 }}>
                         <Button
                             color="secondary mr-2"
-                            onClick={() => setIsOpenDialog(false)}
+                            onClick={onCancelEdit}
                         >
                             Hủy bỏ
                         </Button>
                         <Button color="primary" type="submit">
-                            Thêm
+                            {!isEditingWarehouse ? "Thêm" : "Chỉnh sửa"}
                         </Button>
                     </div>
                 </AvForm>
@@ -183,7 +226,7 @@ const WarehouseManage = () => {
                 width={400}
                 onCancel={() => setIsOpenDialogConfirm(false)}
                 title={"Xác nhận xóa"}
-                description={`Bạn có chắc muốn xóa kho hàng: "${productName}"`}
+                description={`Bạn có chắc muốn xóa kho hàng: "${warehouseName}"`}
                 onOk={onDelete}
             />
         </React.Fragment>
