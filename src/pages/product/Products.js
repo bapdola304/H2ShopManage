@@ -72,6 +72,7 @@ const Products = () => {
     }, []);
 
     useEffect(() => {
+        if (!isSuccess) return
         dispatch(getProducts())
         setIsOpenDialog(false)
         setIsOpenDialogConfirm(false)

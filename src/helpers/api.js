@@ -1,6 +1,7 @@
 import axios from "axios";
 import { handleLoading } from "../redux/actions";
 import store from '../redux/store';
+import { toast } from "react-toastify";
 // import cookie from "react-cookies";
 
 export async function fetchJSON(endpoint, method = "GET", body) {
@@ -20,5 +21,7 @@ const API_URL = "http://localhost:8080";
   } catch (err) {
     store.dispatch(handleLoading(false));
     console.error(err);
+    toast.error('Xảy ra lỗi hệ thống: ' + err);
+    return {}
   }
 }

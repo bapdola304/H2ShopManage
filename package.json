@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@fullcalendar/bootstrap": "^4.3.0",
-    "@fullcalendar/core": "^4.3.1",
+    "@fullcalendar/core": "^4.4.2",
     "@fullcalendar/daygrid": "^4.3.0",
     "@fullcalendar/interaction": "^4.3.0",
     "@fullcalendar/list": "^4.3.0",
@@ -40,6 +40,7 @@
     "react-select": "^3.0.5",
     "react-sortablejs": "^1.5.1",
     "react-text-mask": "^5.4.3",
+    "react-toastify": "^8.0.0",
     "reactstrap": "^8.0.1",
     "redux": "^4.0.4",
     "redux-saga": "^1.1.1",

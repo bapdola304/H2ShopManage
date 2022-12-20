@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import Routes from './routes/Routes';
-
-// Themes
-
-// default
-import './assets/scss/theme.scss';
+import { ToastContainer } from 'react-toastify';
 import Spinner from './components/Spinner';
+import './assets/scss/theme.scss';
+import 'react-toastify/dist/ReactToastify.css';
 
 // dark
 // import './assets/scss/theme-dark.scss';
@@ -21,6 +19,7 @@ import Spinner from './components/Spinner';
 class App extends Component {
   render() {
     return <>
+      <ToastContainer autoClose={2000} style={{ fontWeight: 600 }} />
       <Routes></Routes>
       <Spinner />
     </>;
