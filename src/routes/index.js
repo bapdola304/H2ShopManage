@@ -114,9 +114,57 @@ const warehouseAppRoutes = {
     path: '/apps/warehouse',
     name: 'Kho hàng của tôi',
     icon: FeatherIcon.Truck,
-    component: Warehouse,
-    route: PrivateRoute,
-    roles: ['Admin'],
+    children: [
+        {
+            path: '/apps/warehouse/temperedGlass',
+            name: 'Kính cường lực',
+            component: Warehouse,
+            route: PrivateRoute,
+            roles: ['Admin'],
+        },
+        {
+            path: '/apps/warehouse/phoneCase',
+            name: 'Ốp lưng',
+            component: Warehouse,
+            route: PrivateRoute,
+            roles: ['Admin'],
+        },
+        {
+            path: '/apps/warehouse/phoneCharger',
+            name: 'Cáp - Sạc',
+            component: Warehouse,
+            route: PrivateRoute,
+            roles: ['Admin'],
+        },
+        {
+            path: '/apps/warehouse/headphone',
+            name: 'Tai nghe',
+            component: Warehouse,
+            route: PrivateRoute,
+            roles: ['Admin'],
+        },
+        {
+            path: '/apps/warehouse/backupCharger',
+            name: 'Sạc dự phòng',
+            component: Warehouse,
+            route: PrivateRoute,
+            roles: ['Admin'],
+        },
+        {
+            path: '/apps/warehouse/loudspeaker',
+            name: 'Loa',
+            component: Warehouse,
+            route: PrivateRoute,
+            roles: ['Admin'],
+        },
+        {
+            path: '/apps/warehouse/otherAccessories',
+            name: 'Các loại phụ kiện khác',
+            component: Warehouse,
+            route: PrivateRoute,
+            roles: ['Admin'],
+        }
+    ],
 };
 
 const addGoodsAppRoutes = {
@@ -179,16 +227,18 @@ const flattenRoutes = routes => {
 // All routes
 const allRoutes = [
     rootRoute,
+    // management
     dashboardRoutes,
-    warehouseManageAppRoutes,
-    typeOfItemAppRoutes,
     warehouseAppRoutes,
     soldItemsAppRoutes,
-    addGoodsAppRoutes,
-    addSoldItemAppRoutes,
     costsIncurredAppRoutes,
+    // types
+    warehouseManageAppRoutes,
+    typeOfItemAppRoutes,
     costsTypeAppRoutes,
     authRoutes,
+    addGoodsAppRoutes,
+    addSoldItemAppRoutes,
 ];
 
 const authProtectedRoutes = [
