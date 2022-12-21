@@ -13,8 +13,9 @@ const Dashboard = React.lazy(() => import('../pages/dashboard'));
 // Items
 const Items = React.lazy(() => import('../pages/product/Products'));
 
-// Costs Incurred
+// Costs
 const CostsIncurred = React.lazy(() => import('../pages/costsIncurred/CostsIncurred'));
+const CostsType = React.lazy(() => import('../pages/costsType/CostsType'));
 
 // Warehouse
 const Warehouse = React.lazy(() => import('../pages/warehouse/Warehouse'));
@@ -60,26 +61,44 @@ const rootRoute = {
     route: PrivateRoute,
 };
 
-// dashboards
-const dashboardRoutes = {
-    path: '/dashboard',
-    name: 'Doanh thu',
+// types
+const warehouseManageAppRoutes = {
+    path: '/apps/manage/warehouse',
+    name: 'Danh sách kho hàng',
     icon: FeatherIcon.Home,
-    // header: 'Navigation',
-    component: Dashboard,
+    header: "Phân loại",
+    component: WarehouseManage,
+    route: PrivateRoute,
     roles: ['Admin'],
-    route: PrivateRoute
 };
-
-// apps
 
 const typeOfItemAppRoutes = {
     path: '/apps/items',
-    name: 'Các loại mặt hàng',
+    name: 'Các mặt hàng',
     icon: FeatherIcon.Package,
     component: Items,
     route: PrivateRoute,
     roles: ['Admin'],
+};
+
+const costsTypeAppRoutes = {
+    path: '/apps/costsType',
+    name: 'Các loại chi phí',
+    icon: FeatherIcon.DollarSign,
+    component: CostsType,
+    route: PrivateRoute,
+    roles: ['Admin'],
+};
+
+// management
+const dashboardRoutes = {
+    path: '/dashboard',
+    name: 'Doanh thu',
+    icon: FeatherIcon.DollarSign,
+    header: 'Quản lý',
+    component: Dashboard,
+    roles: ['Admin'],
+    route: PrivateRoute
 };
 
 const costsIncurredAppRoutes = {
@@ -93,7 +112,7 @@ const costsIncurredAppRoutes = {
 
 const warehouseAppRoutes = {
     path: '/apps/warehouse',
-    name: 'Kho hàng',
+    name: 'Kho hàng của tôi',
     icon: FeatherIcon.Truck,
     component: Warehouse,
     route: PrivateRoute,
@@ -123,15 +142,6 @@ const addSoldItemAppRoutes = {
     name: 'Đã bán',
     icon: FeatherIcon.Truck,
     component: AddSoldItem,
-    route: PrivateRoute,
-    roles: ['Admin'],
-};
-
-const warehouseManageAppRoutes = {
-    path: '/apps/manage/warehouse',
-    name: 'Danh sách kho hàng',
-    icon: FeatherIcon.Users,
-    component: WarehouseManage,
     route: PrivateRoute,
     roles: ['Admin'],
 };
@@ -177,9 +187,20 @@ const allRoutes = [
     addGoodsAppRoutes,
     addSoldItemAppRoutes,
     costsIncurredAppRoutes,
+    costsTypeAppRoutes,
     authRoutes,
 ];
 
-const authProtectedRoutes = [dashboardRoutes, warehouseManageAppRoutes, typeOfItemAppRoutes, warehouseAppRoutes, soldItemsAppRoutes, costsIncurredAppRoutes];
+const authProtectedRoutes = [
+    // management
+    dashboardRoutes,
+    warehouseAppRoutes,
+    soldItemsAppRoutes,
+    costsIncurredAppRoutes,
+    // types
+    warehouseManageAppRoutes,
+    typeOfItemAppRoutes,
+    costsTypeAppRoutes
+];
 const allFlattenRoutes = flattenRoutes(allRoutes);
 export { allRoutes, authProtectedRoutes, allFlattenRoutes };
