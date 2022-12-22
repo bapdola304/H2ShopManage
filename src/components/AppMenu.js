@@ -13,7 +13,7 @@ const MenuItemWithChildren = ({ item, linkClassNames, subMenuClassNames, activat
     return (
         <li className={classNames('side-nav-item', { 'active mm-active': activatedMenuItemIds.indexOf(item.id) >= 0 })}>
             <Link
-                to="/"
+                to="#"
                 className={classNames('side-sub-nav-link', linkClassNames)}
                 aria-expanded={activatedMenuItemIds.indexOf(item.id) >= 0}>
                 {item.icon && <Icon />}
