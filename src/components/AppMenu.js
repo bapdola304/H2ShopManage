@@ -6,6 +6,7 @@ import MetisMenu from 'metismenujs/dist/metismenujs';
 
 import { initMenu, changeActiveMenuFromLocation } from '../redux/actions';
 
+var isSecondMenu = false
 
 const MenuItemWithChildren = ({ item, linkClassNames, subMenuClassNames, activatedMenuItemIds }) => {
     const Icon = item.icon || null;
@@ -55,7 +56,7 @@ const MenuItemWithChildren = ({ item, linkClassNames, subMenuClassNames, activat
 
 const MenuItem = ({ item, className, linkClassName }) => {
     return (
-        <li className={classNames('side-nav-item', className)}>
+        <li onClick={() => isSecondMenu = item.parentId !== undefined} className={classNames('side-nav-item', className)}>
             <MenuItemLink item={item} className={linkClassName} />
         </li>
     );
@@ -82,8 +83,12 @@ class AppMenu extends Component {
     };
 
     componentDidMount = () => {
-        if (!this.props.menu.menuItems) this.props.initMenu();
-        else this.initMenu();
+        if (!this.props.menu.menuItems) {
+            this.props.initMenu();
+        } else if (!isSecondMenu) {
+            this.initMenu()
+        }
+
 
         this.props.history.listen((location, action) => {
             this.props.changeActiveMenuFromLocation();
