@@ -85,9 +85,7 @@ class AppMenu extends Component {
     componentDidMount = () => {
         if (!this.props.menu.menuItems) {
             this.props.initMenu();
-        } else if (!isSecondMenu) {
-            this.initMenu()
-        }
+        } else this.initMenu()
 
 
         this.props.history.listen((location, action) => {

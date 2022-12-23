@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Card, CardBody, Button, InputGroupAddon, Label, FormGroup, CustomInput } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import FileUploader from '../../components/FileUploader';
@@ -8,6 +8,21 @@ import PageTitle from '../../components/PageTitle';
 import { VNDCurrencyFormatting } from '../../helpers/format';
 
 const AddGoods = (props) => {
+
+    const [multiValue, setMultiValue] = useState([]);
+
+    const handleMultiChange = (options) => {
+        setMultiValue(options)
+    }
+
+    const getMutilOptions = () => {
+        var arr = []
+        for (let index = 0; index < 100; index++) {
+            arr.push({ value: `chocolate${index}`, label: `Chocolate${index}` },)
+        }
+        return arr
+    }
+
     return (
         <React.Fragment>
             <Row className="page-title">
@@ -39,11 +54,10 @@ const AddGoods = (props) => {
                                         <Select
                                             className="react-select"
                                             classNamePrefix="react-select"
-                                            options={[
-                                                { value: 'chocolate', label: 'Chocolate' },
-                                                { value: 'strawberry', label: 'Strawberry' },
-                                                { value: 'vanilla', label: 'Vanilla' },
-                                            ]}></Select>
+                                            isMulti
+                                            onChange={handleMultiChange}
+                                            value={multiValue}
+                                            options={getMutilOptions()}></Select>
                                     </Col>
                                     <Col md={6}>
                                         <AvField name="quantity" label="Số lượng" type="number" required />
