@@ -45,6 +45,33 @@ const Statistics = () => {
                             value: '25.16%'
                         }}></StatisticsChartWidget>
                 </Col>
+                <Col md={4} xl={4}>
+                    <StatisticsChartWidget
+                        description="Chi phí phát sinh"
+                        title="750"
+                        colors={['#ffbe0b']}
+                        data={[25, 66, 41, 85, 63, 25, 44, 12, 36, 9, 54]}
+                        trend={{
+                            textClass: 'text-danger',
+                            icon: 'uil uil-arrow-down',
+                            value: '5.05%'
+                        }}></StatisticsChartWidget>
+                </Col>
+                <Col md={8} xl={8}>
+                    <StatisticsChartWidget
+                        description="Tổng lợi nhuận"
+                        title="750"
+                        colors={['#ffbe0b']}
+                        isTotal={true}
+                        data={[25, 66, 41, 85, 63, 25, 44, 12, 36, 9, 54]}
+                        trend={{
+                            textClass: 'text-danger',
+                            icon: 'uil uil-arrow-down',
+                            value: '5.05%'
+                        }}></StatisticsChartWidget>
+                </Col>
+            </Row>
+            <Row>
                 <Col md={6} xl={4}>
                     <StatisticsChartWidget
                         description="Số lượng khách hàng"
@@ -59,24 +86,9 @@ const Statistics = () => {
                 </Col>
                 <Col md={6} xl={4}>
                     <StatisticsChartWidget
-                        description="Chi phí phát sinh"
+                        description="Số mặt hàng đã bảo hành"
                         title="750"
                         colors={['#ffbe0b']}
-                        data={[25, 66, 41, 85, 63, 25, 44, 12, 36, 9, 54]}
-                        trend={{
-                            textClass: 'text-danger',
-                            icon: 'uil uil-arrow-down',
-                            value: '5.05%'
-                        }}></StatisticsChartWidget>
-                </Col>
-            </Row>
-            <Row>
-                <Col md={12} xl={8}>
-                    <StatisticsChartWidget
-                        description="Tổng lợi nhuận"
-                        title="750"
-                        colors={['#ffbe0b']}
-                        isTotal={true}
                         data={[25, 66, 41, 85, 63, 25, 44, 12, 36, 9, 54]}
                         trend={{
                             textClass: 'text-danger',

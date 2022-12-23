@@ -114,57 +114,9 @@ const warehouseAppRoutes = {
     path: '/apps/warehouse',
     name: 'Kho hàng của tôi',
     icon: FeatherIcon.Truck,
-    children: [
-        {
-            path: '/apps/warehouse/temperedGlass',
-            name: 'Kính cường lực',
-            component: Warehouse,
-            route: PrivateRoute,
-            roles: ['Admin'],
-        },
-        {
-            path: '/apps/warehouse/phoneCase',
-            name: 'Ốp lưng',
-            component: Warehouse,
-            route: PrivateRoute,
-            roles: ['Admin'],
-        },
-        {
-            path: '/apps/warehouse/phoneCharger',
-            name: 'Cáp - Sạc',
-            component: Warehouse,
-            route: PrivateRoute,
-            roles: ['Admin'],
-        },
-        {
-            path: '/apps/warehouse/headphone',
-            name: 'Tai nghe',
-            component: Warehouse,
-            route: PrivateRoute,
-            roles: ['Admin'],
-        },
-        {
-            path: '/apps/warehouse/backupCharger',
-            name: 'Sạc dự phòng',
-            component: Warehouse,
-            route: PrivateRoute,
-            roles: ['Admin'],
-        },
-        {
-            path: '/apps/warehouse/loudspeaker',
-            name: 'Loa',
-            component: Warehouse,
-            route: PrivateRoute,
-            roles: ['Admin'],
-        },
-        {
-            path: '/apps/warehouse/otherAccessories',
-            name: 'Các loại phụ kiện khác',
-            component: Warehouse,
-            route: PrivateRoute,
-            roles: ['Admin'],
-        }
-    ],
+    component: Warehouse,
+    route: PrivateRoute,
+    roles: ['Admin'],
 };
 
 const addGoodsAppRoutes = {
@@ -180,57 +132,9 @@ const soldItemsAppRoutes = {
     path: '/apps/soldItem',
     name: 'Đã bán',
     icon: FeatherIcon.Users,
-    children: [
-        {
-            path: '/apps/soldItem/temperedGlass',
-            name: 'Kính cường lực',
-            component: SoldItems,
-            route: PrivateRoute,
-            roles: ['Admin'],
-        },
-        {
-            path: '/apps/soldItem/phoneCase',
-            name: 'Ốp lưng',
-            component: SoldItems,
-            route: PrivateRoute,
-            roles: ['Admin'],
-        },
-        {
-            path: '/apps/soldItem/phoneCharger',
-            name: 'Cáp - Sạc',
-            component: SoldItems,
-            route: PrivateRoute,
-            roles: ['Admin'],
-        },
-        {
-            path: '/apps/soldItem/headphone',
-            name: 'Tai nghe',
-            component: SoldItems,
-            route: PrivateRoute,
-            roles: ['Admin'],
-        },
-        {
-            path: '/apps/soldItem/backupCharger',
-            name: 'Sạc dự phòng',
-            component: SoldItems,
-            route: PrivateRoute,
-            roles: ['Admin'],
-        },
-        {
-            path: '/apps/soldItem/loudspeaker',
-            name: 'Loa',
-            component: SoldItems,
-            route: PrivateRoute,
-            roles: ['Admin'],
-        },
-        {
-            path: '/apps/soldItem/otherAccessories',
-            name: 'Các loại phụ kiện khác',
-            component: SoldItems,
-            route: PrivateRoute,
-            roles: ['Admin'],
-        }
-    ],
+    component: SoldItems,
+    route: PrivateRoute,
+    roles: ['Admin'],
 };
 
 const addSoldItemAppRoutes = {
@@ -242,19 +146,10 @@ const addSoldItemAppRoutes = {
     roles: ['Admin'],
 };
 
-const phoneManufacturersAppRoutes = {
-    path: '/apps/phoneManufacturers',
-    name: 'Hãng điện thoại',
+const insuranceAppRoutes = {
+    path: '/apps/insurance',
+    name: 'Bảo hành',
     icon: FeatherIcon.Layers,
-    component: AddSoldItem,
-    route: PrivateRoute,
-    roles: ['Admin'],
-};
-
-const phoneListAppRoutes = {
-    path: '/apps/phoneList',
-    name: 'Mã điện thoại',
-    icon: FeatherIcon.Smartphone,
     component: AddSoldItem,
     route: PrivateRoute,
     roles: ['Admin'],
@@ -298,6 +193,7 @@ const allRoutes = [
     warehouseAppRoutes,
     soldItemsAppRoutes,
     costsIncurredAppRoutes,
+    insuranceAppRoutes,
     // types
     warehouseManageAppRoutes,
     typeOfItemAppRoutes,
@@ -305,8 +201,6 @@ const allRoutes = [
     authRoutes,
     addGoodsAppRoutes,
     addSoldItemAppRoutes,
-    phoneManufacturersAppRoutes,
-    phoneListAppRoutes
 ];
 
 const authProtectedRoutes = [
@@ -315,12 +209,11 @@ const authProtectedRoutes = [
     warehouseAppRoutes,
     soldItemsAppRoutes,
     costsIncurredAppRoutes,
+    insuranceAppRoutes,
     // types
     warehouseManageAppRoutes,
     typeOfItemAppRoutes,
     costsTypeAppRoutes,
-    phoneManufacturersAppRoutes,
-    phoneListAppRoutes
 ];
 const allFlattenRoutes = flattenRoutes(allRoutes);
 export { allRoutes, authProtectedRoutes, allFlattenRoutes };

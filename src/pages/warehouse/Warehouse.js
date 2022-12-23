@@ -30,8 +30,13 @@ const Warehouse = () => {
         },
         {
             dataField: 'itemName',
-            text: 'Tên mặt hàng',
+            text: 'Loại mặt hàng',
             sort: true,
+        },
+        {
+            dataField: 'color',
+            text: 'Màu sắc',
+            sort: false,
         },
         {
             dataField: 'price',
@@ -44,13 +49,13 @@ const Warehouse = () => {
             sort: false,
         },
         {
-            dataField: 'color',
-            text: 'Màu sắc',
+            dataField: 'total',
+            text: 'Thành tiền',
             sort: false,
         },
         {
-            dataField: 'total',
-            text: 'Thành tiền',
+            dataField: 'sellPrice',
+            text: 'Giá bán ra',
             sort: false,
         },
         {

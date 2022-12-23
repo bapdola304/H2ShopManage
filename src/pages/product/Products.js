@@ -30,34 +30,18 @@ const Products = () => {
     const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
     const [productSelected, setProductSelected] = useState({});
     const [isEditingProduct, setIsEditingProduct] = useState(false);
-    const { id, productName, productColor, warrantyPeriod, sellPrice } = productSelected;
+    const { id, productName, warrantyPeriod } = productSelected;
 
     const columns = [
-        {
-            dataField: 'image',
-            text: 'Hình ảnh',
-            sort: false,
-        },
         {
             dataField: 'productName',
             text: 'Tên mặt hàng',
             sort: true,
         },
         {
-            dataField: 'productColor',
-            text: 'Màu sắc',
-            sort: false,
-        },
-        {
             dataField: 'warrantyPeriod',
             text: 'Thời gian bảo hành(tháng)',
             sort: false,
-        },
-        {
-            dataField: 'sellPrice',
-            text: 'Giá bán ra',
-            sort: false,
-            formatter: (record) => VNDCurrencyFormatting(record)
         },
         {
             text: "Thao tác",
@@ -205,21 +189,7 @@ const Products = () => {
                             <AvField name="productName" label="Tên mặt hàng" type="text" required value={!isEditingProduct ? "" : productName} />
                         </Col>
                         <Col md={12}>
-                            <AvField name="productColor" label="Màu sắc" type="text" required value={!isEditingProduct ? "" : productColor} />
-                        </Col>
-                        <Col md={12}>
                             <AvField name="warrantyPeriod" label="Thời gian bảo hành" type="number" required value={!isEditingProduct ? "" : warrantyPeriod} />
-                        </Col>
-                        <Col md={12}>
-                            <AvField name="sellPrice" label="Giá bán ra" type="number" required value={!isEditingProduct ? "" : sellPrice} />
-                        </Col>
-                        <Col md={12}>
-                            <p className="mb-1 font-weight-semibold">Hình ảnh</p>
-                            <FileUploader
-                                onFileUpload={files => {
-                                    console.log(files);
-                                }}
-                            />
                         </Col>
                     </Row>
                     <div style={{ float: "right", marginTop: 20 }}>
