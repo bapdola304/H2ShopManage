@@ -7,6 +7,7 @@ import AppMenu from './appMenu/reducers';
 import loading from './loading/reducers';
 import product from './product/reducers';
 import warehouse from './warehouse/reducers';
+import myWarehouse from './myWarehouse/reducers';
 
 export default combineReducers({
     Auth,
@@ -14,5 +15,6 @@ export default combineReducers({
     Layout,
     loading,
     product,
-    warehouse
+    warehouse,
+    myWarehouse
 });

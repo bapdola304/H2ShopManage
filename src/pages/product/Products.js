@@ -136,7 +136,7 @@ const Products = () => {
             <Row className="page-title">
                 <Col md={12}>
                     <PageTitle
-                        title={'Danh sách các mặt hàng'}
+                        title={'Danh sách các loại mặt hàng'}
                     />
                 </Col>
             </Row>
@@ -167,7 +167,7 @@ const Products = () => {
                                             {...props.baseProps}
                                             bordered={false}
                                             defaultSorted={defaultSorted}
-                                            pagination={paginationFactory({ sizePerPage: 25, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '10', value: 10 }, { text: '25', value: 25 }, { text: '50', value: 50, }, { text: `${items.length} Tất cả`, value: items.length }] })}
+                                            pagination={paginationFactory({ sizePerPage: 25, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '25', value: 25 }, { text: '50', value: 50, }, { text: `${items.length} Tất cả`, value: items.length }] })}
                                             wrapperClasses="table-responsive"
                                         />
                                     </React.Fragment>

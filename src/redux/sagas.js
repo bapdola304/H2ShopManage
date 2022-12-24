@@ -6,7 +6,8 @@ import appMenuSaga from './appMenu/saga';
 import loadingSaga from './loading/saga';
 import productSaga from './product/saga';
 import warehouseSaga from './warehouse/saga';
+import myWarehouseSaga from './myWarehouse/saga';
 
 export default function* rootSaga() {
-    yield all([authSaga(), layoutSaga(), appMenuSaga(), loadingSaga, productSaga, warehouseSaga]);
+    yield all([authSaga(), layoutSaga(), appMenuSaga(), loadingSaga, productSaga, warehouseSaga, myWarehouseSaga]);
 }

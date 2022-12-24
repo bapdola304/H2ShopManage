@@ -1,3 +1,5 @@
+import * as dayjs from 'dayjs';
+
 export function VNDCurrencyFormatting(value = 0) {
     return value.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
 }
@@ -8,4 +10,21 @@ export function isEmpty(obj) {
     }
     let empty = Object.keys(obj);
     return empty.length === 0;
+}
+
+export function dateFormat(date, format) {
+    return dayjs(date).format(format)
+}
+
+export function formatSelectInput(data = [], labelField) {
+    return data.map(item => {
+        return {
+            value: item.id,
+            label: item[labelField]
+        }
+    })
+}
+
+export function setFieldValue(value) {
+    return !isEmpty(value) ? value : "";
 }

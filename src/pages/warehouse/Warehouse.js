@@ -1,36 +1,58 @@
-import React from 'react';
-import { Row, Col, Card, CardBody, Input, Button, UncontrolledDropdown, DropdownMenu, DropdownItem, DropdownToggle  } from 'reactstrap';
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Card, CardBody, Input, Button } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
+import { useDispatch, useSelector } from 'react-redux';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { Link } from 'react-router-dom';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 import PageTitle from '../../components/PageTitle';
-
-
-const defaultSorted = [
-    {
-        dataField: 'id',
-        order: 'asc',
-    },
-];
-
-const records = []
+import { getMyWarehouseList, resetActionSuccess } from '../../redux/myWarehouse/actions';
+import { dateFormat, VNDCurrencyFormatting } from '../../helpers/format';
+import { DATE_FORMAT } from '../../constants/common';
+import DialogConfirm from '../../components/DialogConfirm';
+import { deleteProductWarehouse } from '../../redux/myWarehouse/actions';
 
 const Warehouse = () => {
 
+    const { myWarehouseList = [], isSuccess } = useSelector(state => state.myWarehouse);
+
+    const dispatch = useDispatch();
+
+    const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
+    const [productSelected, setProductSelected] = useState({});
+
     const { SearchBar } = Search;
+
+    useEffect(() => {
+        dispatch(getMyWarehouseList())
+    }, []);
+
+    useEffect(() => {
+        if (!isSuccess) return
+        dispatch(getMyWarehouseList())
+        setIsOpenDialogConfirm(false)
+        dispatch(resetActionSuccess())
+    }, [isSuccess]);
+
 
     const columns = [
         {
-            dataField: 'placeOfEntry',
+            dataField: 'warehouseId',
             text: 'Nơi nhập hàng',
             sort: false,
+            formatter: (record) => record?.warehouseName,
         },
         {
-            dataField: 'itemName',
+            dataField: 'productId',
             text: 'Loại mặt hàng',
+            sort: true,
+            formatter: (record) => record?.productName,
+        },
+        {
+            dataField: 'warehouseProductName',
+            text: 'Tên mặt hàng',
             sort: true,
         },
         {
@@ -42,9 +64,10 @@ const Warehouse = () => {
             dataField: 'price',
             text: 'Đơn giá',
             sort: true,
+            formatter: (record) => VNDCurrencyFormatting(record),
         },
         {
-            dataField: 'phone',
+            dataField: 'quantity',
             text: 'Số lượng',
             sort: false,
         },
@@ -52,21 +75,24 @@ const Warehouse = () => {
             dataField: 'total',
             text: 'Thành tiền',
             sort: false,
+            formatter: (record) => VNDCurrencyFormatting(record),
         },
         {
             dataField: 'sellPrice',
             text: 'Giá bán ra',
             sort: false,
+            formatter: (record) => VNDCurrencyFormatting(record),
         },
         {
-            dataField: 'dateTime',
+            dataField: 'inputDate',
             text: 'Thời gian',
             sort: false,
+            formatter: (record) => dateFormat(record, DATE_FORMAT.DD_MM_YYYY),
         },
         {
             text: "Thao tác",
             dataField: 'action',
-            formatter: (record) => renderAction(record),
+            formatter: (record, data) => renderAction(data),
             // headerStyle: { width: '15%' }
         }
     ];
@@ -88,14 +114,25 @@ const Warehouse = () => {
     const renderAction = (record) => {
         return (
             <div className="wrap-action">
-                <Button outline color="secondary" style={{ marginRight: 10 }}>
-                    <i className="uil-edit"></i>
-                </Button>
-                <Button color="danger">
+                <Link to={`/apps/warehouseEdit/${record?.id}`}>
+                    <Button outline color="secondary" style={{ marginRight: 10 }}>
+                        <i className="uil-edit"></i>
+                    </Button>
+                </Link>
+                <Button color="danger" onClick={() => handleDeleteProduct(record)}>
                     <i className="uil-trash"></i>
                 </Button>
             </div>
         )
+    }
+
+    const onDelete = () => {
+        dispatch(deleteProductWarehouse(productSelected?.id))
+    }
+
+    const handleDeleteProduct = (record) => {
+        setProductSelected(record)
+        setIsOpenDialogConfirm(true)
     }
 
     return (
@@ -119,7 +156,7 @@ const Warehouse = () => {
                             <ToolkitProvider
                                 bootstrap4
                                 keyField="id"
-                                data={[]}
+                                data={myWarehouseList}
                                 columns={columns}
                                 search
                                 columnToggle
@@ -140,8 +177,7 @@ const Warehouse = () => {
                                         <BootstrapTable
                                             {...props.baseProps}
                                             bordered={false}
-                                            defaultSorted={defaultSorted}
-                                            pagination={paginationFactory({ sizePerPage: 20, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '5', value: 5, }, { text: '10', value: 10 }, { text: '25', value: 25 }, { text: 'All', value: records.length }] })}
+                                            pagination={paginationFactory({ sizePerPage: 25, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '25', value: 25 }, { text: '50', value: 50, }, { text: `${myWarehouseList.length} Tất cả`, value: myWarehouseList.length }] })}
                                             wrapperClasses="table-responsive"
                                         />
                                     </React.Fragment>
@@ -151,6 +187,14 @@ const Warehouse = () => {
                     </Card>
                 </Col>
             </Row>
+            <DialogConfirm
+                isOpen={isOpenDialogConfirm}
+                width={400}
+                onCancel={() => setIsOpenDialogConfirm(false)}
+                title={"Xác nhận xóa"}
+                description={`Bạn có chắc muốn xóa: "${productSelected?.warehouseProductName}"`}
+                onOk={onDelete}
+            />
         </React.Fragment>
     );
 };

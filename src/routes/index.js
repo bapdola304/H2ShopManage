@@ -74,7 +74,7 @@ const warehouseManageAppRoutes = {
 
 const typeOfItemAppRoutes = {
     path: '/apps/items',
-    name: 'Các mặt hàng',
+    name: 'Các loại mặt hàng',
     icon: FeatherIcon.Package,
     component: Items,
     route: PrivateRoute,
@@ -122,6 +122,15 @@ const warehouseAppRoutes = {
 const addGoodsAppRoutes = {
     path: '/apps/warehouseAdd',
     name: 'Kho hàng',
+    icon: FeatherIcon.Truck,
+    component: AddGoods,
+    route: PrivateRoute,
+    roles: ['Admin'],
+};
+
+const editProductOfWarehouseAppRoutes = {
+    path: '/apps/warehouseEdit/:id',
+    name: 'Cập nhật hàng',
     icon: FeatherIcon.Truck,
     component: AddGoods,
     route: PrivateRoute,
@@ -201,6 +210,7 @@ const allRoutes = [
     authRoutes,
     addGoodsAppRoutes,
     addSoldItemAppRoutes,
+    editProductOfWarehouseAppRoutes,
 ];
 
 const authProtectedRoutes = [
