@@ -2,16 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Card, CardBody, Input, Button } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
-import ToolkitProvider, { Search, CSVExport } from 'react-bootstrap-table2-toolkit';
+import ToolkitProvider, { Search, } from 'react-bootstrap-table2-toolkit';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import Dialog from '../../components/Dialog';
 import DialogConfirm from '../../components/DialogConfirm';
 import { AvForm, AvField } from "availity-reactstrap-validation";
-import FileUploader from '../../components/FileUploader';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import PageTitle from '../../components/PageTitle';
 import { createProduct, deleteProduct, getProducts, resetActionSuccess, updateProduct } from '../../redux/product/actions';
-import { isEmpty, VNDCurrencyFormatting } from '../../helpers/format';
 
 const defaultSorted = [
     {
@@ -67,7 +64,7 @@ const Products = () => {
     const renderAction = (record) => {
         return (
             <div className="wrap-action">
-                <Button outline color="secondary" style={{ marginRight: 10 }} onClick={() => handleEditProduct(record)}>
+                <Button color="secondary" style={{ marginRight: 10 }} onClick={() => handleEditProduct(record)}>
                     <i className="uil-edit"></i>
                 </Button>
                 <Button onClick={() => handleDeleteProduct(record)} color="danger">

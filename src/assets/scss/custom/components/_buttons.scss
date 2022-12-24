@@ -24,6 +24,18 @@
     border-radius: 2em;
 }
 
+.btn-secondary {
+    background-color: rgba(108,117,125,.15);
+    color: #6c757d;
+    border-color: rgba(108,117,125,.15);
+
+    &:hover, &:active, &:focus {
+        background-color: rgba(108,117,125,.2) !important;
+        color: #6c757d !important;
+        border-color: rgba(108,117,125,.2) !important;
+    }
+}
+
 //
 // light button
 // 

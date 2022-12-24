@@ -8,6 +8,7 @@ import loading from './loading/reducers';
 import product from './product/reducers';
 import warehouse from './warehouse/reducers';
 import myWarehouse from './myWarehouse/reducers';
+import productSold from './productSold/reducers';
 
 export default combineReducers({
     Auth,
@@ -16,5 +17,6 @@ export default combineReducers({
     loading,
     product,
     warehouse,
-    myWarehouse
+    myWarehouse,
+    productSold
 });

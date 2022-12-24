@@ -27,7 +27,6 @@ const AddGoods = (props) => {
     const { match } = props;
     const { params: { id } = {} } = match || {};
     const { warehouseProductName, color, sellPrice, price: productPrice, quantity: productQuantity, total, productId, warehouseId } = productOfWarehouse;
-    console.log({productOfWarehouse})
 
     useEffect(() => {
         if (id) {
@@ -133,7 +132,7 @@ const AddGoods = (props) => {
                                         <div className="form-group">
                                             <label>Ngày</label> <br />
                                             <div className="form-group mb-sm-0 mr-2">
-                                                <Flatpickr 
+                                                <Flatpickr
                                                     value={dateValue}
                                                     onChange={date => { setDateValue(date) }}
                                                     className="form-control" />
@@ -188,7 +187,8 @@ const AddGoods = (props) => {
                                             onChange={handleChangeQuantity}
                                             value={productQuantity}
                                             validate={{
-                                                required: { value: true, errorMessage: "Vui lòng nhập số lượng" }
+                                                required: { value: true, errorMessage: "Vui lòng nhập số lượng" },
+                                                min: { value: 1, errorMessage: 'Số lượng phải lớn hơn hoặc bằng 1' }
                                             }}
                                         />
                                     </Col>
@@ -220,7 +220,7 @@ const AddGoods = (props) => {
                                         Hủy bỏ
                                     </Button>
                                     <Button color="primary" type="submit">
-                                       {id ? "Cập nhật" : "Thêm hàng"}
+                                        {id ? "Cập nhật" : "Thêm hàng"}
                                     </Button>
                                 </div>
                             </AvForm>

@@ -16,11 +16,11 @@ export function dateFormat(date, format) {
     return dayjs(date).format(format)
 }
 
-export function formatSelectInput(data = [], labelField) {
+export function formatSelectInput(data = [], labelField, hasColor = false) {
     return data.map(item => {
         return {
             value: item.id,
-            label: item[labelField]
+            label: `${item[labelField]}${hasColor && item?.color && ` - ${item?.color}`}`
         }
     })
 }

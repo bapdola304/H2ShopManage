@@ -6,6 +6,7 @@ import Spinner from './components/Spinner';
 import './assets/scss/theme.scss';
 import 'react-toastify/dist/ReactToastify.css';
 import { history } from './helpers/navigation';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 // dark
 // import './assets/scss/theme-dark.scss';

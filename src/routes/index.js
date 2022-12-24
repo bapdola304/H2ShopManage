@@ -22,8 +22,8 @@ const Warehouse = React.lazy(() => import('../pages/warehouse/Warehouse'));
 const AddGoods = React.lazy(() => import('../pages/warehouse/AddGoods'));
 
 // Sold Items
-const SoldItems = React.lazy(() => import('../pages/soldItems/SoldItems'));
-const AddSoldItem = React.lazy(() => import('../pages/soldItems/AddSoldItem'));
+const ProductsSold = React.lazy(() => import('../pages/productSold/ProductsSold'));
+const AddProductSold = React.lazy(() => import('../pages/productSold/AddProductSold'));
 
 // Warehouse Manage
 const WarehouseManage = React.lazy(() => import('../pages/warehouseManage/WarehouseManage'));
@@ -84,7 +84,7 @@ const typeOfItemAppRoutes = {
 const costsTypeAppRoutes = {
     path: '/apps/costsType',
     name: 'Các loại chi phí',
-    icon: FeatherIcon.DollarSign,
+    icon: FeatherIcon.List,
     component: CostsType,
     route: PrivateRoute,
     roles: ['Admin'],
@@ -137,20 +137,29 @@ const editProductOfWarehouseAppRoutes = {
     roles: ['Admin'],
 };
 
-const soldItemsAppRoutes = {
-    path: '/apps/soldItem',
+const productsSoldAppRoutes = {
+    path: '/apps/productsSold',
     name: 'Đã bán',
-    icon: FeatherIcon.Users,
-    component: SoldItems,
+    icon: FeatherIcon.ShoppingBag,
+    component: ProductsSold,
     route: PrivateRoute,
     roles: ['Admin'],
 };
 
-const addSoldItemAppRoutes = {
-    path: '/apps/soldItemAdd',
+const addProductSoldAppRoutes = {
+    path: '/apps/productsSoldAdd',
+    name: 'Đã bán',
+    icon: FeatherIcon.ShoppingBag,
+    component: AddProductSold,
+    route: PrivateRoute,
+    roles: ['Admin'],
+};
+
+const editProductSoldAppRoutes = {
+    path: '/apps/productsSoldEdit/:id',
     name: 'Đã bán',
     icon: FeatherIcon.Truck,
-    component: AddSoldItem,
+    component: AddProductSold,
     route: PrivateRoute,
     roles: ['Admin'],
 };
@@ -159,7 +168,7 @@ const insuranceAppRoutes = {
     path: '/apps/insurance',
     name: 'Bảo hành',
     icon: FeatherIcon.Layers,
-    component: AddSoldItem,
+    component: AddProductSold,
     route: PrivateRoute,
     roles: ['Admin'],
 };
@@ -200,7 +209,7 @@ const allRoutes = [
     // management
     dashboardRoutes,
     warehouseAppRoutes,
-    soldItemsAppRoutes,
+    productsSoldAppRoutes,
     costsIncurredAppRoutes,
     insuranceAppRoutes,
     // types
@@ -209,15 +218,16 @@ const allRoutes = [
     costsTypeAppRoutes,
     authRoutes,
     addGoodsAppRoutes,
-    addSoldItemAppRoutes,
+    addProductSoldAppRoutes,
     editProductOfWarehouseAppRoutes,
+    editProductSoldAppRoutes
 ];
 
 const authProtectedRoutes = [
     // management
     dashboardRoutes,
     warehouseAppRoutes,
-    soldItemsAppRoutes,
+    productsSoldAppRoutes,
     costsIncurredAppRoutes,
     insuranceAppRoutes,
     // types

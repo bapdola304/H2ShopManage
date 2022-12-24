@@ -7,7 +7,6 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import Dialog from '../../components/Dialog';
 import DialogConfirm from '../../components/DialogConfirm';
 import { AvForm, AvField } from "availity-reactstrap-validation";
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import PageTitle from '../../components/PageTitle';
 import { createWarehouse, deleteWarehouse, getWarehouseList, resetActionSuccess, updateWarehouse } from '../../redux/warehouse/actions';
 
@@ -73,7 +72,7 @@ const WarehouseManage = () => {
     const renderAction = (record) => {
         return (
             <div className="wrap-action">
-                <Button outline color="secondary" style={{ marginRight: 10 }} onClick={() => handleEditProduct(record)}>
+                <Button color="secondary" style={{ marginRight: 10 }} onClick={() => handleEditProduct(record)}>
                     <i className="uil-edit"></i>
                 </Button>
                 <Button onClick={() => handleDeleteProduct(record)} color="danger">

@@ -62,7 +62,7 @@ const CostsIncurred = () => {
     const renderAction = (record) => {
         return (
             <div className="wrap-action">
-                <Button outline color="secondary" style={{ marginRight: 10 }}>
+                <Button color="secondary" style={{ marginRight: 10 }}>
                     <i className="uil-edit"></i>
                 </Button>
                 <Button onClick={() => setIsOpenDialogConfirm(true)} color="danger">
