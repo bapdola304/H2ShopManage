@@ -13,8 +13,8 @@ import {
     RESET_MY_WAREHOUSE_DETAIL
 } from './constants';
 
-const getMyWarehouseList = () => {
-    return { type: GET_MY_WAREHOUSE_LIST };
+const getMyWarehouseList = (payload) => {
+    return { type: GET_MY_WAREHOUSE_LIST, payload };
 }
 
 const getMyWarehouseListSuccess = (data) => {

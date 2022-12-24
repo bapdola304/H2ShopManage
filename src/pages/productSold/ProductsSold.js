@@ -93,7 +93,7 @@ const ProductsSold = () => {
                         <i className="uil-edit"></i>
                     </Button>
                 </Link>
-                <Button color="danger" onClick={() => handleDeleteProductSold(record)}>
+                <Button className='action-button-mt5' color="danger" onClick={() => handleDeleteProductSold(record)}>
                     <i className="uil-trash"></i>
                 </Button>
             </div>

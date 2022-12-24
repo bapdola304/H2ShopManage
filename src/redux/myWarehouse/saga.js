@@ -14,8 +14,8 @@ import { isEmpty } from '../../helpers/format';
 import { goBack } from '../../helpers/navigation';
 
 
-function* getMyWarehouseList() {
-    const response = yield call(fetchJSON, 'api/myWarehouse');
+function* getMyWarehouseList({ payload }) {
+    const response = yield call(fetchJSON, `api/myWarehouse${payload ? `?productTypeId=${payload}` : ''}`);
     const { data = {} } = response;
     yield put(getMyWarehouseListSuccess(data));
 }

@@ -5,26 +5,31 @@ import { useDispatch, useSelector } from 'react-redux';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { Link } from 'react-router-dom';
+import Select from 'react-select'
 import PageTitle from '../../components/PageTitle';
 import { getMyWarehouseList, resetActionSuccess } from '../../redux/myWarehouse/actions';
-import { dateFormat, VNDCurrencyFormatting } from '../../helpers/format';
+import { dateFormat, formatSelectInput, VNDCurrencyFormatting } from '../../helpers/format';
 import { DATE_FORMAT } from '../../constants/common';
 import DialogConfirm from '../../components/DialogConfirm';
 import { deleteProductWarehouse } from '../../redux/myWarehouse/actions';
+import { getProducts } from '../../redux/actions';
 
 const Warehouse = () => {
 
     const { myWarehouseList = [], isSuccess } = useSelector(state => state.myWarehouse);
+    const { items = [] } = useSelector(state => state.product);
 
     const dispatch = useDispatch();
-
+    const productTypeAll = { value: null, label: 'Tất cả' }
     const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
     const [productSelected, setProductSelected] = useState({});
+    const [productItemSelected, setProductItemSelected] = useState(productTypeAll);
 
     const { SearchBar } = Search;
 
     useEffect(() => {
         dispatch(getMyWarehouseList())
+        dispatch(getProducts())
     }, []);
 
     useEffect(() => {
@@ -117,7 +122,7 @@ const Warehouse = () => {
                         <i className="uil-edit"></i>
                     </Button>
                 </Link>
-                <Button color="danger" onClick={() => handleDeleteProduct(record)}>
+                <Button className='action-button-mt5' color="danger" onClick={() => handleDeleteProduct(record)}>
                     <i className="uil-trash"></i>
                 </Button>
             </div>
@@ -125,12 +130,17 @@ const Warehouse = () => {
     }
 
     const onDelete = () => {
-        dispatch(deleteProductWarehouse(productSelected?.id))
+        dispatch(deleteProductWarehouse(productSelected?.id));
     }
 
     const handleDeleteProduct = (record) => {
-        setProductSelected(record)
-        setIsOpenDialogConfirm(true)
+        setProductSelected(record);
+        setIsOpenDialogConfirm(true);
+    }
+
+    const handleProductTypeChange = (option) => {
+        setProductItemSelected(option);
+        dispatch(getMyWarehouseList(option?.value));
     }
 
     return (
@@ -163,7 +173,21 @@ const Warehouse = () => {
                                     <React.Fragment>
                                         <Row>
                                             <Col>
-                                                <SearchBar {...props.searchProps} placeholder={"Tìm kiếm hàng"} />
+                                                <Row>
+                                                    <Col className='warehouse-search' md={6}>
+                                                        <SearchBar {...props.searchProps} placeholder={"Tìm kiếm hàng"} />
+                                                    </Col>
+                                                    <Col md={6}>
+                                                        <Select
+                                                            className="react-select"
+                                                            classNamePrefix="react-select"
+                                                            placeholder="Lọc theo loại mặt hàng"
+                                                            value={productItemSelected}
+                                                            onChange={handleProductTypeChange}
+                                                            options={[productTypeAll, ...formatSelectInput(items, "productName")]}
+                                                        />
+                                                    </Col>
+                                                </Row>
                                             </Col>
                                             <Col className="text-right">
                                                 <Link to="/apps/warehouseAdd">

@@ -20,7 +20,7 @@ export function formatSelectInput(data = [], labelField, hasColor = false) {
     return data.map(item => {
         return {
             value: item.id,
-            label: `${item[labelField]}${hasColor && item?.color && ` - ${item?.color}`}`
+            label: `${item[labelField]}${(hasColor && item?.color) ? ` - ${item?.color}` : ''}`
         }
     })
 }

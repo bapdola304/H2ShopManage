@@ -65,7 +65,7 @@ const CostsIncurred = () => {
                 <Button color="secondary" style={{ marginRight: 10 }}>
                     <i className="uil-edit"></i>
                 </Button>
-                <Button onClick={() => setIsOpenDialogConfirm(true)} color="danger">
+                <Button className='action-button-mt5' onClick={() => setIsOpenDialogConfirm(true)} color="danger">
                     <i className="uil-trash"></i>
                 </Button>
             </div>

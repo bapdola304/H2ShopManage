@@ -75,7 +75,7 @@ const WarehouseManage = () => {
                 <Button color="secondary" style={{ marginRight: 10 }} onClick={() => handleEditProduct(record)}>
                     <i className="uil-edit"></i>
                 </Button>
-                <Button onClick={() => handleDeleteProduct(record)} color="danger">
+                <Button className='action-button-mt5' onClick={() => handleDeleteProduct(record)} color="danger">
                     <i className="uil-trash"></i>
                 </Button>
             </div>
