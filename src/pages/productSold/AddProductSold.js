@@ -73,7 +73,7 @@ const AddProductSold = (props) => {
     }
 
     const getMaxQuantity = () => {
-        return myWarehouseList.find(item => item?.id == productWarehouseValue?.value)?.quantity || 1;
+        return myWarehouseList.find(item => item?.id == productWarehouseValue?.value)?.remainingQuantity || 1;
     }
 
     const handleSubmit = (event, errors, values) => {

@@ -71,7 +71,7 @@ const Warehouse = () => {
         },
         {
             dataField: 'quantity',
-            text: 'Số lượng',
+            text: 'SL nhập',
             sort: false,
         },
         {
@@ -79,6 +79,11 @@ const Warehouse = () => {
             text: 'Thành tiền',
             sort: false,
             formatter: (record) => VNDCurrencyFormatting(record),
+        },
+        {
+            dataField: 'remainingQuantity',
+            text: 'SL còn lại',
+            sort: false,
         },
         {
             dataField: 'sellPrice',
