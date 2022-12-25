@@ -6,7 +6,7 @@ import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { Link } from 'react-router-dom';
 import PageTitle from '../../components/PageTitle'
-import { getProductSoldList, resetActionSuccess } from '../../redux/productSold/actions';
+import { deleteProductSold, getProductSoldList, resetActionSuccess } from '../../redux/productSold/actions';
 import { dateFormat } from '../../helpers/format';
 import { DATE_FORMAT } from '../../constants/common';
 import DialogConfirm from '../../components/DialogConfirm';
@@ -115,7 +115,7 @@ const ProductsSold = () => {
     );
 
     const onDelete = () => {
-        // dispatch(deleteProductWarehouse(productSelected?.id))
+        dispatch(deleteProductSold(productSoldSelected?.id))
     }
 
     const handleDeleteProductSold = (record) => {
