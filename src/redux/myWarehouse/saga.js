@@ -15,7 +15,13 @@ import { goBack } from '../../helpers/navigation';
 
 
 function* getMyWarehouseList({ payload }) {
-    const response = yield call(fetchJSON, `api/myWarehouse${payload ? `?productTypeId=${payload}` : ''}`);
+    var path = ''
+    if (typeof payload != 'string') {
+        path = `api/myWarehouse${payload ? `?isSelecteInput=${payload}` : ''}`;
+    } else {
+        path = `api/myWarehouse${payload ? `?productTypeId=${payload}` : ''}`;
+    }
+    const response = yield call(fetchJSON, path);
     const { data = {} } = response;
     yield put(getMyWarehouseListSuccess(data));
 }
@@ -32,7 +38,7 @@ function* createProductForWarehouse({ payload }) {
     if (!isEmpty(data)) {
         yield put(createProductForWarehouseSuccess(data));
         toast.success('Thêm vào kho thành công!');
-        goBack()
+        // goBack()
     }
 }
 

@@ -28,8 +28,8 @@ const Warehouse = () => {
     const { SearchBar } = Search;
 
     useEffect(() => {
-        dispatch(getMyWarehouseList())
-        dispatch(getProducts())
+        dispatch(getProducts());
+        dispatch(getMyWarehouseList());
     }, []);
 
     useEffect(() => {
@@ -41,6 +41,12 @@ const Warehouse = () => {
 
 
     const columns = [
+        {
+            dataField: 'inputDate',
+            text: 'Thời gian',
+            sort: true,
+            formatter: (record) => dateFormat(record, DATE_FORMAT.DD_MM_YYYY),
+        },
         {
             dataField: 'warehouseId',
             text: 'Nơi nhập hàng',
@@ -90,12 +96,6 @@ const Warehouse = () => {
             text: 'Giá bán ra',
             sort: false,
             formatter: (record) => VNDCurrencyFormatting(record),
-        },
-        {
-            dataField: 'inputDate',
-            text: 'Thời gian',
-            sort: false,
-            formatter: (record) => dateFormat(record, DATE_FORMAT.DD_MM_YYYY),
         },
         {
             text: "Thao tác",

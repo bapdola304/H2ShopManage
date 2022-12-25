@@ -3,5 +3,6 @@ export const PUT = 'PUT';
 export const DELETE = 'DELETE';
 
 export const DATE_FORMAT = {
-    DD_MM_YYYY: "DD/MM/YYYY HH:mm"
+    DD_MM_YYYY: "DD/MM/YYYY",
+    d_m_Y: "d-m-Y"
 }

@@ -186,7 +186,7 @@ const Products = () => {
                             <AvField name="productName" label="Tên mặt hàng" type="text" required value={!isEditingProduct ? "" : productName} />
                         </Col>
                         <Col md={12}>
-                            <AvField name="warrantyPeriod" label="Thời gian bảo hành" type="number" required value={!isEditingProduct ? "" : warrantyPeriod} />
+                            <AvField name="warrantyPeriod" label="Thời gian bảo hành" type="number" value={!isEditingProduct ? "" : warrantyPeriod} />
                         </Col>
                     </Row>
                     <div style={{ float: "right", marginTop: 20 }}>

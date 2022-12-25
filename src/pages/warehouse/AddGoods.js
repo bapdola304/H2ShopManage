@@ -9,7 +9,9 @@ import PageTitle from '../../components/PageTitle';
 import { formatSelectInput, setFieldValue, VNDCurrencyFormatting } from '../../helpers/format';
 import { getProducts } from '../../redux/product/actions';
 import { getWarehouseList } from '../../redux/warehouse/actions';
-import { createProductForWarehouse, getMyWarehouseDetail, resetMyWarehouseDetail, updateProductWarehouse } from '../../redux/myWarehouse/actions';
+import { createProductForWarehouse, getMyWarehouseDetail, resetActionSuccess, resetMyWarehouseDetail, updateProductWarehouse } from '../../redux/myWarehouse/actions';
+import { DATE_FORMAT } from '../../constants/common';
+import { Vietnamese } from  'flatpickr/dist/l10n/vn.js';
 
 const AddGoods = (props) => {
 
@@ -23,10 +25,11 @@ const AddGoods = (props) => {
     const dispatch = useDispatch();
     const { items: products = [] } = useSelector(state => state.product);
     const { warehouseList = [] } = useSelector(state => state.warehouse);
-    const { productOfWarehouse = {} } = useSelector(state => state.myWarehouse);
+    const { productOfWarehouse = {}, isSuccess } = useSelector(state => state.myWarehouse);
+    let form = null;
     const { match } = props;
     const { params: { id } = {} } = match || {};
-    const { warehouseProductName, color, sellPrice, price: productPrice, quantity: productQuantity, total, productId, warehouseId } = productOfWarehouse;
+    const { warehouseProductName, color, sellPrice, price: productPrice, quantity: productQuantity, total, productId, warehouseId, inputDate } = productOfWarehouse;
 
     useEffect(() => {
         if (id) {
@@ -55,8 +58,14 @@ const AddGoods = (props) => {
         if (!id) return
         setProductValue({ value: productId?._id, label: productId?.productName });
         setWarehouseValue({ value: warehouseId?._id, label: warehouseId?.warehouseName });
-        setTotalValue(total)
+        setTotalValue(total);
+        setDateValue(inputDate);
     }, [productOfWarehouse]);
+
+    useEffect(() => {
+        form && form.reset();
+        dispatch(resetActionSuccess())
+    }, [isSuccess]);
 
 
     const handleWarehouseChange = (options) => {
@@ -64,7 +73,8 @@ const AddGoods = (props) => {
     }
 
     const handleProductChange = (options) => {
-        setProductValue(options)
+        setProductValue(options);
+        form && form.reset();
     }
 
     const handleChangeQuantity = (event, value = 0) => {
@@ -116,7 +126,7 @@ const AddGoods = (props) => {
                 <Col>
                     <Card>
                         <CardBody>
-                            <AvForm onSubmit={handleSubmit}>
+                            <AvForm onSubmit={handleSubmit} ref={c => (form = c)}>
                                 <Row>
                                     <Col md={6}>
                                         <p className="mb-1 font-weight-semibold">Nơi nhập hàng</p>
@@ -128,14 +138,21 @@ const AddGoods = (props) => {
                                             value={warehouseValue}
                                             options={formatSelectInput(warehouseList, "warehouseName")}></Select>
                                     </Col>
-                                    <Col lg={6}>
+                                    <Col md={6}>
                                         <div className="form-group">
                                             <label>Ngày</label> <br />
                                             <div className="form-group mb-sm-0 mr-2">
                                                 <Flatpickr
                                                     value={dateValue}
                                                     onChange={date => { setDateValue(date) }}
-                                                    className="form-control" />
+                                                    className="form-control"
+                                                    options={
+                                                        {
+                                                            dateFormat: DATE_FORMAT.d_m_Y,
+                                                            locale: Vietnamese
+                                                        }
+                                                    }
+                                                />
                                             </div>
                                         </div>
                                     </Col>

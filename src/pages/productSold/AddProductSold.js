@@ -9,6 +9,8 @@ import { formatSelectInput, VNDCurrencyFormatting } from '../../helpers/format';
 import { goBack } from '../../helpers/navigation';
 import { getMyWarehouseList } from '../../redux/myWarehouse/actions';
 import { createProductSold, getProductSoldDetail, resetProductSoldDetail, updateProductSold } from '../../redux/productSold/actions';
+import { DATE_FORMAT } from '../../constants/common';
+import { Vietnamese } from  'flatpickr/dist/l10n/vn.js';
 
 const AddProductSold = (props) => {
 
@@ -24,13 +26,14 @@ const AddProductSold = (props) => {
 
     const { match } = props;
     const { params: { id } = {} } = match || {};
-    const { customer, customerPhone, sellPrice: productSellPrice, quantity: productQuantity, total, productWarehouseId = {} } = productSold;
+    const { customer, customerPhone, sellPrice: productSellPrice, quantity: productQuantity, total, productWarehouseId = {}, inputDate } = productSold;
 
     useEffect(() => {
         if (id) {
             dispatch(getProductSoldDetail(id));
         }
-        dispatch(getMyWarehouseList());
+        const isSelecteInput = true
+        dispatch(getMyWarehouseList(isSelecteInput));
         return function cleanup() {
             dispatch(resetProductSoldDetail());
         };
@@ -46,9 +49,10 @@ const AddProductSold = (props) => {
     useEffect(() => {
         if (!id) return
         setProductWarehouseValue({ value: productWarehouseId?._id, label: `${productWarehouseId?.warehouseProductName}${productWarehouseId?.color && ` - ${productWarehouseId?.color}`}` });
-        setTotalValue(total)
-        setSellPrice(productSellPrice)
-        setQuantity(productQuantity)
+        setTotalValue(total);
+        setSellPrice(productSellPrice);
+        setQuantity(productQuantity);
+        setDateValue(inputDate);
     }, [productSold]);
 
     const handleChangeQuantity = (event, value = 0) => {
@@ -162,7 +166,14 @@ const AddProductSold = (props) => {
                                                         <Flatpickr
                                                             value={dateValue}
                                                             onChange={date => { setDateValue(date) }}
-                                                            className="form-control" />
+                                                            className="form-control"
+                                                            options={
+                                                                {
+                                                                    dateFormat: DATE_FORMAT.d_m_Y,
+                                                                    locale: Vietnamese
+                                                                }
+                                                            }
+                                                         />
                                                     </div>
                                                 </div>
                                             </Col>

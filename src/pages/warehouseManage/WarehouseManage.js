@@ -49,6 +49,7 @@ const WarehouseManage = () => {
             dataField: 'contactPhone',
             text: 'SĐT liên hệ',
             sort: false,
+            formatter: (data) => `0${data}`,
         },
         {
             text: "Thao tác",
@@ -198,13 +199,13 @@ const WarehouseManage = () => {
                             <AvField name="warehouseName" label="Tên kho hàng" type="text" required value={!isEditingWarehouse ? "" : warehouseName} />
                         </Col>
                         <Col md={12}>
-                            <AvField name="address" label="Địa chỉ" type="text" required value={!isEditingWarehouse ? "" : address} />
+                            <AvField name="address" label="Địa chỉ" type="text" value={!isEditingWarehouse ? "" : address} />
                         </Col>
                         <Col md={12}>
-                            <AvField name="contactName" label="Người liên hệ" type="text" required value={!isEditingWarehouse ? "" : contactName} />
+                            <AvField name="contactName" label="Người liên hệ" type="text" value={!isEditingWarehouse ? "" : contactName} />
                         </Col>
                         <Col md={12}>
-                            <AvField name="contactPhone" label="SĐT liên hệ" type="text" required value={!isEditingWarehouse ? "" : contactPhone} />
+                            <AvField name="contactPhone" label="SĐT liên hệ" type="text" value={!isEditingWarehouse ? "" : contactPhone} />
                         </Col>
                     </Row>
                     <div style={{ float: "right", marginTop: 20 }}>
