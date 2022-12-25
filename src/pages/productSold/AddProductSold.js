@@ -8,7 +8,7 @@ import PageTitle from '../../components/PageTitle';
 import { formatSelectInput, VNDCurrencyFormatting } from '../../helpers/format';
 import { goBack } from '../../helpers/navigation';
 import { getMyWarehouseList } from '../../redux/myWarehouse/actions';
-import { createProductSold, getProductSoldDetail, resetProductSoldDetail, updateProductSold } from '../../redux/productSold/actions';
+import { createProductSold, getProductSoldDetail, resetActionSuccess, resetProductSoldDetail, updateProductSold } from '../../redux/productSold/actions';
 import { DATE_FORMAT } from '../../constants/common';
 import { Vietnamese } from  'flatpickr/dist/l10n/vn.js';
 
@@ -16,7 +16,7 @@ const AddProductSold = (props) => {
 
     const dispatch = useDispatch();
     const { myWarehouseList = [] } = useSelector(state => state.myWarehouse);
-    const { productSold = {} } = useSelector(state => state.productSold);
+    const { productSold = {}, isSuccess } = useSelector(state => state.productSold);
 
     const [productWarehouseValue, setProductWarehouseValue] = useState({});
     const [dateValue, setDateValue] = useState(new Date());
@@ -24,6 +24,7 @@ const AddProductSold = (props) => {
     const [quantity, setQuantity] = useState(1);
     const [sellPrice, setSellPrice] = useState(0);
 
+    let form = null;
     const { match } = props;
     const { params: { id } = {} } = match || {};
     const { customer, customerPhone, sellPrice: productSellPrice, quantity: productQuantity, total, productWarehouseId = {}, inputDate } = productSold;
@@ -54,6 +55,15 @@ const AddProductSold = (props) => {
         setQuantity(productQuantity);
         setDateValue(inputDate);
     }, [productSold]);
+
+    useEffect(() => {
+        if (!isSuccess) return;
+        form && form._inputs.customer.reset();
+        form && form._inputs.customerPhone.reset();
+        setQuantity(1);
+        setTotalValue(sellPrice);
+        dispatch(resetActionSuccess());
+    }, [isSuccess]);
 
     const handleChangeQuantity = (event, value = 0) => {
         setTotalValue(parseInt(value) * sellPrice);
@@ -100,8 +110,6 @@ const AddProductSold = (props) => {
         }
     };
 
-    console.log({productWarehouseId})
-
     return (
         <React.Fragment>
             <Row className="page-title">
@@ -120,7 +128,7 @@ const AddProductSold = (props) => {
                 <Col>
                     <Card>
                         <CardBody>
-                            <AvForm onSubmit={handleSubmit}>
+                            <AvForm onSubmit={handleSubmit} ref={c => (form = c)}>
                                 <Row>
                                     <Col md={6}>
                                         <Row>

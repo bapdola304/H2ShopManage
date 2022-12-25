@@ -32,7 +32,7 @@ function* createProductSold({ payload }) {
     if (!isEmpty(data)) {
         yield put(createProductSoldSuccess(data));
         toast.success('Thêm hàng đã bán thành công!');
-        goBack()
+        // goBack()
     }
 }
 
