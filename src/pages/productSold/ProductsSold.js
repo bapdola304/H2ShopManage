@@ -7,7 +7,7 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import { Link } from 'react-router-dom';
 import PageTitle from '../../components/PageTitle'
 import { deleteProductSold, getProductSoldList, resetActionSuccess } from '../../redux/productSold/actions';
-import { dateFormat } from '../../helpers/format';
+import { dateFormat, VNDCurrencyFormatting } from '../../helpers/format';
 import { DATE_FORMAT } from '../../constants/common';
 import DialogConfirm from '../../components/DialogConfirm';
 
@@ -39,10 +39,9 @@ const ProductsSold = () => {
             sort: false,
         },
         {
-            dataField: 'item',
+            dataField: 'warehouseProductName',
             text: 'Tên mặt hàng',
             sort: false,
-            formatter: (data, record) => record?.productWarehouseId?.warehouseProductName,
         },
         {
             dataField: 'color',
@@ -54,6 +53,7 @@ const ProductsSold = () => {
             dataField: 'sellPrice',
             text: 'Giá bán ra',
             sort: false,
+            formatter: (data) => VNDCurrencyFormatting(data),
         },
         {
             dataField: 'quantity',
@@ -64,6 +64,7 @@ const ProductsSold = () => {
             dataField: 'total',
             text: 'Thành tiền',
             sort: false,
+            formatter: (data) => VNDCurrencyFormatting(data),
         },
         {
             text: "Thao tác",
@@ -123,6 +124,15 @@ const ProductsSold = () => {
         setIsOpenDialogConfirm(true)
     }
 
+    const formatProductSoldData = (data) => {
+        return data.map(item => {
+            return {
+                ...item,
+                warehouseProductName: item?.productWarehouseId?.warehouseProductName
+            }
+        })
+    }
+
     return (
         <React.Fragment>
             <Row className="page-title">
@@ -144,7 +154,7 @@ const ProductsSold = () => {
                             <ToolkitProvider
                                 bootstrap4
                                 keyField="id"
-                                data={productSoldList}
+                                data={formatProductSoldData(productSoldList)}
                                 columns={columns}
                                 search
                                 exportCSV={{ onlyExportFiltered: true, exportAll: false }}>
