@@ -58,12 +58,16 @@ const AddGoods = (props) => {
         if (!id) return
         setProductValue({ value: productId?._id, label: productId?.productName });
         setWarehouseValue({ value: warehouseId?._id, label: warehouseId?.warehouseName });
-        setTotalValue(total);
+        setTotalValue(total)
         setDateValue(inputDate);
     }, [productOfWarehouse]);
 
     useEffect(() => {
+        if (!isSuccess) return;
         form && form.reset();
+        setQuantity(0);
+        setPrice(0);
+        setTotalValue(0);
         dispatch(resetActionSuccess())
     }, [isSuccess]);
 
