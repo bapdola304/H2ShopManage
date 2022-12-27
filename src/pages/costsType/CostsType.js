@@ -1,29 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, CardBody, Input, Button } from 'reactstrap';
+import { useDispatch, useSelector } from 'react-redux';
 import BootstrapTable from 'react-bootstrap-table-next';
-import ToolkitProvider, { Search, CSVExport } from 'react-bootstrap-table2-toolkit';
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import Dialog from '../../components/Dialog';
 import DialogConfirm from '../../components/DialogConfirm';
 import { AvForm, AvField } from "availity-reactstrap-validation";
-import FileUploader from '../../components/FileUploader';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import PageTitle from '../../components/PageTitle';
-import { VNDCurrencyFormatting } from '../../helpers/format';
-
-const defaultSorted = [
-    {
-        dataField: 'id',
-        order: 'asc',
-    },
-];
-
-const records = []
+import { createCostType, deleteCostType, getCostsType, resetActionSuccess, updateCostType } from '../../redux/costType/actions';
 
 const CostsType = () => {
     const { SearchBar } = Search;
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
+    const [costTypeSelected, setCostTypeSelected] = useState({});
+    const [isEditing, setIsEditing] = useState(false);
+    const dispatch = useDispatch();
+    const { costTypeList = [], isSuccess } = useSelector(state => state.costType);
+    const { costTypeName, id } = costTypeSelected;
+
+    useEffect(() => {
+        dispatch(getCostsType());
+    }, []);
+
+    useEffect(() => {
+        if (!isSuccess) return
+        dispatch(getCostsType());
+        setIsOpenDialog(false);
+        setIsOpenDialogConfirm(false);
+        dispatch(resetActionSuccess());
+    }, [isSuccess]);
+
 
     const columns = [
         {
@@ -34,7 +43,7 @@ const CostsType = () => {
         {
             text: "Thao tác",
             dataField: 'action',
-            formatter: (record) => renderAction(record),
+            formatter: (data, record) => renderAction(record),
             headerStyle: { width: '15%' }
         }
     ];
@@ -42,10 +51,10 @@ const CostsType = () => {
     const renderAction = (record) => {
         return (
             <div className="wrap-action">
-                <Button color="secondary" style={{ marginRight: 10 }}>
+                <Button color="secondary" style={{ marginRight: 10 }} onClick={() => handleEdit(record)}>
                     <i className="uil-edit"></i>
                 </Button>
-                <Button className='action-button-mt5' onClick={() => setIsOpenDialogConfirm(true)} color="danger">
+                <Button className='action-button-mt5' onClick={() => handleDelete(record)} color="danger">
                     <i className="uil-trash"></i>
                 </Button>
             </div>
@@ -56,15 +65,32 @@ const CostsType = () => {
         setIsOpenDialog(true)
     }
 
+    const handleEdit = (record) => {
+        setCostTypeSelected(record);
+        setIsEditing(true);
+        setIsOpenDialog(true);
+    }
+
+    const handleDelete = (record) => {
+        setCostTypeSelected(record);
+        setIsOpenDialogConfirm(true);
+    }
+
+    const onDelete = () => {
+        dispatch(deleteCostType(id))
+    }
+
     const handleSubmit = (event, errors, values) => {
         if (!errors.length) {
-            // const { _id } = userSelected;
-            // let { role } = values;
-            // if (!role) {
-            //     role = PERMISSION.SELLER;
-            // }
-            // dispatch(setPermissionsForUser({ id: _id, permission: role }));
-            // setIsOpenDialog(false);
+            if (isEditing) {
+                const payload = {
+                    id,
+                    body: values
+                }
+                dispatch(updateCostType(payload));
+            } else {
+                dispatch(createCostType(values));
+            }
         }
     }
 
@@ -100,7 +126,7 @@ const CostsType = () => {
                             <ToolkitProvider
                                 bootstrap4
                                 keyField="id"
-                                data={[]}
+                                data={costTypeList}
                                 columns={columns}
                                 search
                                 exportCSV={{ onlyExportFiltered: true, exportAll: false }}>
@@ -118,8 +144,7 @@ const CostsType = () => {
                                         <BootstrapTable
                                             {...props.baseProps}
                                             bordered={false}
-                                            defaultSorted={defaultSorted}
-                                            pagination={paginationFactory({ sizePerPage: 20, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '5', value: 5, }, { text: '10', value: 10 }, { text: '25', value: 25 }, { text: 'All', value: records.length }] })}
+                                            pagination={paginationFactory({ sizePerPage: 25, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '25', value: 25 }, { text: '50', value: 50, }, { text: `${costTypeList.length} Tất cả`, value: costTypeList.length }] })}
                                             wrapperClasses="table-responsive"
                                         />
                                     </React.Fragment>
@@ -131,14 +156,22 @@ const CostsType = () => {
             </Row>
             <Dialog
                 visible={isOpenDialog}
-                title={"Thêm loại chi phí"}
+                title={!isEditing ? "Thêm loại chi phí" : "Chỉnh sửa loại chi phí"}
                 onCancel={() => setIsOpenDialog(false)}
                 isShowFooter={false}
             >
                 <AvForm onSubmit={handleSubmit}>
                     <Row>
                         <Col md={12}>
-                            <AvField name="costTypeName" label="Tên loại chi phí" type="text" required />
+                            <AvField
+                                name="costTypeName"
+                                label="Tên loại chi phí"
+                                type="text"
+                                value={!isEditing ? "" : costTypeName}
+                                validate={{
+                                    required: { value: true, errorMessage: "Vui lòng nhập tên loại chi phí" },
+                                }}
+                            />
                         </Col>
                     </Row>
                     <div style={{ float: "right", marginTop: 20 }}>
@@ -149,7 +182,7 @@ const CostsType = () => {
                             Hủy bỏ
                         </Button>
                         <Button color="primary" type="submit">
-                            Thêm
+                            { !isEditing ? "Thêm" : "Chỉnh sửa" }
                         </Button>
                     </div>
                 </AvForm>
@@ -159,8 +192,8 @@ const CostsType = () => {
                 width={400}
                 onCancel={() => setIsOpenDialogConfirm(false)}
                 title={"Xác nhận xóa"}
-                description={"Bạn có chắc muốn xóa mặt hàng này"}
-                // onOk={onOk}
+                description={`Bạn có chắc muốn xóa: ${costTypeName}`}
+                onOk={onDelete}
             />
         </React.Fragment>
     );
