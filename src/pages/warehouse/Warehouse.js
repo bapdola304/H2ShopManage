@@ -29,8 +29,11 @@ const Warehouse = () => {
 
     useEffect(() => {
         dispatch(getProducts());
-        dispatch(getMyWarehouseList());
     }, []);
+
+    useEffect(() => {
+        dispatch(getMyWarehouseList());
+    }, [items]);
 
     useEffect(() => {
         if (!isSuccess) return
@@ -39,6 +42,12 @@ const Warehouse = () => {
         dispatch(resetActionSuccess())
     }, [isSuccess]);
 
+    const defaultSorted = [
+        {
+            dataField: 'inputDate',
+            order: 'desc',
+        },
+    ];
 
     const columns = [
         {
@@ -204,6 +213,7 @@ const Warehouse = () => {
                                         <BootstrapTable
                                             {...props.baseProps}
                                             bordered={false}
+                                            defaultSorted={defaultSorted}
                                             pagination={paginationFactory({ sizePerPage: 25, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '25', value: 25 }, { text: '50', value: 50, }, { text: `${myWarehouseList.length} Tất cả`, value: myWarehouseList.length }] })}
                                             wrapperClasses="table-responsive"
                                         />

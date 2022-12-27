@@ -74,6 +74,13 @@ const ProductsSold = () => {
         }
     ];
 
+    const defaultSorted = [
+        {
+            dataField: 'inputDate',
+            order: 'desc',
+        },
+    ];
+
 
     useEffect(() => {
         dispatch(getProductSoldList())
@@ -174,6 +181,7 @@ const ProductsSold = () => {
                                         <BootstrapTable
                                             {...props.baseProps}
                                             bordered={false}
+                                            defaultSorted={defaultSorted}
                                             pagination={paginationFactory({ sizePerPage: 25, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '25', value: 25 }, { text: '50', value: 50, }, { text: `${productSoldList.length} Tất cả`, value: productSoldList.length }] })}
                                             wrapperClasses="table-responsive"
                                         />
