@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, CardBody, Input, Button } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
-import ToolkitProvider, { Search, CSVExport } from 'react-bootstrap-table2-toolkit';
+import { useDispatch, useSelector } from 'react-redux';
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import Dialog from '../../components/Dialog';
 import DialogConfirm from '../../components/DialogConfirm';
 import { AvForm, AvField } from "availity-reactstrap-validation";
-import FileUploader from '../../components/FileUploader';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import PageTitle from '../../components/PageTitle';
-import { VNDCurrencyFormatting } from '../../helpers/format';
+import { dateFormat, VNDCurrencyFormatting } from '../../helpers/format';
+import { DATE_FORMAT } from '../../constants/common';
+import { Vietnamese } from 'flatpickr/dist/l10n/vn.js';
+import Flatpickr from 'react-flatpickr'
+import { createCostIncurred, deleteCostIncurred, getCostIncurred, resetActionSuccess, updateCostIncurred } from '../../redux/costIncurred/actions';
 
 const defaultSorted = [
     {
@@ -24,15 +27,44 @@ const CostsIncurred = () => {
     const { SearchBar } = Search;
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [dateValue, setDateValue] = useState(new Date());
+    const [totalValue, setTotalValue] = useState(0);
+    const [quantity, setQuantity] = useState(1);
+    const [sellPrice, setSellPrice] = useState(0);
+    const [costIncurredSelected, setCostIncurredSelected] = useState({});
+    const { costIncurredName, id } = costIncurredSelected;
+    const dispatch = useDispatch();
+    const { costIncurredList = [], isSuccess } = useSelector(state => state.costIncurred);
+
+    useEffect(() => {
+        dispatch(getCostIncurred());
+    }, []);
+
+    useEffect(() => {
+        if (!isSuccess) return
+        dispatch(getCostIncurred());
+        setIsOpenDialog(false);
+        setIsOpenDialogConfirm(false);
+        dispatch(resetActionSuccess());
+    }, [isSuccess]);
+
+    useEffect(() => {
+        setSellPrice(costIncurredSelected?.price);
+        setQuantity(costIncurredSelected?.quantity);
+        setTotalValue(costIncurredSelected?.total);
+        setDateValue(costIncurredSelected?.inputDate);
+    }, [costIncurredName]);
 
     const columns = [
         {
-            dataField: 'dateTime',
+            dataField: 'inputDate',
             text: 'Thời gian',
             sort: true,
+            formatter: (data) => dateFormat(data, DATE_FORMAT.DD_MM_YYYY),
         },
         {
-            dataField: 'costsIncurredName',
+            dataField: 'costIncurredName',
             text: 'Tên chi phí',
             sort: false,
         },
@@ -54,7 +86,7 @@ const CostsIncurred = () => {
         {
             text: "Thao tác",
             dataField: 'action',
-            formatter: (record) => renderAction(record),
+            formatter: (data, record) => renderAction(record),
             headerStyle: { width: '15%' }
         }
     ];
@@ -62,30 +94,69 @@ const CostsIncurred = () => {
     const renderAction = (record) => {
         return (
             <div className="wrap-action">
-                <Button color="secondary" style={{ marginRight: 10 }}>
+                <Button color="secondary" style={{ marginRight: 10 }} onClick={() => handleEdit(record)}>
                     <i className="uil-edit"></i>
                 </Button>
-                <Button className='action-button-mt5' onClick={() => setIsOpenDialogConfirm(true)} color="danger">
+                <Button className='action-button-mt5' onClick={() => handleDelete(record)} color="danger">
                     <i className="uil-trash"></i>
                 </Button>
             </div>
         )
     }
 
+    const handleDelete = (record) => {
+        setCostIncurredSelected(record);
+        setIsOpenDialogConfirm(true);
+    }
+
+    const handleEdit = (record) => {
+        setCostIncurredSelected(record);
+        setIsEditing(true);
+        setIsOpenDialog(true);
+    }
+
+
     const handleOpenDialog = () => {
         setIsOpenDialog(true)
     }
 
+    const handleChangeQuantity = (event, value = 0) => {
+        setTotalValue(parseInt(value) * sellPrice);
+        setQuantity(parseInt(value));
+    }
+
+    const handleChangePrice = (event, value = 0) => {
+        setSellPrice(parseInt(value));
+        setTotalValue(quantity * parseInt(value));
+    }
+
     const handleSubmit = (event, errors, values) => {
         if (!errors.length) {
-            // const { _id } = userSelected;
-            // let { role } = values;
-            // if (!role) {
-            //     role = PERMISSION.SELLER;
-            // }
-            // dispatch(setPermissionsForUser({ id: _id, permission: role }));
-            // setIsOpenDialog(false);
+            const body = {
+                ...values,
+                total: totalValue,
+                inputDate: dateValue
+            }
+            if (!isEditing) {
+                dispatch(createCostIncurred(body));
+            } else {
+                const payload = {
+                    id,
+                    body
+                }
+                dispatch(updateCostIncurred(payload))
+            }
         }
+    }
+
+    const onDelete = () => {
+        dispatch(deleteCostIncurred(id))
+    }
+
+    const handleCancel = () => {
+        setCostIncurredSelected({});
+        setIsOpenDialog(false);
+        setIsEditing(false);
     }
 
     const sizePerPageRenderer = ({ options, currSizePerPage, onSizePerPageChange }) => (
@@ -124,7 +195,7 @@ const CostsIncurred = () => {
                             <ToolkitProvider
                                 bootstrap4
                                 keyField="id"
-                                data={[]}
+                                data={costIncurredList}
                                 columns={columns}
                                 search
                                 exportCSV={{ onlyExportFiltered: true, exportAll: false }}>
@@ -143,7 +214,7 @@ const CostsIncurred = () => {
                                             {...props.baseProps}
                                             bordered={false}
                                             defaultSorted={defaultSorted}
-                                            pagination={paginationFactory({ sizePerPage: 20, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '5', value: 5, }, { text: '10', value: 10 }, { text: '25', value: 25 }, { text: 'All', value: records.length }] })}
+                                            pagination={paginationFactory({ sizePerPage: 25, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '25', value: 25 }, { text: '50', value: 50, }, { text: `${costIncurredList.length} Tất cả`, value: costIncurredList.length }] })}
                                             wrapperClasses="table-responsive"
                                         />
                                     </React.Fragment>
@@ -155,34 +226,85 @@ const CostsIncurred = () => {
             </Row>
             <Dialog
                 visible={isOpenDialog}
-                title={"Thêm chi phí"}
-                onCancel={() => setIsOpenDialog(false)}
+                title={!isEditing ? "Thêm chi phí" : "Chỉnh sửa chi phí"}
+                onCancel={handleCancel}
                 isShowFooter={false}
             >
                 <AvForm onSubmit={handleSubmit}>
                     <Row>
                         <Col md={12}>
-                            <AvField name="costsIncurredName" label="Tên chi phí" type="text" required />
+                            <div className="form-group">
+                                <label>Ngày</label> <br />
+                                <div className="form-group mb-sm-0 mr-2">
+                                    <Flatpickr
+                                        value={dateValue || new Date()}
+                                        onChange={date => { setDateValue(date) }}
+                                        className="form-control"
+                                        options={
+                                            {
+                                                dateFormat: DATE_FORMAT.d_m_Y,
+                                                locale: Vietnamese
+                                            }
+                                        }
+                                    />
+                                </div>
+                            </div>
                         </Col>
                         <Col md={12}>
-                            <AvField name="price" label="Đơn giá" type="number" required />
+                            <AvField
+                                name="costIncurredName"
+                                label="Tên chi phí"
+                                type="text"
+                                value={ !isEditing ? "" : costIncurredName }
+                                validate={{
+                                    required: { value: true, errorMessage: "Vui lòng nhập tên chi phí" },
+                                }}
+                            />
                         </Col>
                         <Col md={12}>
-                            <AvField name="quantity" label="Số lượng" type="number" required />
+                            <AvField
+                                name="price"
+                                label="Đơn giá"
+                                type="number"
+                                value={!isEditing ? "" : sellPrice}
+                                onChange={handleChangePrice}
+                                validate={{
+                                    required: { value: true, errorMessage: "Vui lòng nhập giá bán" },
+                                }}
+                            />
                         </Col>
                         <Col md={12}>
-                            <AvField name="total" label="Thành tiền" type="text" value={VNDCurrencyFormatting(30000)} disabled={true} style={{fontWeight: 700}} />
+                            <AvField
+                                name="quantity"
+                                label="Số lượng"
+                                type="number"
+                                value={!isEditing ? "" : quantity}
+                                onChange={handleChangeQuantity}
+                                validate={{
+                                    required: { value: true, errorMessage: "Vui lòng nhập số lượng" },
+                                }}
+                            />
+                        </Col>
+                        <Col md={12}>
+                            <AvField
+                                name="total"
+                                label="Thành tiền"
+                                type="text"
+                                value={VNDCurrencyFormatting(totalValue || 0)}
+                                disabled={true}
+                                style={{ fontWeight: 700 }}
+                            />
                         </Col>
                     </Row>
                     <div style={{ float: "right", marginTop: 20 }}>
                         <Button
                             color="secondary mr-2"
-                            onClick={() => setIsOpenDialog(false)}
+                            onClick={handleCancel}
                         >
                             Hủy bỏ
                         </Button>
                         <Button color="primary" type="submit">
-                            Thêm
+                            { !isEditing ? "Thêm" : "Chỉnh sửa" }
                         </Button>
                     </div>
                 </AvForm>
@@ -192,8 +314,8 @@ const CostsIncurred = () => {
                 width={400}
                 onCancel={() => setIsOpenDialogConfirm(false)}
                 title={"Xác nhận xóa"}
-                description={"Bạn có chắc muốn xóa mặt hàng này"}
-                // onOk={onOk}
+                description={`Bạn có chắc muốn xóa: ${costIncurredName}`}
+                onOk={onDelete}
             />
         </React.Fragment>
     );

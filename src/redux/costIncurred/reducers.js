@@ -1,32 +1,32 @@
 import produce from 'immer';
 import {
     RESET_ACTION_SUCCESS,
-    CREATE_COST_TYPE_SUCCESS,
-    GET_COST_TYPE_SUCCESS,
-    DELETE_COST_TYPE_SUCCESS,
-    UPDATE_COST_TYPE_SUCCESS
+    CREATE_COST_INCURRED_SUCCESS,
+    GET_COST_INCURRED_SUCCESS,
+    DELETE_COST_INCURRED_SUCCESS,
+    UPDATE_COST_INCURRED_SUCCESS
 } from './constants';
 
 const INITIAL_STATE = {
-    costTypeList: [],
+    costIncurredList: [],
     isSuccess: false
 };
 
-const costType = (state = INITIAL_STATE, action) => {
+const costIncurred = (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        case GET_COST_TYPE_SUCCESS:
+        case GET_COST_INCURRED_SUCCESS:
             return produce(state, draft => {
-                draft.costTypeList = action.payload.items
+                draft.costIncurredList = action.payload.items
             });
-        case CREATE_COST_TYPE_SUCCESS:
-            return produce(state, draft => {
-                draft.isSuccess = true
-            });
-        case DELETE_COST_TYPE_SUCCESS:
+        case CREATE_COST_INCURRED_SUCCESS:
             return produce(state, draft => {
                 draft.isSuccess = true
             });
-        case UPDATE_COST_TYPE_SUCCESS:
+        case DELETE_COST_INCURRED_SUCCESS:
+            return produce(state, draft => {
+                draft.isSuccess = true
+            });
+        case UPDATE_COST_INCURRED_SUCCESS:
             return produce(state, draft => {
                 draft.isSuccess = true
             });
@@ -40,4 +40,4 @@ const costType = (state = INITIAL_STATE, action) => {
     }
 }
 
-export default costType;
+export default costIncurred;

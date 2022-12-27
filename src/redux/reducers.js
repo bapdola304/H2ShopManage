@@ -10,6 +10,7 @@ import warehouse from './warehouse/reducers';
 import myWarehouse from './myWarehouse/reducers';
 import productSold from './productSold/reducers';
 import costType from './costType/reducers';
+import costIncurred from './costIncurred/reducers';
 
 export default combineReducers({
     Auth,
@@ -20,5 +21,6 @@ export default combineReducers({
     warehouse,
     myWarehouse,
     productSold,
-    costType
+    costType,
+    costIncurred
 });

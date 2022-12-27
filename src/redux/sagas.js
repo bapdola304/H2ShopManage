@@ -9,6 +9,7 @@ import warehouseSaga from './warehouse/saga';
 import myWarehouseSaga from './myWarehouse/saga';
 import productSoldSaga from './productSold/saga';
 import costTypeSaga from './costType/saga';
+import costIncurredSaga from './costIncurred/saga';
 
 export default function* rootSaga() {
     yield all([
@@ -20,6 +21,7 @@ export default function* rootSaga() {
         warehouseSaga,
         myWarehouseSaga,
         productSoldSaga,
-        costTypeSaga
+        costTypeSaga,
+        costIncurredSaga
     ]);
 }
