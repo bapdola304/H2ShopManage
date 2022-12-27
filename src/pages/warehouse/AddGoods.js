@@ -58,7 +58,9 @@ const AddGoods = (props) => {
         if (!id) return
         setProductValue({ value: productId?._id, label: productId?.productName });
         setWarehouseValue({ value: warehouseId?._id, label: warehouseId?.warehouseName });
-        setTotalValue(total)
+        setTotalValue(total);
+        setPrice(productPrice);
+        setQuantity(productQuantity);
         setDateValue(inputDate);
     }, [productOfWarehouse]);
 
