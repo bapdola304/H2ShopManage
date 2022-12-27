@@ -8,8 +8,22 @@ import productSaga from './product/saga';
 import warehouseSaga from './warehouse/saga';
 import myWarehouseSaga from './myWarehouse/saga';
 import productSoldSaga from './productSold/saga';
+import costTypeSaga from './costType/saga';
+import costIncurredSaga from './costIncurred/saga';
 import revenueSaga from './revenue/saga';
 
 export default function* rootSaga() {
-    yield all([authSaga(), layoutSaga(), appMenuSaga(), loadingSaga, productSaga, warehouseSaga, myWarehouseSaga, productSoldSaga, revenueSaga]);
+    yield all([
+        authSaga(),
+        layoutSaga(),
+        appMenuSaga(),
+        loadingSaga,
+        productSaga,
+        warehouseSaga,
+        myWarehouseSaga,
+        productSoldSaga,
+        costTypeSaga,
+        costIncurredSaga,
+        revenueSaga
+    ]);
 }
