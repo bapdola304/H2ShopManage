@@ -40,33 +40,12 @@ class Dashboard extends Component {
                                         onChange={date => { this.setState({ filterDate: date }) }} options={{ mode: "range" }}
                                         className="form-control" />
                                 </div>
-                                <UncontrolledButtonDropdown>
-                                    <DropdownToggle color="primary" className="dropdown-toggle">
-                                        <i className='uil uil-file-alt mr-1'></i>Download
-                                            <i className="icon ml-1"><ChevronDown /></i>
-                                    </DropdownToggle>
-                                    <DropdownMenu right>
-                                        <DropdownItem>
-                                            <Mail className="icon-dual icon-xs mr-2"></Mail>
-                                            <span>Email</span>
-                                        </DropdownItem>
-                                        <DropdownItem>
-                                            <Printer className="icon-dual icon-xs mr-2"></Printer>
-                                            <span>Print</span>
-                                        </DropdownItem>
-                                        <DropdownItem divider />
-                                        <DropdownItem>
-                                            <File className="icon-dual icon-xs mr-2"></File>
-                                            <span>Re-Generate</span>
-                                        </DropdownItem>
-                                    </DropdownMenu>
-                                </UncontrolledButtonDropdown>
                             </form>
                         </Col>
                     </Row>
 
                     {/* stats */}
-                    <Statistics></Statistics>
+                    <Statistics />
 
                 </div>
             </React.Fragment>

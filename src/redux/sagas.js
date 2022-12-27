@@ -8,7 +8,8 @@ import productSaga from './product/saga';
 import warehouseSaga from './warehouse/saga';
 import myWarehouseSaga from './myWarehouse/saga';
 import productSoldSaga from './productSold/saga';
+import revenueSaga from './revenue/saga';
 
 export default function* rootSaga() {
-    yield all([authSaga(), layoutSaga(), appMenuSaga(), loadingSaga, productSaga, warehouseSaga, myWarehouseSaga, productSoldSaga]);
+    yield all([authSaga(), layoutSaga(), appMenuSaga(), loadingSaga, productSaga, warehouseSaga, myWarehouseSaga, productSoldSaga, revenueSaga]);
 }

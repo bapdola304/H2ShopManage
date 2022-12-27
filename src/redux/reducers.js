@@ -9,6 +9,7 @@ import product from './product/reducers';
 import warehouse from './warehouse/reducers';
 import myWarehouse from './myWarehouse/reducers';
 import productSold from './productSold/reducers';
+import revenue from './revenue/reducers';
 
 export default combineReducers({
     Auth,
@@ -18,5 +19,6 @@ export default combineReducers({
     product,
     warehouse,
     myWarehouse,
-    productSold
+    productSold,
+    revenue
 });
