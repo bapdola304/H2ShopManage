@@ -8,19 +8,15 @@ import {
     UPDATE_PRODUCT_WAREHOUSE,
 } from './constants';
 import { createProductForWarehouseSuccess, deleteProductWarehouseSuccess, getMyWarehouseDetailSuccess, getMyWarehouseListSuccess, updateProductWarehouseSuccess } from './actions';
-import { fetchJSON } from '../../helpers/api';
+import { fetchJSON, handleGetApiPath } from '../../helpers/api';
 import { DELETE, POST, PUT } from '../../constants/common';
 import { isEmpty } from '../../helpers/format';
 import { goBack } from '../../helpers/navigation';
+import { API } from '../../constants/apiPath';
 
 
 function* getMyWarehouseList({ payload }) {
-    var path = ''
-    if (typeof payload != 'string') {
-        path = `api/myWarehouse${payload ? `?isSelecteInput=${payload}` : ''}`;
-    } else {
-        path = `api/myWarehouse${payload ? `?productTypeId=${payload}` : ''}`;
-    }
+    const path = handleGetApiPath(API.MY_WAREHOUSE.GET, payload);
     const response = yield call(fetchJSON, path);
     const { data = {} } = response;
     yield put(getMyWarehouseListSuccess(data));

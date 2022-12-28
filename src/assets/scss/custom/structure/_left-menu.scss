@@ -247,7 +247,7 @@
 
     // Side menu
     .left-side-menu {
-        position: absolute;
+        position: fixed;
         width: $leftbar-width-collapsed !important;
         z-index: 5;
 

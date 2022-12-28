@@ -4,5 +4,6 @@ export const DELETE = 'DELETE';
 
 export const DATE_FORMAT = {
     DD_MM_YYYY: "DD/MM/YYYY",
+    YYYY_MM_DD: "YYYY-MM-DD",
     d_m_Y: "d-m-Y"
 }

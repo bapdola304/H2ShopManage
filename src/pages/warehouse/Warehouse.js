@@ -13,26 +13,43 @@ import { DATE_FORMAT } from '../../constants/common';
 import DialogConfirm from '../../components/DialogConfirm';
 import { deleteProductWarehouse } from '../../redux/myWarehouse/actions';
 import { getProducts } from '../../redux/actions';
+import { Vietnamese } from 'flatpickr/dist/l10n/vn.js';
+import Flatpickr from 'react-flatpickr'
+import { getWarehouseList } from '../../redux/warehouse/actions';
+import * as FeatherIcon from 'react-feather';
+
+var firstLoad = true;
 
 const Warehouse = () => {
 
     const { myWarehouseList = [], isSuccess } = useSelector(state => state.myWarehouse);
     const { items = [] } = useSelector(state => state.product);
+    const { warehouseList = [] } = useSelector(state => state.warehouse);
 
     const dispatch = useDispatch();
-    const productTypeAll = { value: null, label: 'Tất cả' }
+    const productTypeAll = { value: null, label: 'Loại mặt hàng (Tất cả)' }
+    const warehouseAll = { value: null, label: 'Loại kho (Tất cả)' }
     const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
     const [productSelected, setProductSelected] = useState({});
     const [productItemSelected, setProductItemSelected] = useState(productTypeAll);
+    const [warehouseSelected, setWarehouseSelected] = useState(warehouseAll);
+    const [dateValue, setDateValue] = useState(null);
+
 
     const { SearchBar } = Search;
 
     useEffect(() => {
         dispatch(getProducts());
+        dispatch(getMyWarehouseList());
+        dispatch(getWarehouseList());
     }, []);
 
     useEffect(() => {
-        dispatch(getMyWarehouseList());
+        if (firstLoad) {
+            firstLoad = false;
+            dispatch(getMyWarehouseList());
+
+        }
     }, [items]);
 
     useEffect(() => {
@@ -154,7 +171,43 @@ const Warehouse = () => {
 
     const handleProductTypeChange = (option) => {
         setProductItemSelected(option);
-        dispatch(getMyWarehouseList(option?.value));
+        const params = {
+            productTypeId: option?.value,
+            warehouseId: warehouseSelected?.value,
+            inputDate: dateFormat(dateValue, DATE_FORMAT.YYYY_MM_DD)
+        }
+        dispatch(getMyWarehouseList(params));
+    }
+
+    const handleWarehouseChange = (option) => {
+        setWarehouseSelected(option);
+        const params = {
+            productTypeId: productItemSelected?.value,
+            warehouseId: option?.value,
+            inputDate: dateFormat(dateValue, DATE_FORMAT.YYYY_MM_DD)
+        }
+        dispatch(getMyWarehouseList(params));
+        // dispatch(getMyWarehouseList(option?.value));
+    }
+
+    const handleDateChange = (date) => {
+        setDateValue(date);
+        const params = {
+            productTypeId: productItemSelected?.value,
+            warehouseId: warehouseSelected?.value,
+            inputDate: dateFormat(date, DATE_FORMAT.YYYY_MM_DD)
+        }
+        dispatch(getMyWarehouseList(params));
+    }
+
+    const onClearDate = () => {
+        setDateValue(null);
+        const params = {
+            productTypeId: productItemSelected?.value,
+            warehouseId: warehouseSelected?.value,
+            inputDate: null
+        }
+        dispatch(getMyWarehouseList(params));
     }
 
     return (
@@ -186,24 +239,51 @@ const Warehouse = () => {
                                 {props => (
                                     <React.Fragment>
                                         <Row>
-                                            <Col>
+                                            <Col md={9}>
                                                 <Row>
-                                                    <Col className='warehouse-search' md={6}>
+                                                    <Col className='warehouse-search' md={3}>
                                                         <SearchBar {...props.searchProps} placeholder={"Tìm kiếm hàng"} />
                                                     </Col>
-                                                    <Col md={6}>
+                                                    <Col md={3}>
                                                         <Select
                                                             className="react-select"
                                                             classNamePrefix="react-select"
-                                                            placeholder="Lọc theo loại mặt hàng"
                                                             value={productItemSelected}
                                                             onChange={handleProductTypeChange}
                                                             options={[productTypeAll, ...formatSelectInput(items, "productName")]}
                                                         />
                                                     </Col>
+                                                    <Col md={3}>
+                                                        <Select
+                                                            className="react-select warehouse-select"
+                                                            classNamePrefix="react-select"
+                                                            value={warehouseSelected}
+                                                            onChange={handleWarehouseChange}
+                                                            options={[warehouseAll, ...formatSelectInput(warehouseList, "warehouseName")]}
+                                                        />
+                                                    </Col>
+                                                    <Col md={3}>
+                                                        <div className='date-wrapper'>
+                                                            <Flatpickr
+                                                                value={dateValue}
+                                                                onChange={handleDateChange}
+                                                                className="form-control"
+                                                                placeholder='Chọn ngày'
+                                                                options={
+                                                                    {
+                                                                        dateFormat: DATE_FORMAT.d_m_Y,
+                                                                        locale: Vietnamese,
+                                                                    }
+                                                                }
+                                                            />
+                                                            <a onClick={onClearDate} class="clear-button" title="clear" data-clear>
+                                                                <FeatherIcon.X />
+                                                            </a>
+                                                        </div>
+                                                    </Col>
                                                 </Row>
                                             </Col>
-                                            <Col className="text-right">
+                                            <Col md={3} className="text-right add-warehouse-btn">
                                                 <Link to="/apps/warehouseAdd">
                                                     <Button color="primary" id="btn-new-event"><i className="uil-plus mr-1"></i>Thêm hàng</Button>
                                                 </Link>

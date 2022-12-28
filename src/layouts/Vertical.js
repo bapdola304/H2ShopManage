@@ -45,7 +45,7 @@ class VerticalLayout extends Component {
 
     componentDidMount = () => {
         // activate the condensed sidebar if smaller devices like ipad or tablet
-        if (window.innerWidth >= 768 && window.innerWidth <= 1028) {
+        if (window.innerWidth >= 768 && window.innerWidth <= 1280) {
             this.props.changeSidebarType(layoutConstants.LEFT_SIDEBAR_TYPE_CONDENSED);
         }
     };

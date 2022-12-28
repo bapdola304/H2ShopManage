@@ -13,7 +13,7 @@ export function isEmpty(obj) {
 }
 
 export function dateFormat(date, format) {
-    return dayjs(date).format(format)
+    return !date ? null : dayjs(date).format(format)
 }
 
 export function formatSelectInput(data = [], labelField, hasColor = false) {

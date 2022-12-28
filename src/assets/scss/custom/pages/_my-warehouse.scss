@@ -1,0 +1,28 @@
+.date-wrapper {
+    display: flex;
+    cursor: pointer;
+
+    .clear-button {
+        width: 39px;
+        height: 39px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #e2e7f1;
+    }
+    .flatpickr-input {
+        border-top-right-radius: 0px !important;
+        border-bottom-right-radius: 0px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .warehouse-select {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .date-wrapper, .add-warehouse-btn {
+        margin-bottom: 0.5rem;
+    }
+}

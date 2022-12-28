@@ -6,7 +6,7 @@ import Select from 'react-select';
 import Flatpickr from 'react-flatpickr'
 import { withRouter } from "react-router-dom";
 import PageTitle from '../../components/PageTitle';
-import { formatSelectInput, setFieldValue, VNDCurrencyFormatting } from '../../helpers/format';
+import { dateFormat, formatSelectInput, setFieldValue, VNDCurrencyFormatting } from '../../helpers/format';
 import { getProducts } from '../../redux/product/actions';
 import { getWarehouseList } from '../../redux/warehouse/actions';
 import { createProductForWarehouse, getMyWarehouseDetail, resetActionSuccess, resetMyWarehouseDetail, updateProductWarehouse } from '../../redux/myWarehouse/actions';
@@ -100,7 +100,7 @@ const AddGoods = (props) => {
                 total: totalValue,
                 warehouseId: warehouseValue?.value,
                 productId: productValue?.value,
-                inputDate: dateValue
+                inputDate: dateFormat(dateValue, DATE_FORMAT.YYYY_MM_DD)
             }
             if (!id) {
                 dispatch(createProductForWarehouse(body))
