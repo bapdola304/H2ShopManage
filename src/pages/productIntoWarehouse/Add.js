@@ -27,7 +27,7 @@ const AddGoods = (props) => {
     var [colorAndQuantity, setColorAndQuantity] = useState([{ id: rowId, quantityName: `quantity${rowId}`, colorName: `color${rowId}`, quantity: 0 }]);
 
     const dispatch = useDispatch();
-    const { items: products = [] } = useSelector(state => state.product);
+    const { items: productsType = [] } = useSelector(state => state.productType);
     const { warehouseList = [] } = useSelector(state => state.warehouse);
     const { productOfWarehouse = {}, isSuccess } = useSelector(state => state.myWarehouse);
     let form = null;
@@ -48,9 +48,9 @@ const AddGoods = (props) => {
 
     useEffect(() => {
         if (id) return
-        const firstItem = products?.[0];
+        const firstItem = productsType?.[0];
         setProductValue({ value: firstItem?.id, label: firstItem?.productName });
-    }, [products]);
+    }, [productsType]);
 
     useEffect(() => {
         if (id) return
@@ -341,7 +341,7 @@ const AddGoods = (props) => {
                                                         placeholder="Chọn loại mặt hàng"
                                                         onChange={handleProductChange}
                                                         value={productValue}
-                                                        options={formatSelectInput(products, "productName")}
+                                                        options={formatSelectInput(productsType, "productName")}
                                                     />
                                                 </div>
                                             </Col>

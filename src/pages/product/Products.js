@@ -10,20 +10,22 @@ import { AvForm, AvField } from "availity-reactstrap-validation";
 import PageTitle from '../../components/PageTitle';
 import { createProductType, deleteProductType, getProductsType, resetActionSuccess, updateProductType } from '../../redux/productType/actions';
 import Select from 'react-select';
-import { formatSelectInput } from '../../helpers/format';
+import { formatSelectInput, isEmpty } from '../../helpers/format';
+import { createProduct, deleteProduct, getProducts, updateProduct } from '../../redux/product/actions';
 
 const Products = () => {
 
     const dispatch = useDispatch();
-    const { items = [], isSuccess } = useSelector(state => state.product);
+    const { items = [] } = useSelector(state => state.productType);
+    const { products = [], isSuccess } = useSelector(state => state.product);
 
     const { SearchBar } = Search;
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
     const [productTypeSelected, setProductTypeSelected] = useState({});
+    const [productSelected, setProductSelected] = useState({});
     const [isEditingProduct, setIsEditingProduct] = useState(false);
-    const productSelected = {}
-    const { id, productName, warrantyPeriod } = productSelected;
+    const { id, productName } = productSelected;
 
     const columns = [
         {
@@ -35,27 +37,29 @@ const Products = () => {
             dataField: 'productType',
             text: 'Loại mặt hàng',
             sort: false,
+            formatter: (data, record) => record?.productType?.productName,
         },
         {
             text: "Thao tác",
             dataField: 'action',
-            formatter: (record, data) => renderAction(data),
+            formatter: (data, record) => renderAction(record),
             headerStyle: { width: '15%' }
         }
     ];
 
     useEffect(() => {
-        dispatch(getProductsType())
+        dispatch(getProducts())
     }, []);
 
     useEffect(() => {
+        if (isEmpty(items)) return;
         const firstItem = items?.[0];
         setProductTypeSelected({ value: firstItem?.id, label: firstItem?.productName });
     }, [items]);
 
     useEffect(() => {
         if (!isSuccess) return
-        dispatch(getProductsType())
+        dispatch(getProducts())
         setIsOpenDialog(false)
         setIsOpenDialogConfirm(false)
         setIsEditingProduct(false)
@@ -76,42 +80,49 @@ const Products = () => {
     }
 
     const handleOpenDialog = () => {
-        // setProductSelected({})
+        setProductSelected({})
         setIsOpenDialog(true)
     }
 
     const handleSubmit = (event, errors, values) => {
         if (!errors.length) {
+            const body = {
+                ...values,
+                productTypeId: productTypeSelected?.value
+            }
             if (isEditingProduct) {
                 const payload = {
                     id,
-                    body: values
+                    body
                 }
-                dispatch(updateProductType(payload))
+                dispatch(updateProduct(payload));
             } else {
-                dispatch(createProductType(values))
+                dispatch(createProduct(body));
             }
         }
     };
 
     const handleCancel = () => {
+        const firstItem = items?.[0];
+        setProductTypeSelected({ value: firstItem?.id, label: firstItem?.productName });
         setIsOpenDialog(false)
         setIsEditingProduct(false)
     }
 
     const handleDeleteProduct = (record) => {
-        // setProductSelected(record)
+        setProductSelected(record)
         setIsOpenDialogConfirm(true)
     }
 
     const handleEditProduct = (record) => {
-        // setProductSelected(record)
+        setProductSelected(record)
+        setProductTypeSelected({ value: record?.productType?._id, label: record?.productType?.productName });
         setIsEditingProduct(true)
         setIsOpenDialog(true)
     }
 
     const onDelete = () => {
-        dispatch(deleteProductType(id))
+        dispatch(deleteProduct(id))
     }
 
     const handleProductTypeChange = (options) => {
@@ -150,7 +161,7 @@ const Products = () => {
                             <ToolkitProvider
                                 bootstrap4
                                 keyField="id"
-                                data={items}
+                                data={products}
                                 columns={columns}
                                 search
                                 exportCSV={{ onlyExportFiltered: true, exportAll: false }}>
@@ -168,7 +179,7 @@ const Products = () => {
                                         <BootstrapTable
                                             {...props.baseProps}
                                             bordered={false}
-                                            pagination={paginationFactory({ sizePerPage: 25, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '25', value: 25 }, { text: '50', value: 50, }, { text: `${items.length} Tất cả`, value: items.length }] })}
+                                            pagination={paginationFactory({ sizePerPage: 25, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '25', value: 25 }, { text: '50', value: 50, }, { text: `${products.length} Tất cả`, value: products.length }] })}
                                             wrapperClasses="table-responsive"
                                         />
                                     </React.Fragment>

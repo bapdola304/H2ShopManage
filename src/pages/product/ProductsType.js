@@ -20,7 +20,7 @@ const defaultSorted = [
 const ProductsType = () => {
 
     const dispatch = useDispatch();
-    const { items = [], isSuccess } = useSelector(state => state.product);
+    const { items = [], isSuccess } = useSelector(state => state.productType);
 
     const { SearchBar } = Search;
     const [isOpenDialog, setIsOpenDialog] = useState(false);

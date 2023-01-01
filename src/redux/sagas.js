@@ -4,7 +4,8 @@ import authSaga from './auth/saga';
 import layoutSaga from './layout/saga';
 import appMenuSaga from './appMenu/saga';
 import loadingSaga from './loading/saga';
-import productSaga from './productType/saga';
+import productTypeSaga from './productType/saga';
+import productSaga from './product/saga';
 import warehouseSaga from './warehouse/saga';
 import myWarehouseSaga from './myWarehouse/saga';
 import productSoldSaga from './productSold/saga';
@@ -24,6 +25,7 @@ export default function* rootSaga() {
         productSoldSaga,
         costTypeSaga,
         costIncurredSaga,
-        revenueSaga
+        revenueSaga,
+        productTypeSaga
     ]);
 }

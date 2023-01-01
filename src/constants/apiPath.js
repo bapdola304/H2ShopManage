@@ -14,6 +14,14 @@ const API = {
         GET_ID: {
             path: 'api/productType/:id'
         }
+    },
+    PRODUCT: {
+        GET: {
+            path: 'api/product'
+        },
+        GET_ID: {
+            path: 'api/product/:id'
+        }
     }
 };
 

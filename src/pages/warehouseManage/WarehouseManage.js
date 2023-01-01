@@ -49,7 +49,7 @@ const WarehouseManage = () => {
             dataField: 'contactPhone',
             text: 'SĐT liên hệ',
             sort: false,
-            formatter: (data) => `0${data}`,
+            formatter: (data) => data && `0${data}`,
         },
         {
             text: "Thao tác",

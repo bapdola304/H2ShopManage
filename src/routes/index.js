@@ -209,7 +209,7 @@ const insuranceAppRoutes = {
     path: '/apps/insurance',
     name: 'Bảo hành',
     icon: FeatherIcon.Layers,
-    component: AddProductSold,
+    component: CostsIncurred,
     route: PrivateRoute,
     roles: ['Admin'],
 };
