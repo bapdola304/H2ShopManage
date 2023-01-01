@@ -27,16 +27,7 @@ const Warehouse = () => {
     useEffect(() => {
         dispatch(getProducts());
         dispatch(getMyWarehouseList());
-        dispatch(getWarehouseList());
     }, []);
-
-    useEffect(() => {
-        if (firstLoad) {
-            firstLoad = false;
-            dispatch(getMyWarehouseList());
-
-        }
-    }, [items]);
 
     useEffect(() => {
         if (!isSuccess) return
