@@ -10,8 +10,9 @@ const Login = React.lazy(() => import('../pages/auth/Login'));
 // dashboard
 const Dashboard = React.lazy(() => import('../pages/dashboard'));
 
-// Items
-const Items = React.lazy(() => import('../pages/product/Products'));
+// Product Type
+const ProductsType = React.lazy(() => import('../pages/product/ProductsType'));
+const Products = React.lazy(() => import('../pages/product/Products'));
 
 // Costs
 const CostsIncurred = React.lazy(() => import('../pages/costsIncurred/CostsIncurred'));
@@ -77,10 +78,19 @@ const warehouseManageAppRoutes = {
 };
 
 const typeOfItemAppRoutes = {
-    path: '/apps/items',
+    path: '/apps/type/products',
     name: 'Các loại mặt hàng',
     icon: FeatherIcon.Package,
-    component: Items,
+    component: ProductsType,
+    route: PrivateRoute,
+    roles: ['Admin'],
+};
+
+const productsAppRoutes = {
+    path: '/apps/products/list',
+    name: 'Danh sách mặt hàng',
+    icon: FeatherIcon.ShoppingBag,
+    component: Products,
     route: PrivateRoute,
     roles: ['Admin'],
 };
@@ -171,7 +181,7 @@ const editProductOfWarehouseAppRoutes = {
 const productsSoldAppRoutes = {
     path: '/apps/productsSold',
     name: 'Bán hàng',
-    icon: FeatherIcon.ShoppingBag,
+    icon: FeatherIcon.ShoppingCart,
     component: ProductsSold,
     route: PrivateRoute,
     roles: ['Admin'],
@@ -254,7 +264,8 @@ const allRoutes = [
     editProductOfWarehouseAppRoutes,
     editProductSoldAppRoutes,
     addProductToWarehouseAppRoutes,
-    editProductToWarehouseAppRoutes
+    editProductToWarehouseAppRoutes,
+    productsAppRoutes
 ];
 
 const authProtectedRoutes = [
@@ -267,6 +278,7 @@ const authProtectedRoutes = [
     insuranceAppRoutes,
     // types
     warehouseManageAppRoutes,
+    productsAppRoutes,
     typeOfItemAppRoutes,
     costsTypeAppRoutes,
 ];

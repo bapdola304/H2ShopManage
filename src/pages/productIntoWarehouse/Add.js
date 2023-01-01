@@ -7,7 +7,7 @@ import Flatpickr from 'react-flatpickr'
 import { withRouter } from "react-router-dom";
 import PageTitle from '../../components/PageTitle';
 import { dateFormat, formatSelectInput, setFieldValue, VNDCurrencyFormatting } from '../../helpers/format';
-import { getProducts } from '../../redux/product/actions';
+import { getProductsType } from '../../redux/productType/actions';
 import { getWarehouseList } from '../../redux/warehouse/actions';
 import { createProductForWarehouse, getMyWarehouseDetail, resetActionSuccess, resetMyWarehouseDetail, updateProductWarehouse } from '../../redux/myWarehouse/actions';
 import { DATE_FORMAT } from '../../constants/common';
@@ -39,7 +39,7 @@ const AddGoods = (props) => {
         if (id) {
             dispatch(getMyWarehouseDetail(id))
         }
-        dispatch(getProducts())
+        dispatch(getProductsType())
         dispatch(getWarehouseList())
         return function cleanup() {
             dispatch(resetMyWarehouseDetail());

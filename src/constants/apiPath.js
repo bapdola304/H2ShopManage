@@ -7,6 +7,14 @@ const API = {
             path: 'api/myWarehouse/:id'
         }
     },
+    PRODUCT_TYPE: {
+        GET: {
+            path: 'api/productType'
+        },
+        GET_ID: {
+            path: 'api/productType/:id'
+        }
+    }
 };
 
 export {

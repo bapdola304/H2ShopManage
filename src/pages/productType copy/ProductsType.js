@@ -8,11 +8,16 @@ import Dialog from '../../components/Dialog';
 import DialogConfirm from '../../components/DialogConfirm';
 import { AvForm, AvField } from "availity-reactstrap-validation";
 import PageTitle from '../../components/PageTitle';
-import { createProductType, deleteProductType, getProductsType, resetActionSuccess, updateProductType } from '../../redux/productType/actions';
-import Select from 'react-select';
-import { formatSelectInput } from '../../helpers/format';
+import { createProduct, deleteProduct, getProducts, resetActionSuccess, updateProduct } from '../../redux/productType/actions';
 
-const Products = () => {
+const defaultSorted = [
+    {
+        dataField: 'id',
+        order: 'asc',
+    },
+];
+
+const ProductsType = () => {
 
     const dispatch = useDispatch();
     const { items = [], isSuccess } = useSelector(state => state.product);
@@ -20,9 +25,8 @@ const Products = () => {
     const { SearchBar } = Search;
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
-    const [productTypeSelected, setProductTypeSelected] = useState({});
+    const [productSelected, setProductSelected] = useState({});
     const [isEditingProduct, setIsEditingProduct] = useState(false);
-    const productSelected = {}
     const { id, productName, warrantyPeriod } = productSelected;
 
     const columns = [
@@ -32,8 +36,8 @@ const Products = () => {
             sort: true,
         },
         {
-            dataField: 'productType',
-            text: 'Loại mặt hàng',
+            dataField: 'warrantyPeriod',
+            text: 'Thời gian bảo hành(tháng)',
             sort: false,
         },
         {
@@ -45,17 +49,12 @@ const Products = () => {
     ];
 
     useEffect(() => {
-        dispatch(getProductsType())
+        dispatch(getProducts())
     }, []);
 
     useEffect(() => {
-        const firstItem = items?.[0];
-        setProductTypeSelected({ value: firstItem?.id, label: firstItem?.productName });
-    }, [items]);
-
-    useEffect(() => {
         if (!isSuccess) return
-        dispatch(getProductsType())
+        dispatch(getProducts())
         setIsOpenDialog(false)
         setIsOpenDialogConfirm(false)
         setIsEditingProduct(false)
@@ -76,7 +75,7 @@ const Products = () => {
     }
 
     const handleOpenDialog = () => {
-        // setProductSelected({})
+        setProductSelected({})
         setIsOpenDialog(true)
     }
 
@@ -87,9 +86,9 @@ const Products = () => {
                     id,
                     body: values
                 }
-                dispatch(updateProductType(payload))
+                dispatch(updateProduct(payload))
             } else {
-                dispatch(createProductType(values))
+                dispatch(createProduct(values))
             }
         }
     };
@@ -100,22 +99,18 @@ const Products = () => {
     }
 
     const handleDeleteProduct = (record) => {
-        // setProductSelected(record)
+        setProductSelected(record)
         setIsOpenDialogConfirm(true)
     }
 
     const handleEditProduct = (record) => {
-        // setProductSelected(record)
+        setProductSelected(record)
         setIsEditingProduct(true)
         setIsOpenDialog(true)
     }
 
     const onDelete = () => {
-        dispatch(deleteProductType(id))
-    }
-
-    const handleProductTypeChange = (options) => {
-        setProductTypeSelected(options);
+        dispatch(deleteProduct(id))
     }
 
 
@@ -138,7 +133,7 @@ const Products = () => {
             <Row className="page-title">
                 <Col md={12}>
                     <PageTitle
-                        title={'Danh sách các mặt hàng'}
+                        title={'Danh sách các loại mặt hàng'}
                     />
                 </Col>
             </Row>
@@ -168,6 +163,7 @@ const Products = () => {
                                         <BootstrapTable
                                             {...props.baseProps}
                                             bordered={false}
+                                            defaultSorted={defaultSorted}
                                             pagination={paginationFactory({ sizePerPage: 25, sizePerPageRenderer: sizePerPageRenderer, sizePerPageList: [{ text: '25', value: 25 }, { text: '50', value: 50, }, { text: `${items.length} Tất cả`, value: items.length }] })}
                                             wrapperClasses="table-responsive"
                                         />
@@ -190,15 +186,7 @@ const Products = () => {
                             <AvField name="productName" label="Tên mặt hàng" type="text" required value={!isEditingProduct ? "" : productName} />
                         </Col>
                         <Col md={12}>
-                            <p className="mb-1 font-weight-semibold">Loại mặt hàng</p>
-                            <Select
-                                className="react-select"
-                                classNamePrefix="react-select"
-                                placeholder="Chọn hàng"
-                                onChange={handleProductTypeChange}
-                                value={productTypeSelected}
-                                options={formatSelectInput(items, "productName")}
-                            />
+                            <AvField name="warrantyPeriod" label="Thời gian bảo hành" type="number" value={!isEditingProduct ? "" : warrantyPeriod} />
                         </Col>
                     </Row>
                     <div style={{ float: "right", marginTop: 20 }}>
@@ -209,7 +197,7 @@ const Products = () => {
                             Hủy bỏ
                         </Button>
                         <Button color="primary" type="submit">
-                            {isEditingProduct ? "Cập nhật" : "Thêm"}
+                            { isEditingProduct ? "Cập nhật" : "Thêm" }
                         </Button>
                     </div>
                 </AvForm>
@@ -226,4 +214,4 @@ const Products = () => {
     );
 };
 
-export default Products;
+export default ProductsType;

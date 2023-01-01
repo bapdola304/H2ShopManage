@@ -12,7 +12,7 @@ import { dateFormat, formatSelectInput, VNDCurrencyFormatting } from '../../help
 import { DATE_FORMAT } from '../../constants/common';
 import DialogConfirm from '../../components/DialogConfirm';
 import { deleteProductWarehouse } from '../../redux/myWarehouse/actions';
-import { getProducts } from '../../redux/actions';
+import { getProductsType } from '../../redux/actions';
 import { Vietnamese } from 'flatpickr/dist/l10n/vn.js';
 import Flatpickr from 'react-flatpickr'
 import { getWarehouseList } from '../../redux/warehouse/actions';
@@ -39,7 +39,7 @@ const ProductsInWarehouse = () => {
     const { SearchBar } = Search;
 
     useEffect(() => {
-        dispatch(getProducts());
+        dispatch(getProductsType());
         dispatch(getMyWarehouseList({ isImportProduct: true }));
         dispatch(getWarehouseList());
     }, []);

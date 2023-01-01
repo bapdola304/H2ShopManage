@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 // import cookie from "react-cookies";
 
 export async function fetchJSON(endpoint, method = "GET", body) {
-const API_URL = "https://h2shop.onrender.com";
+const API_URL = "http://localhost:8080";
   try {
     // const loginData = cookie.load("ADMIN_DATA") || {};
     // const token = loginData.Token;

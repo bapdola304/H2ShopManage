@@ -8,7 +8,7 @@ import Select from 'react-select'
 import PageTitle from '../../components/PageTitle';
 import { getMyWarehouseList, resetActionSuccess } from '../../redux/myWarehouse/actions';
 import { formatSelectInput, VNDCurrencyFormatting } from '../../helpers/format';
-import { getProducts } from '../../redux/actions';
+import { getProductsType } from '../../redux/actions';
 import { getWarehouseList } from '../../redux/warehouse/actions';
 
 var firstLoad = true;
@@ -25,7 +25,7 @@ const Warehouse = () => {
     const { SearchBar } = Search;
 
     useEffect(() => {
-        dispatch(getProducts());
+        dispatch(getProductsType());
         dispatch(getMyWarehouseList());
     }, []);
 
