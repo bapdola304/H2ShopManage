@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, CardBody, Button } from 'reactstrap';
-import { AvForm, AvField } from 'availity-reactstrap-validation';
+import { AvForm, AvField, AvRadioGroup, AvRadio } from 'availity-reactstrap-validation';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import Flatpickr from 'react-flatpickr'
@@ -10,7 +10,7 @@ import { goBack } from '../../helpers/navigation';
 import { getMyWarehouseList } from '../../redux/myWarehouse/actions';
 import { createProductSold, getProductSoldDetail, resetActionSuccess, resetProductSoldDetail, updateProductSold } from '../../redux/productSold/actions';
 import { DATE_FORMAT } from '../../constants/common';
-import { Vietnamese } from  'flatpickr/dist/l10n/vn.js';
+import { Vietnamese } from 'flatpickr/dist/l10n/vn.js';
 
 const AddProductSold = (props) => {
 
@@ -23,11 +23,12 @@ const AddProductSold = (props) => {
     const [totalValue, setTotalValue] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [sellPrice, setSellPrice] = useState(0);
+    const [maxQuantity, setMaxQuantity] = useState(99);
 
     let form = null;
     const { match } = props;
     const { params: { id } = {} } = match || {};
-    const { customer, customerPhone, sellPrice: productSellPrice, quantity: productQuantity, total, productWarehouseId = {}, inputDate } = productSold;
+    const { customer, customerPhone, sellPrice: productSellPrice, quantity: productQuantity, total, productWarehouseId = {}, inputDate, colorId } = productSold;
 
     useEffect(() => {
         if (id) {
@@ -43,13 +44,13 @@ const AddProductSold = (props) => {
     useEffect(() => {
         if (id) return
         const firstItem = myWarehouseList?.[0];
-        setProductWarehouseValue({ value: firstItem?.id, label: `${firstItem?.warehouseProductName}${firstItem?.color && ` - ${firstItem?.color}`}` });
+        setProductWarehouseValue({ value: firstItem?.id, label: firstItem?.warehouseProductName });
         handleSetSellPriceByProductSelected(firstItem?.id);
     }, [myWarehouseList]);
 
     useEffect(() => {
         if (!id) return
-        setProductWarehouseValue({ value: productWarehouseId?._id, label: `${productWarehouseId?.warehouseProductName}${productWarehouseId?.color && ` - ${productWarehouseId?.color}`}` });
+        setProductWarehouseValue({ value: productWarehouseId?._id, label: productWarehouseId?.warehouseProductName });
         setTotalValue(total);
         setSellPrice(productSellPrice);
         setQuantity(productQuantity);
@@ -86,17 +87,14 @@ const AddProductSold = (props) => {
         setTotalValue(quantity * sellPriceByProductSelected);
     }
 
-    const getMaxQuantity = () => {
-        return myWarehouseList.find(item => item?.id == productWarehouseValue?.value)?.remainingQuantity || 1;
-    }
-
     const handleSubmit = (event, errors, values) => {
         if (!errors.length) {
             const body = {
                 ...values,
-                total: totalValue,
                 productWarehouseId: productWarehouseValue?.value,
-                inputDate: dateValue
+                inputDate: dateValue,
+                total: totalValue,
+                colorId: values.colorId || colorAndQuantityDataByProduct()?.colorAndQuantityData?.[0]?._id
             }
             if (!id) {
                 dispatch(createProductSold(body));
@@ -109,6 +107,24 @@ const AddProductSold = (props) => {
             }
         }
     };
+
+    const renderColors = () => {
+        const data = colorAndQuantityDataByProduct();
+        return data?.colorAndQuantityData?.map(item => {
+            return (
+                <AvRadio customInput label={item?.color} value={item?._id} disabled={item?.quantity <= 0} />
+            )
+        })
+    }
+
+    const colorAndQuantityDataByProduct = () => {
+        return myWarehouseList.find(item => item?.id === productWarehouseValue?.value);
+    }
+
+    const handleChangeColor = (e, value) => {
+        const maxQuantity = colorAndQuantityDataByProduct()?.colorAndQuantityData.find(item => item?._id === value);
+        setMaxQuantity(maxQuantity?.quantity);
+    }
 
     return (
         <React.Fragment>
@@ -143,25 +159,46 @@ const AddProductSold = (props) => {
                                                     options={formatSelectInput(myWarehouseList, "warehouseProductName", true)}
                                                 />
                                             </Col>
+                                            {colorAndQuantityDataByProduct()?.colorAndQuantityData.length > 1 && (
+                                                <Col md={12}>
+                                                    <AvRadioGroup
+                                                        inline
+                                                        name="colorId"
+                                                        label="Màu sắc"
+                                                        className="color-select"
+                                                        value={colorId}
+                                                        onChange={handleChangeColor}
+                                                        validate={{
+                                                            required: { value: true, errorMessage: "Vui lòng chọn màu" },
+                                                        }}>
+                                                        {renderColors()}
+                                                    </AvRadioGroup>
+                                                </Col>
+                                            )}
                                             <Col md={12}>
-                                                <AvField
-                                                    name="customer"
-                                                    label="Tên người mua"
-                                                    type="text"
-                                                    value={customer}
-                                                />
-                                            </Col>
-                                            <Col md={12}>
-                                                <AvField
-                                                    name="customerPhone"
-                                                    label="Số điện thoại"
-                                                    type="number"
-                                                    value={customerPhone}
-                                                    validate={{
-                                                        minLength: {value: 10, errorMessage: 'SĐT phải là 10 số'},
-                                                        maxLength: {value: 10, errorMessage: 'SĐT phải là 10 số'}
-                                                    }}
-                                                />
+                                                <Row>
+                                                    <Col md={6}>
+                                                        <AvField
+                                                            name="customer"
+                                                            label="Tên người mua"
+                                                            type="text"
+                                                            value={customer}
+                                                        />
+                                                    </Col>
+                                                    <Col md={6}>
+                                                        <AvField
+                                                            name="customerPhone"
+                                                            label="Số điện thoại"
+                                                            type="number"
+                                                            value={customerPhone}
+                                                            validate={{
+                                                                minLength: { value: 10, errorMessage: 'SĐT phải là 10 số' },
+                                                                maxLength: { value: 10, errorMessage: 'SĐT phải là 10 số' }
+                                                            }}
+                                                        />
+                                                    </Col>
+                                                </Row>
+
                                             </Col>
                                         </Row>
                                     </Col>
@@ -181,7 +218,7 @@ const AddProductSold = (props) => {
                                                                     locale: Vietnamese
                                                                 }
                                                             }
-                                                         />
+                                                        />
                                                     </div>
                                                 </div>
                                             </Col>
@@ -208,8 +245,8 @@ const AddProductSold = (props) => {
                                                             value={quantity}
                                                             validate={{
                                                                 required: { value: true, errorMessage: "Vui lòng nhập số lượng" },
-                                                                min: {value: 1, errorMessage: 'Số lượng phải lớn hơn hoặc bằng 1'},
-                                                                max: {value: getMaxQuantity(), errorMessage: `Số lượng phải nhỏ hơn hoặc bằng ${getMaxQuantity()}`}
+                                                                min: { value: 1, errorMessage: 'Số lượng phải lớn hơn hoặc bằng 1' },
+                                                                max: { value: maxQuantity, errorMessage: `Số lượng phải nhỏ hơn hoặc bằng ${maxQuantity}` }
                                                             }}
                                                         />
                                                     </Col>

@@ -28,6 +28,10 @@ const AddProductSold = React.lazy(() => import('../pages/productSold/AddProductS
 // Warehouse Manage
 const WarehouseManage = React.lazy(() => import('../pages/warehouseManage/WarehouseManage'));
 
+// ProductsInWarehouse
+const List = React.lazy(() => import('../pages/productIntoWarehouse/List'));
+const Add = React.lazy(() => import('../pages/productIntoWarehouse/Add'));
+
 
 
 // handle auth and authorization
@@ -110,9 +114,36 @@ const costsIncurredAppRoutes = {
     roles: ['Admin'],
 };
 
+const productsInWarehouseAppRoutes = {
+    path: '/apps/productsInWarehouse',
+    name: 'Nhập hàng',
+    icon: FeatherIcon.LogIn,
+    component: List,
+    route: PrivateRoute,
+    roles: ['Admin'],
+};
+
+const addProductToWarehouseAppRoutes = {
+    path: '/apps/productsInWarehouseAdd',
+    name: 'Nhập hàng',
+    icon: FeatherIcon.LogIn,
+    component: Add,
+    route: PrivateRoute,
+    roles: ['Admin'],
+};
+
+const editProductToWarehouseAppRoutes = {
+    path: '/apps/productsInWarehouseEdit/:id',
+    name: 'Nhập hàng',
+    icon: FeatherIcon.LogIn,
+    component: Add,
+    route: PrivateRoute,
+    roles: ['Admin'],
+};
+
 const warehouseAppRoutes = {
     path: '/apps/warehouse',
-    name: 'Kho hàng của tôi',
+    name: 'Kho hàng',
     icon: FeatherIcon.Truck,
     component: Warehouse,
     route: PrivateRoute,
@@ -139,7 +170,7 @@ const editProductOfWarehouseAppRoutes = {
 
 const productsSoldAppRoutes = {
     path: '/apps/productsSold',
-    name: 'Đã bán',
+    name: 'Bán hàng',
     icon: FeatherIcon.ShoppingBag,
     component: ProductsSold,
     route: PrivateRoute,
@@ -208,6 +239,7 @@ const allRoutes = [
     rootRoute,
     // management
     dashboardRoutes,
+    productsInWarehouseAppRoutes,
     warehouseAppRoutes,
     productsSoldAppRoutes,
     costsIncurredAppRoutes,
@@ -220,12 +252,15 @@ const allRoutes = [
     addGoodsAppRoutes,
     addProductSoldAppRoutes,
     editProductOfWarehouseAppRoutes,
-    editProductSoldAppRoutes
+    editProductSoldAppRoutes,
+    addProductToWarehouseAppRoutes,
+    editProductToWarehouseAppRoutes
 ];
 
 const authProtectedRoutes = [
     // management
     dashboardRoutes,
+    productsInWarehouseAppRoutes,
     warehouseAppRoutes,
     productsSoldAppRoutes,
     costsIncurredAppRoutes,

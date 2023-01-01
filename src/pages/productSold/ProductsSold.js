@@ -47,7 +47,7 @@ const ProductsSold = () => {
             dataField: 'color',
             text: 'Màu sắc',
             sort: false,
-            formatter: (data, record) => record?.productWarehouseId?.color,
+            formatter: (data, record) => handleRenderColor(record),
         },
         {
             dataField: 'sellPrice',
@@ -106,6 +106,11 @@ const ProductsSold = () => {
                 </Button>
             </div>
         )
+    }
+
+    const handleRenderColor = (record) => {
+        const colorSold = record?.productWarehouseId?.colorAndQuantityData?.find(item => item?._id.toString() === record?.colorId);
+        return colorSold?.color;
     }
 
     const sizePerPageRenderer = ({ options, currSizePerPage, onSizePerPageChange }) => (

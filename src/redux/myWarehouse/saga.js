@@ -23,13 +23,15 @@ function* getMyWarehouseList({ payload }) {
 }
 
 function* getMyWarehouseDetail({ payload }) {
-    const response = yield call(fetchJSON, `api/myWarehouse/${payload}`);
+    const path = handleGetApiPath(API.MY_WAREHOUSE.GET_ID, { id: payload });
+    const response = yield call(fetchJSON, path);
     const { data = {} } = response;
     yield put(getMyWarehouseDetailSuccess(data));
 }
 
 function* createProductForWarehouse({ payload }) {
-    const response = yield call(fetchJSON, 'api/myWarehouse', POST, payload);
+    const path = handleGetApiPath(API.MY_WAREHOUSE.GET);
+    const response = yield call(fetchJSON, path, POST, payload);
     const { data = {} } = response;
     if (!isEmpty(data)) {
         yield put(createProductForWarehouseSuccess(data));
@@ -49,7 +51,8 @@ function* deleteWarehouse({ payload }) {
 
 function* updateProductWarehouse({ payload }) {
     const { id, body } = payload;
-    const response = yield call(fetchJSON, `api/myWarehouse/${id}`, PUT, body);
+    const path = handleGetApiPath(API.MY_WAREHOUSE.GET_ID, { id });
+    const response = yield call(fetchJSON, path, PUT, body);
     const { data = {} } = response;
     if (!isEmpty(data)) {
         yield put(updateProductWarehouseSuccess(data));

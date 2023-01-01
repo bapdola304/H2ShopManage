@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, CardBody, Input, Button } from 'reactstrap';
+import { Row, Col, Card, CardBody, Input } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { useDispatch, useSelector } from 'react-redux';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import { Link } from 'react-router-dom';
 import Select from 'react-select'
 import PageTitle from '../../components/PageTitle';
 import { getMyWarehouseList, resetActionSuccess } from '../../redux/myWarehouse/actions';
-import { dateFormat, formatSelectInput, VNDCurrencyFormatting } from '../../helpers/format';
-import { DATE_FORMAT } from '../../constants/common';
-import DialogConfirm from '../../components/DialogConfirm';
-import { deleteProductWarehouse } from '../../redux/myWarehouse/actions';
+import { formatSelectInput, VNDCurrencyFormatting } from '../../helpers/format';
 import { getProducts } from '../../redux/actions';
-import { Vietnamese } from 'flatpickr/dist/l10n/vn.js';
-import Flatpickr from 'react-flatpickr'
 import { getWarehouseList } from '../../redux/warehouse/actions';
-import * as FeatherIcon from 'react-feather';
 
 var firstLoad = true;
 
@@ -24,17 +17,10 @@ const Warehouse = () => {
 
     const { myWarehouseList = [], isSuccess } = useSelector(state => state.myWarehouse);
     const { items = [] } = useSelector(state => state.product);
-    const { warehouseList = [] } = useSelector(state => state.warehouse);
 
     const dispatch = useDispatch();
     const productTypeAll = { value: null, label: 'Loại mặt hàng (Tất cả)' }
-    const warehouseAll = { value: null, label: 'Loại kho (Tất cả)' }
-    const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
-    const [productSelected, setProductSelected] = useState({});
     const [productItemSelected, setProductItemSelected] = useState(productTypeAll);
-    const [warehouseSelected, setWarehouseSelected] = useState(warehouseAll);
-    const [dateValue, setDateValue] = useState(null);
-
 
     const { SearchBar } = Search;
 
@@ -55,7 +41,6 @@ const Warehouse = () => {
     useEffect(() => {
         if (!isSuccess) return
         dispatch(getMyWarehouseList())
-        setIsOpenDialogConfirm(false)
         dispatch(resetActionSuccess())
     }, [isSuccess]);
 
@@ -68,66 +53,27 @@ const Warehouse = () => {
 
     const columns = [
         {
-            dataField: 'inputDate',
-            text: 'Thời gian',
-            sort: true,
-            formatter: (record) => dateFormat(record, DATE_FORMAT.DD_MM_YYYY),
-        },
-        {
-            dataField: 'warehouseId',
-            text: 'Nơi nhập hàng',
-            sort: false,
-            formatter: (record) => record?.warehouseName,
-        },
-        {
-            dataField: 'productId',
-            text: 'Loại mặt hàng',
-            sort: true,
-            formatter: (record) => record?.productName,
-        },
-        {
             dataField: 'warehouseProductName',
             text: 'Tên mặt hàng',
-            sort: true,
+            sort: false,
         },
         {
             dataField: 'color',
             text: 'Màu sắc',
             sort: false,
-        },
-        {
-            dataField: 'price',
-            text: 'Đơn giá',
-            sort: true,
-            formatter: (record) => VNDCurrencyFormatting(record),
-        },
-        {
-            dataField: 'quantity',
-            text: 'SL nhập',
-            sort: false,
-        },
-        {
-            dataField: 'total',
-            text: 'Thành tiền',
-            sort: false,
-            formatter: (record) => VNDCurrencyFormatting(record),
+            formatter: (data, record) => renderColorAndQuantity(record),
         },
         {
             dataField: 'remainingQuantity',
-            text: 'SL còn lại',
-            sort: false,
+            text: 'Số lượng',
+            sort: true,
+            formatter: (data, record) => renderTotalQuantity(record),
         },
         {
             dataField: 'sellPrice',
             text: 'Giá bán ra',
-            sort: false,
+            sort: true,
             formatter: (record) => VNDCurrencyFormatting(record),
-        },
-        {
-            text: "Thao tác",
-            dataField: 'action',
-            formatter: (record, data) => renderAction(data),
-            // headerStyle: { width: '15%' }
         }
     ];
 
@@ -145,67 +91,19 @@ const Warehouse = () => {
         </React.Fragment>
     );
 
-    const renderAction = (record) => {
-        return (
-            <div className="wrap-action">
-                <Link to={`/apps/warehouseEdit/${record?.id}`}>
-                    <Button color="secondary" style={{ marginRight: 10 }}>
-                        <i className="uil-edit"></i>
-                    </Button>
-                </Link>
-                <Button className='action-button-mt5' color="danger" onClick={() => handleDeleteProduct(record)}>
-                    <i className="uil-trash"></i>
-                </Button>
-            </div>
-        )
+    const renderColorAndQuantity = (record) => {
+        if (record?.colorAndQuantityData.length < 2) return "";
+        return record?.colorAndQuantityData.map(item => `${item.color}(${item.quantity}), `)
     }
 
-    const onDelete = () => {
-        dispatch(deleteProductWarehouse(productSelected?.id));
-    }
-
-    const handleDeleteProduct = (record) => {
-        setProductSelected(record);
-        setIsOpenDialogConfirm(true);
+    const renderTotalQuantity = (record) => {
+        return record?.colorAndQuantityData.map(item => item?.quantity).reduce((a, b) => a + b, 0);
     }
 
     const handleProductTypeChange = (option) => {
         setProductItemSelected(option);
         const params = {
             productTypeId: option?.value,
-            warehouseId: warehouseSelected?.value,
-            inputDate: dateFormat(dateValue, DATE_FORMAT.YYYY_MM_DD)
-        }
-        dispatch(getMyWarehouseList(params));
-    }
-
-    const handleWarehouseChange = (option) => {
-        setWarehouseSelected(option);
-        const params = {
-            productTypeId: productItemSelected?.value,
-            warehouseId: option?.value,
-            inputDate: dateFormat(dateValue, DATE_FORMAT.YYYY_MM_DD)
-        }
-        dispatch(getMyWarehouseList(params));
-        // dispatch(getMyWarehouseList(option?.value));
-    }
-
-    const handleDateChange = (date) => {
-        setDateValue(date);
-        const params = {
-            productTypeId: productItemSelected?.value,
-            warehouseId: warehouseSelected?.value,
-            inputDate: dateFormat(date, DATE_FORMAT.YYYY_MM_DD)
-        }
-        dispatch(getMyWarehouseList(params));
-    }
-
-    const onClearDate = () => {
-        setDateValue(null);
-        const params = {
-            productTypeId: productItemSelected?.value,
-            warehouseId: warehouseSelected?.value,
-            inputDate: null
         }
         dispatch(getMyWarehouseList(params));
     }
@@ -215,10 +113,6 @@ const Warehouse = () => {
             <Row className="page-title">
                 <Col md={12}>
                     <PageTitle
-                        breadCrumbItems={[
-                            { label: 'Tables', path: '/tables/advanced' },
-                            { label: 'Advanced Tables', path: '/tables/advanced', active: true },
-                        ]}
                         title={'Kho hàng'}
                     />
                 </Col>
@@ -241,10 +135,10 @@ const Warehouse = () => {
                                         <Row>
                                             <Col md={9}>
                                                 <Row>
-                                                    <Col className='warehouse-search' md={3}>
+                                                    <Col className='warehouse-search' md={4}>
                                                         <SearchBar {...props.searchProps} placeholder={"Tìm kiếm hàng"} />
                                                     </Col>
-                                                    <Col md={3}>
+                                                    <Col md={4}>
                                                         <Select
                                                             className="react-select"
                                                             classNamePrefix="react-select"
@@ -253,43 +147,9 @@ const Warehouse = () => {
                                                             options={[productTypeAll, ...formatSelectInput(items, "productName")]}
                                                         />
                                                     </Col>
-                                                    <Col md={3}>
-                                                        <Select
-                                                            className="react-select warehouse-select"
-                                                            classNamePrefix="react-select"
-                                                            value={warehouseSelected}
-                                                            onChange={handleWarehouseChange}
-                                                            options={[warehouseAll, ...formatSelectInput(warehouseList, "warehouseName")]}
-                                                        />
-                                                    </Col>
-                                                    <Col md={3}>
-                                                        <div className='date-wrapper'>
-                                                            <Flatpickr
-                                                                value={dateValue}
-                                                                onChange={handleDateChange}
-                                                                className="form-control"
-                                                                placeholder='Chọn ngày'
-                                                                options={
-                                                                    {
-                                                                        dateFormat: DATE_FORMAT.d_m_Y,
-                                                                        locale: Vietnamese,
-                                                                    }
-                                                                }
-                                                            />
-                                                            <a onClick={onClearDate} class="clear-button" title="clear" data-clear>
-                                                                <FeatherIcon.X />
-                                                            </a>
-                                                        </div>
-                                                    </Col>
                                                 </Row>
                                             </Col>
-                                            <Col md={3} className="text-right add-warehouse-btn">
-                                                <Link to="/apps/warehouseAdd">
-                                                    <Button color="primary" id="btn-new-event"><i className="uil-plus mr-1"></i>Thêm hàng</Button>
-                                                </Link>
-                                            </Col>
                                         </Row>
-
                                         <BootstrapTable
                                             {...props.baseProps}
                                             bordered={false}
@@ -304,14 +164,6 @@ const Warehouse = () => {
                     </Card>
                 </Col>
             </Row>
-            <DialogConfirm
-                isOpen={isOpenDialogConfirm}
-                width={400}
-                onCancel={() => setIsOpenDialogConfirm(false)}
-                title={"Xác nhận xóa"}
-                description={`Bạn có chắc muốn xóa: "${productSelected?.warehouseProductName}"`}
-                onOk={onDelete}
-            />
         </React.Fragment>
     );
 };

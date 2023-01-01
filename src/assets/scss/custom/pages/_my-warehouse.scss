@@ -17,6 +17,29 @@
     }
 }
 
+.clear-row-button {
+    align-items: center;
+    display: flex;
+    cursor: pointer;
+    .clear-button {
+        margin-top: 10px;
+    }
+}
+
+.color-select {
+    legend {
+        font-size: 0.875rem;
+        color: #6c757d;
+        font-weight: 600;
+    }
+    .form-control {
+        margin-bottom: 18px;
+        input, label {
+            cursor: pointer;
+        }
+    }
+}
+
 @media (max-width: 768px) {
     .warehouse-select {
         margin-top: 0.5rem;
