@@ -25,6 +25,15 @@ export function formatSelectInput(data = [], labelField, hasColor = false) {
     })
 }
 
+export function formatProductData(data = []) {
+    return data.map(item => {
+        return {
+            ...item,
+            productName: item?.product?.productName
+        }
+    })
+}
+
 export function setFieldValue(value) {
     return !isEmpty(value) ? value : "";
 }

@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import Select from 'react-select'
 import PageTitle from '../../components/PageTitle';
 import { getMyWarehouseList, resetActionSuccess } from '../../redux/myWarehouse/actions';
-import { dateFormat, formatSelectInput, VNDCurrencyFormatting } from '../../helpers/format';
+import { dateFormat, formatProductData, formatSelectInput, VNDCurrencyFormatting } from '../../helpers/format';
 import { DATE_FORMAT } from '../../constants/common';
 import DialogConfirm from '../../components/DialogConfirm';
 import { deleteProductWarehouse } from '../../redux/myWarehouse/actions';
@@ -86,10 +86,9 @@ const ProductsInWarehouse = () => {
             formatter: (record) => record?.productName,
         },
         {
-            dataField: 'product',
+            dataField: 'productName',
             text: 'Tên mặt hàng',
             sort: true,
-            formatter: (record) => record?.productName,
         },
         {
             dataField: 'color',
@@ -233,7 +232,7 @@ const ProductsInWarehouse = () => {
                             <ToolkitProvider
                                 bootstrap4
                                 keyField="id"
-                                data={myWarehouseList}
+                                data={formatProductData(myWarehouseList)}
                                 columns={columns}
                                 search
                                 columnToggle

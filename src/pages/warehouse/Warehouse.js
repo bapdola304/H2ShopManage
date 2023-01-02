@@ -7,7 +7,7 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import Select from 'react-select'
 import PageTitle from '../../components/PageTitle';
 import { getMyWarehouseList, resetActionSuccess } from '../../redux/myWarehouse/actions';
-import { dateFormat, formatSelectInput, VNDCurrencyFormatting } from '../../helpers/format';
+import { dateFormat, formatProductData, formatSelectInput, VNDCurrencyFormatting } from '../../helpers/format';
 import { getProductsType } from '../../redux/actions';
 import { getWarehouseList } from '../../redux/warehouse/actions';
 import { DATE_FORMAT } from '../../constants/common';
@@ -51,10 +51,9 @@ const Warehouse = () => {
             formatter: (record) => dateFormat(record, DATE_FORMAT.DD_MM_YYYY),
         },
         {
-            dataField: 'product',
+            dataField: 'productName',
             text: 'Tên mặt hàng',
             sort: false,
-            formatter: (data) => data?.productName,
         },
         {
             dataField: 'color',
@@ -125,7 +124,7 @@ const Warehouse = () => {
                             <ToolkitProvider
                                 bootstrap4
                                 keyField="id"
-                                data={myWarehouseList}
+                                data={formatProductData(myWarehouseList)}
                                 columns={columns}
                                 search
                                 columnToggle
