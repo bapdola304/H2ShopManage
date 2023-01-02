@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import Flatpickr from 'react-flatpickr'
 import PageTitle from '../../components/PageTitle';
-import { VNDCurrencyFormatting } from '../../helpers/format';
+import { dateFormat, isEmpty, VNDCurrencyFormatting } from '../../helpers/format';
 import { goBack } from '../../helpers/navigation';
 import { getMyWarehouseList } from '../../redux/myWarehouse/actions';
 import { createProductSold, getProductSoldDetail, resetActionSuccess, resetProductSoldDetail, updateProductSold } from '../../redux/productSold/actions';
@@ -44,7 +44,7 @@ const AddProductSold = (props) => {
     useEffect(() => {
         if (id) return
         const firstItem = myWarehouseList?.[0];
-        setProductWarehouseValue({ value: firstItem?.id, label: firstItem?.product?.productName });
+        setProductWarehouseValue({ value: firstItem?.id, label: `${firstItem?.product?.productName}${(firstItem?.inputDate) ? ` - ${dateFormat(firstItem?.inputDate)}` : ''}` });
         handleSetSellPriceByProductSelected(firstItem?.id);
     }, [myWarehouseList]);
 
@@ -65,6 +65,14 @@ const AddProductSold = (props) => {
         setTotalValue(sellPrice);
         dispatch(resetActionSuccess());
     }, [isSuccess]);
+
+    useEffect(() => {
+        if (isEmpty(productWarehouseValue)) return;
+        const data = colorAndQuantityDataByProduct();
+        if (data?.colorAndQuantityData.length === 1) {
+            handleChangeColor(null, data?.colorAndQuantityData?.[0]?._id);
+        }
+    }, [productWarehouseValue]);
 
     const handleChangeQuantity = (event, value = 0) => {
         setTotalValue(parseInt(value) * sellPrice);
@@ -130,9 +138,16 @@ const AddProductSold = (props) => {
         return data.map(item => {
             return {
                 value: item.id,
-                label: item?.product?.productName
+                label: `${item?.product?.productName}${(item?.inputDate) ? ` - ${dateFormat(item?.inputDate)}` : ''}` 
             }
         })
+    }
+
+    const isShowClassify = () => {
+       return (
+        colorAndQuantityDataByProduct()?.colorAndQuantityData.length > 1 ||
+        (colorAndQuantityDataByProduct()?.colorAndQuantityData.length == 1 && colorAndQuantityDataByProduct()?.colorAndQuantityData?.[0].color !== "" )
+       )
     }
 
     return (
@@ -168,17 +183,17 @@ const AddProductSold = (props) => {
                                                     options={formatProrductSelectInput(myWarehouseList)}
                                                 />
                                             </Col>
-                                            {colorAndQuantityDataByProduct()?.colorAndQuantityData.length > 1 && (
+                                            {isShowClassify() && (
                                                 <Col md={12}>
                                                     <AvRadioGroup
                                                         inline
                                                         name="colorId"
-                                                        label="Màu sắc"
+                                                        label="Phân loại"
                                                         className="color-select"
                                                         value={colorId}
                                                         onChange={handleChangeColor}
                                                         validate={{
-                                                            required: { value: true, errorMessage: "Vui lòng chọn màu" },
+                                                            required: { value: true, errorMessage: "Vui lòng chọn loại" },
                                                         }}>
                                                         {renderColors()}
                                                     </AvRadioGroup>

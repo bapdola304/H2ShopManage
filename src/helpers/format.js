@@ -1,4 +1,5 @@
 import * as dayjs from 'dayjs';
+import { DATE_FORMAT } from '../constants/common';
 
 export function VNDCurrencyFormatting(value = 0) {
     return value.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
@@ -12,7 +13,7 @@ export function isEmpty(obj) {
     return empty.length === 0;
 }
 
-export function dateFormat(date, format) {
+export function dateFormat(date, format = DATE_FORMAT.DD_MM_YYYY) {
     return !date ? null : dayjs(date).format(format)
 }
 

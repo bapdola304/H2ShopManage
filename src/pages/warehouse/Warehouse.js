@@ -57,7 +57,7 @@ const Warehouse = () => {
         },
         {
             dataField: 'color',
-            text: 'Màu sắc',
+            text: 'Phân loại',
             sort: false,
             formatter: (data, record) => renderColorAndQuantity(record),
         },

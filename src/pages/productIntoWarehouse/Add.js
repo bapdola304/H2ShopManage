@@ -190,7 +190,7 @@ const AddGoods = (props) => {
             return (
                 <Row>
                     <Col md={5}>
-                        <AvField name={item?.colorName} label="Màu sắc" type="text" value={setFieldValue(item?.color)} />
+                        <AvField name={item?.colorName} label="Phân loại" type="text" value={setFieldValue(item?.color)} />
                     </Col>
                     <Col md={5}>
                         <AvField

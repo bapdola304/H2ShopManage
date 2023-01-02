@@ -46,7 +46,7 @@ const ProductsSold = () => {
         },
         {
             dataField: 'color',
-            text: 'Màu sắc',
+            text: 'Phân loại',
             sort: false,
             formatter: (data, record) => handleRenderColor(record),
         },

@@ -63,7 +63,7 @@ const Statistics = () => {
                             value: '25.16%'
                         }}></StatisticsChartWidget>
                 </Col>
-                <Col md={4} xl={4}>
+                <Col md={6} xl={4}>
                     <StatisticsChartWidget
                         description="Chi phí khác"
                         title={VNDCurrencyFormatting(totalOtherFees)}
@@ -75,7 +75,7 @@ const Statistics = () => {
                             value: '5.05%'
                         }}></StatisticsChartWidget>
                 </Col>
-                <Col md={8} xl={8}>
+                <Col md={12} xl={8}>
                     <StatisticsChartWidget
                         description="Tổng lợi nhuận"
                         title={VNDCurrencyFormatting(totalProfit)}
