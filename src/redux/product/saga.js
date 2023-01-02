@@ -10,8 +10,8 @@ import { fetchJSON, handleGetApiPath } from '../../helpers/api';
 import { DELETE, POST, PUT } from '../../constants/common';
 import { API } from '../../constants/apiPath';
 
-function* getProducts() {
-    const path = handleGetApiPath(API.PRODUCT.GET);
+function* getProducts({ payload }) {
+    const path = handleGetApiPath(API.PRODUCT.GET, payload);
     const response = yield call(fetchJSON, path);
     const { data = {} } = response;
     yield put(getProductsSuccess(data));

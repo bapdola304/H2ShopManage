@@ -4,12 +4,14 @@ import {
     CREATE_PRODUCT_SUCCESS,
     RESET_ACTION_SUCCESS,
     DELETE_PRODUCT_SUCCESS,
-    UPDATE_PRODUCT_SUCCESS
+    UPDATE_PRODUCT_SUCCESS,
+    RESET_PRODUCT_CREATED_DATA
 } from './constants';
 
 const INITIAL_STATE = {
     products: [],
-    isSuccess: false
+    isSuccess: false,
+    productCreated: {}
 };
 
 const product = (state = INITIAL_STATE, action) => {
@@ -21,6 +23,11 @@ const product = (state = INITIAL_STATE, action) => {
         case CREATE_PRODUCT_SUCCESS:
             return produce(state, draft => {
                 draft.isSuccess = true
+                draft.productCreated = action.payload.data
+            });
+        case RESET_PRODUCT_CREATED_DATA:
+            return produce(state, draft => {
+                draft.productCreated = {}
             });
         case DELETE_PRODUCT_SUCCESS:
             return produce(state, draft => {

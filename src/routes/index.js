@@ -78,7 +78,7 @@ const warehouseManageAppRoutes = {
 };
 
 const typeOfItemAppRoutes = {
-    path: '/apps/type/products',
+    path: '/apps/products/type',
     name: 'Các loại mặt hàng',
     icon: FeatherIcon.Package,
     component: ProductsType,

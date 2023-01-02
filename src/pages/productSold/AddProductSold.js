@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import Flatpickr from 'react-flatpickr'
 import PageTitle from '../../components/PageTitle';
-import { formatSelectInput, VNDCurrencyFormatting } from '../../helpers/format';
+import { VNDCurrencyFormatting } from '../../helpers/format';
 import { goBack } from '../../helpers/navigation';
 import { getMyWarehouseList } from '../../redux/myWarehouse/actions';
 import { createProductSold, getProductSoldDetail, resetActionSuccess, resetProductSoldDetail, updateProductSold } from '../../redux/productSold/actions';
@@ -44,13 +44,13 @@ const AddProductSold = (props) => {
     useEffect(() => {
         if (id) return
         const firstItem = myWarehouseList?.[0];
-        setProductWarehouseValue({ value: firstItem?.id, label: firstItem?.warehouseProductName });
+        setProductWarehouseValue({ value: firstItem?.id, label: firstItem?.product?.productName });
         handleSetSellPriceByProductSelected(firstItem?.id);
     }, [myWarehouseList]);
 
     useEffect(() => {
         if (!id) return
-        setProductWarehouseValue({ value: productWarehouseId?._id, label: productWarehouseId?.warehouseProductName });
+        setProductWarehouseValue({ value: productWarehouseId?._id, label: productWarehouseId?.product?.productName });
         setTotalValue(total);
         setSellPrice(productSellPrice);
         setQuantity(productQuantity);
@@ -126,6 +126,15 @@ const AddProductSold = (props) => {
         setMaxQuantity(maxQuantity?.quantity);
     }
 
+    const formatProrductSelectInput = (data = []) => {
+        return data.map(item => {
+            return {
+                value: item.id,
+                label: item?.product?.productName
+            }
+        })
+    }
+
     return (
         <React.Fragment>
             <Row className="page-title">
@@ -135,7 +144,7 @@ const AddProductSold = (props) => {
                             { label: 'Forms', path: '/forms/validation' },
                             { label: 'Form Validation', path: '/forms/validation', active: true },
                         ]}
-                        title={!id ? 'Thêm thông tin hàng đã bán' : 'Cập nhật thông tin hàng đã bán'}
+                        title={!id ? 'Thêm thông tin bán hàng' : 'Cập nhật thông tin bán hàng'}
                     />
                 </Col>
             </Row>
@@ -156,7 +165,7 @@ const AddProductSold = (props) => {
                                                     placeholder="Chọn hàng"
                                                     onChange={handleProductWarehouseChange}
                                                     value={productWarehouseValue}
-                                                    options={formatSelectInput(myWarehouseList, "warehouseProductName", true)}
+                                                    options={formatProrductSelectInput(myWarehouseList)}
                                                 />
                                             </Col>
                                             {colorAndQuantityDataByProduct()?.colorAndQuantityData.length > 1 && (

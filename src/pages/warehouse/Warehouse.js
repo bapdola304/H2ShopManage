@@ -7,16 +7,17 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import Select from 'react-select'
 import PageTitle from '../../components/PageTitle';
 import { getMyWarehouseList, resetActionSuccess } from '../../redux/myWarehouse/actions';
-import { formatSelectInput, VNDCurrencyFormatting } from '../../helpers/format';
+import { dateFormat, formatSelectInput, VNDCurrencyFormatting } from '../../helpers/format';
 import { getProductsType } from '../../redux/actions';
 import { getWarehouseList } from '../../redux/warehouse/actions';
+import { DATE_FORMAT } from '../../constants/common';
 
 var firstLoad = true;
 
 const Warehouse = () => {
 
     const { myWarehouseList = [], isSuccess } = useSelector(state => state.myWarehouse);
-    const { items = [] } = useSelector(state => state.product);
+    const { items = [] } = useSelector(state => state.productType);
 
     const dispatch = useDispatch();
     const productTypeAll = { value: null, label: 'Loại mặt hàng (Tất cả)' }
@@ -44,9 +45,16 @@ const Warehouse = () => {
 
     const columns = [
         {
-            dataField: 'warehouseProductName',
+            dataField: 'inputDate',
+            text: 'Thời gian',
+            sort: true,
+            formatter: (record) => dateFormat(record, DATE_FORMAT.DD_MM_YYYY),
+        },
+        {
+            dataField: 'product',
             text: 'Tên mặt hàng',
             sort: false,
+            formatter: (data) => data?.productName,
         },
         {
             dataField: 'color',

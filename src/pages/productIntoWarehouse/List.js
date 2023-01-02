@@ -23,7 +23,7 @@ var firstLoad = true;
 const ProductsInWarehouse = () => {
 
     const { myWarehouseList = [], isSuccess } = useSelector(state => state.myWarehouse);
-    const { items = [] } = useSelector(state => state.product);
+    const { items = [] } = useSelector(state => state.productType);
     const { warehouseList = [] } = useSelector(state => state.warehouse);
 
     const dispatch = useDispatch();
@@ -74,21 +74,22 @@ const ProductsInWarehouse = () => {
             formatter: (record) => dateFormat(record, DATE_FORMAT.DD_MM_YYYY),
         },
         {
-            dataField: 'warehouseId',
+            dataField: 'warehouse',
             text: 'Nơi nhập hàng',
             sort: false,
             formatter: (record) => record?.warehouseName,
         },
         {
-            dataField: 'productId',
+            dataField: 'productType',
             text: 'Loại mặt hàng',
             sort: true,
             formatter: (record) => record?.productName,
         },
         {
-            dataField: 'warehouseProductName',
+            dataField: 'product',
             text: 'Tên mặt hàng',
             sort: true,
+            formatter: (record) => record?.productName,
         },
         {
             dataField: 'color',
@@ -115,15 +116,9 @@ const ProductsInWarehouse = () => {
             formatter: (record) => VNDCurrencyFormatting(record),
         },
         {
-            dataField: 'sellPrice',
-            text: 'Giá bán ra',
-            sort: false,
-            formatter: (record) => VNDCurrencyFormatting(record),
-        },
-        {
             text: "Thao tác",
             dataField: 'action',
-            formatter: (record, data) => renderAction(data),
+            formatter: (data, record) => renderAction(record),
             // headerStyle: { width: '15%' }
         }
     ];
@@ -315,7 +310,7 @@ const ProductsInWarehouse = () => {
                 width={400}
                 onCancel={() => setIsOpenDialogConfirm(false)}
                 title={"Xác nhận xóa"}
-                description={`Bạn có chắc muốn xóa: "${productSelected?.warehouseProductName}"`}
+                description={`Bạn có chắc muốn xóa: "${productSelected?.product?.productName}"`}
                 onOk={onDelete}
             />
         </React.Fragment>

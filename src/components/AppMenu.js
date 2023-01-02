@@ -6,8 +6,6 @@ import MetisMenu from 'metismenujs/dist/metismenujs';
 
 import { initMenu, changeActiveMenuFromLocation } from '../redux/actions';
 
-var isSecondMenu = false
-
 const MenuItemWithChildren = ({ item, linkClassNames, subMenuClassNames, activatedMenuItemIds }) => {
     const Icon = item.icon || null;
     return (
@@ -56,7 +54,7 @@ const MenuItemWithChildren = ({ item, linkClassNames, subMenuClassNames, activat
 
 const MenuItem = ({ item, className, linkClassName }) => {
     return (
-        <li onClick={() => isSecondMenu = item.parentId !== undefined} className={classNames('side-nav-item', className)}>
+        <li className={classNames('side-nav-item', className)}>
             <MenuItemLink item={item} className={linkClassName} />
         </li>
     );

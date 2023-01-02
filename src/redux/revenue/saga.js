@@ -4,7 +4,6 @@ import {
 } from './constants';
 import {  getRevenueSuccess } from './actions';
 import { fetchJSON } from '../../helpers/api';
-import { DELETE, POST, PUT } from '../../constants/common';
 
 function* getRevenue() {
     const response = yield call(fetchJSON, 'api/revenue');

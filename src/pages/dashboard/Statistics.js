@@ -17,7 +17,6 @@ const Statistics = () => {
         totalAmountCostIncurred,
         totalProfit
     } = revenueData
-    console.log({revenueData})
 
     useEffect(() => {
         dispatch(getRevenue())

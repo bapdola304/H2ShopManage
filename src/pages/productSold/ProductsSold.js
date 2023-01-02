@@ -39,9 +39,10 @@ const ProductsSold = () => {
             sort: false,
         },
         {
-            dataField: 'warehouseProductName',
+            dataField: 'productWarehouseId',
             text: 'Tên mặt hàng',
             sort: false,
+            formatter: (record) => record?.product?.productName,
         },
         {
             dataField: 'color',
@@ -136,15 +137,6 @@ const ProductsSold = () => {
         setIsOpenDialogConfirm(true)
     }
 
-    const formatProductSoldData = (data) => {
-        return data.map(item => {
-            return {
-                ...item,
-                warehouseProductName: item?.productWarehouseId?.warehouseProductName
-            }
-        })
-    }
-
     return (
         <React.Fragment>
             <Row className="page-title">
@@ -166,7 +158,7 @@ const ProductsSold = () => {
                             <ToolkitProvider
                                 bootstrap4
                                 keyField="id"
-                                data={formatProductSoldData(productSoldList)}
+                                data={productSoldList}
                                 columns={columns}
                                 search
                                 exportCSV={{ onlyExportFiltered: true, exportAll: false }}>
@@ -202,7 +194,7 @@ const ProductsSold = () => {
                 width={400}
                 onCancel={() => setIsOpenDialogConfirm(false)}
                 title={"Xác nhận xóa"}
-                description={`Bạn có chắc muốn xóa: "${productSoldSelected?.productWarehouseId?.warehouseProductName}"`}
+                description={`Bạn có chắc muốn xóa: "${productSoldSelected?.productWarehouseId?.product?.productName}"`}
                 onOk={onDelete}
             />
         </React.Fragment>

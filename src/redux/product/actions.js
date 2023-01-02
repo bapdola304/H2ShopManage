@@ -7,11 +7,12 @@ import {
     DELETE_PRODUCT,
     DELETE_PRODUCT_SUCCESS,
     UPDATE_PRODUCT,
-    UPDATE_PRODUCT_SUCCESS
+    UPDATE_PRODUCT_SUCCESS,
+    RESET_PRODUCT_CREATED_DATA
 } from './constants';
 
-const getProducts = () => {
-    return { type: GET_PRODUCTS };
+const getProducts = (payload) => {
+    return { type: GET_PRODUCTS, payload };
 }
 
 const getProductsSuccess = (data) => {
@@ -46,6 +47,10 @@ const resetActionSuccess = () => {
     return { type: RESET_ACTION_SUCCESS };
 }
 
+const resetProductCreatedData = () => {
+    return { type: RESET_PRODUCT_CREATED_DATA };
+}
+
 export {
     getProducts,
     getProductsSuccess,
@@ -55,5 +60,6 @@ export {
     deleteProduct,
     deleteProductSuccess,
     updateProduct,
-    updateProductSuccess
+    updateProductSuccess,
+    resetProductCreatedData
 }

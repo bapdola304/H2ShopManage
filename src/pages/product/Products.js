@@ -8,10 +8,9 @@ import Dialog from '../../components/Dialog';
 import DialogConfirm from '../../components/DialogConfirm';
 import { AvForm, AvField } from "availity-reactstrap-validation";
 import PageTitle from '../../components/PageTitle';
-import { createProductType, deleteProductType, getProductsType, resetActionSuccess, updateProductType } from '../../redux/productType/actions';
 import Select from 'react-select';
 import { formatSelectInput, isEmpty } from '../../helpers/format';
-import { createProduct, deleteProduct, getProducts, updateProduct } from '../../redux/product/actions';
+import { createProduct, deleteProduct, getProducts, updateProduct, resetActionSuccess } from '../../redux/product/actions';
 
 const Products = () => {
 
@@ -198,7 +197,15 @@ const Products = () => {
                 <AvForm onSubmit={handleSubmit}>
                     <Row>
                         <Col md={12}>
-                            <AvField name="productName" label="Tên mặt hàng" type="text" required value={!isEditingProduct ? "" : productName} />
+                            <AvField
+                                name="productName"
+                                label="Tên mặt hàng"
+                                type="text"
+                                value={!isEditingProduct ? "" : productName}
+                                validate={{
+                                    required: { value: true, errorMessage: "Vui lòng nhập tên hàng" },
+                                }}
+                            />
                         </Col>
                         <Col md={12}>
                             <p className="mb-1 font-weight-semibold">Loại mặt hàng</p>

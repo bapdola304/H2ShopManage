@@ -6,34 +6,39 @@ import Select from 'react-select';
 import Flatpickr from 'react-flatpickr'
 import { withRouter } from "react-router-dom";
 import PageTitle from '../../components/PageTitle';
-import { dateFormat, formatSelectInput, setFieldValue, VNDCurrencyFormatting } from '../../helpers/format';
+import { dateFormat, formatSelectInput, isEmpty, setFieldValue, VNDCurrencyFormatting } from '../../helpers/format';
 import { getProductsType } from '../../redux/productType/actions';
 import { getWarehouseList } from '../../redux/warehouse/actions';
 import { createProductForWarehouse, getMyWarehouseDetail, resetActionSuccess, resetMyWarehouseDetail, updateProductWarehouse } from '../../redux/myWarehouse/actions';
 import { DATE_FORMAT } from '../../constants/common';
 import { Vietnamese } from 'flatpickr/dist/l10n/vn.js';
 import * as FeatherIcon from 'react-feather';
+import Dialog from '../../components/Dialog';
+import { createProduct, getProducts, resetActionSuccess as resetProductActionSuccess, resetProductCreatedData } from '../../redux/product/actions';
 
 var rowId = 1;
 
 const AddGoods = (props) => {
-
+    const defaultColorsAndQuantity = [{ id: rowId, quantityName: `quantity${rowId}`, colorName: `color${rowId}`, quantity: 0 }];
     const [warehouseValue, setWarehouseValue] = useState({});
+    const [productTypeValue, setProductTypeValue] = useState({});
     const [productValue, setProductValue] = useState({});
     const [dateValue, setDateValue] = useState(new Date());
     const [totalValue, setTotalValue] = useState(0);
     const [price, setPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
-    var [colorAndQuantity, setColorAndQuantity] = useState([{ id: rowId, quantityName: `quantity${rowId}`, colorName: `color${rowId}`, quantity: 0 }]);
+    const [isOpenDialog, setIsOpenDialog] = useState(false);
+    var [colorAndQuantity, setColorAndQuantity] = useState(defaultColorsAndQuantity);
 
     const dispatch = useDispatch();
     const { items: productsType = [] } = useSelector(state => state.productType);
     const { warehouseList = [] } = useSelector(state => state.warehouse);
     const { productOfWarehouse = {}, isSuccess } = useSelector(state => state.myWarehouse);
+    const { products = [], isSuccess: isSuccessCreateProduct, productCreated } = useSelector(state => state.product);
     let form = null;
     const { match } = props;
     const { params: { id } = {} } = match || {};
-    const { warehouseProductName, color, sellPrice, price: productPrice, quantity: productQuantity, total, productId, warehouseId, inputDate, colorAndQuantityData = [] } = productOfWarehouse;
+    const { sellPrice, price: productPrice, quantity: productQuantity, total, product, warehouse, inputDate, colorAndQuantityData = [], productType } = productOfWarehouse;
 
     useEffect(() => {
         if (id) {
@@ -49,8 +54,26 @@ const AddGoods = (props) => {
     useEffect(() => {
         if (id) return
         const firstItem = productsType?.[0];
-        setProductValue({ value: firstItem?.id, label: firstItem?.productName });
+        setProductTypeValue({ value: firstItem?.id, label: firstItem?.productName });
+        dispatch(getProducts({ productTypeId: firstItem?.id }));
     }, [productsType]);
+
+    useEffect(() => {
+        if (!isEmpty(productCreated) && !isEmpty(products)) {
+            setProductValue({ value: productCreated?.id, label: productCreated?.productName });
+            dispatch(resetProductCreatedData());
+            return;
+        }
+        if (id) {
+            if(!isEmpty(product)) {
+                setProductValue({ value: product?._id, label: product?.productName });
+            }
+            return;
+        } else {
+            const firstItem = products?.[0];
+            setProductValue({ value: firstItem?.id, label: firstItem?.productName });
+        }
+    }, [products]);
 
     useEffect(() => {
         if (id) return
@@ -59,9 +82,10 @@ const AddGoods = (props) => {
     }, [warehouseList]);
 
     useEffect(() => {
-        if (!id) return
-        setProductValue({ value: productId?._id, label: productId?.productName });
-        setWarehouseValue({ value: warehouseId?._id, label: warehouseId?.warehouseName });
+        if (!id || isEmpty(productOfWarehouse)) return
+        dispatch(getProducts({ productTypeId: productType?._id }));
+        setProductTypeValue({ value: productType?._id, label: productType?.productName });
+        setWarehouseValue({ value: warehouse?._id, label: warehouse?.warehouseName });
         setTotalValue(total);
         setPrice(productPrice);
         setQuantity(productQuantity);
@@ -72,7 +96,7 @@ const AddGoods = (props) => {
         setColorAndQuantity(newColorAndQuantity);
         const totalQuantity = newColorAndQuantity.map(item => item?.quantity).reduce((a, b) => a + b, 0);
         setQuantity(totalQuantity);
-        setTotalValue(totalQuantity*productPrice);
+        setTotalValue(totalQuantity * productPrice);
     }, [productOfWarehouse]);
 
     useEffect(() => {
@@ -81,23 +105,31 @@ const AddGoods = (props) => {
         setQuantity(0);
         setPrice(0);
         setTotalValue(0);
+        setColorAndQuantity(defaultColorsAndQuantity);
         dispatch(resetActionSuccess())
     }, [isSuccess]);
+
+    useEffect(() => {
+        if (!isSuccessCreateProduct) return;
+        setIsOpenDialog(false);
+        dispatch(getProducts({ productTypeId: productTypeValue?.value }));
+        dispatch(resetProductActionSuccess())
+    }, [isSuccessCreateProduct]);
 
 
     const handleWarehouseChange = (options) => {
         setWarehouseValue(options)
     }
 
-    const handleProductChange = (options) => {
-        setProductValue(options);
+    const handleProductTypeChange = (options) => {
+        setProductTypeValue(options);
+        dispatch(getProducts({ productTypeId: options?.value }));
         form && form.reset();
     }
 
-    // const handleChangeQuantity = (event, value = 0) => {
-    //     setTotalValue(parseInt(value) * price);
-    //     setQuantity(parseInt(value));
-    // }
+    const handleProductChange = (options) => {
+        setProductValue(options)
+    }
 
     const handleChangePrice = (event, value = 0) => {
         setPrice(parseInt(value));
@@ -107,12 +139,12 @@ const AddGoods = (props) => {
     const handleSubmit = (event, errors, values) => {
         if (!errors.length) {
             const body = {
-                warehouseProductName: values?.warehouseProductName,
+                productId: productValue?.value,
                 price: values?.price,
                 sellPrice: values?.sellPrice,
                 total: totalValue,
                 warehouseId: warehouseValue?.value,
-                productId: productValue?.value,
+                productTypeId: productTypeValue?.value,
                 inputDate: dateFormat(dateValue, DATE_FORMAT.YYYY_MM_DD),
                 colorAndQuantityData: getColorAndQuantityData(values)
             }
@@ -139,7 +171,7 @@ const AddGoods = (props) => {
 
     const handleAddColorAndQuantity = () => {
         rowId++;
-        setColorAndQuantity([...colorAndQuantity, { id: rowId, quantityName: `quantity${rowId}`, colorName: `color${rowId}`,  quantity: 0 }])
+        setColorAndQuantity([...colorAndQuantity, { id: rowId, quantityName: `quantity${rowId}`, colorName: `color${rowId}`, quantity: 0 }])
     }
 
     const handleChangeQuantity = (event, value, rowChange) => {
@@ -149,10 +181,9 @@ const AddGoods = (props) => {
             }
             return item;
         });
-        setColorAndQuantity(newColorAndQuantity);
         const totalQuantity = newColorAndQuantity.map(item => item?.quantity).reduce((a, b) => a + b, 0);
         setQuantity(totalQuantity);
-        setTotalValue(totalQuantity*price);
+        setTotalValue(totalQuantity * price);
     }
 
     const renderColorAndQuantity = () => {
@@ -167,7 +198,7 @@ const AddGoods = (props) => {
                             name={item?.quantityName}
                             label="Số lượng"
                             type="number"
-                            value={item?.quantity || 0 }
+                            value={item?.quantity || 0}
                             onChange={(event, value) => handleChangeQuantity(event, value, item)}
                             validate={{
                                 required: { value: true, errorMessage: "Vui lòng nhập số lượng" },
@@ -192,6 +223,20 @@ const AddGoods = (props) => {
         setColorAndQuantity(newData);
     }
 
+    const handleSubmitProduct = (event, errors, values) => {
+        if (!errors.length) {
+            const body = {
+                ...values,
+                productTypeId: productTypeValue?.value
+            }
+            dispatch(createProduct(body));
+        }
+    };
+
+    const handleCancel = () => {
+        setIsOpenDialog(false)
+    }
+
     return (
         <React.Fragment>
             <Row className="page-title">
@@ -211,111 +256,6 @@ const AddGoods = (props) => {
                     <Card>
                         <CardBody>
                             <AvForm onSubmit={handleSubmit} ref={c => (form = c)}>
-                                {/* <Row>
-                                    <Col md={6}>
-                                        <p className="mb-1 font-weight-semibold">Nơi nhập hàng</p>
-                                        <Select
-                                            className="react-select"
-                                            classNamePrefix="react-select"
-                                            placeholder="Chọn nơi nhập hàng"
-                                            onChange={handleWarehouseChange}
-                                            value={warehouseValue}
-                                            options={formatSelectInput(warehouseList, "warehouseName")}></Select>
-                                    </Col>
-                                    <Col md={6}>
-                                        <div className="form-group">
-                                            <label>Ngày</label> <br />
-                                            <div className="form-group mb-sm-0 mr-2">
-                                                <Flatpickr
-                                                    value={dateValue}
-                                                    onChange={date => { setDateValue(date) }}
-                                                    className="form-control"
-                                                    options={
-                                                        {
-                                                            dateFormat: DATE_FORMAT.d_m_Y,
-                                                            locale: Vietnamese
-                                                        }
-                                                    }
-                                                />
-                                            </div>
-                                        </div>
-                                    </Col>
-                                    <Col md={6}>
-                                        <p className="mb-1 font-weight-semibold">Loại mặt hàng</p>
-                                        <Select
-                                            className="react-select"
-                                            classNamePrefix="react-select"
-                                            placeholder="Chọn loại mặt hàng"
-                                            onChange={handleProductChange}
-                                            value={productValue}
-                                            options={formatSelectInput(products, "productName")}></Select>
-                                    </Col>
-                                    <Col md={6}>
-                                        <AvField
-                                            name="price"
-                                            label="Đơn giá nhập vào"
-                                            type="number"
-                                            onChange={handleChangePrice}
-                                            value={productPrice}
-                                            validate={{
-                                                required: { value: true, errorMessage: "Vui lòng nhập đơn giá" },
-                                            }}
-                                        />
-                                    </Col>
-                                    <Col md={6}>
-                                        <Row>
-                                            <Col md={8}>
-                                                <AvField
-                                                    name="warehouseProductName"
-                                                    label="Tên mặt hàng"
-                                                    type="text"
-                                                    value={setFieldValue(warehouseProductName)}
-                                                    validate={{
-                                                        required: { value: true, errorMessage: "Vui lòng nhập tên mặt hàng" },
-                                                    }}
-                                                />
-                                            </Col>
-                                            <Col md={4}>
-                                                <AvField name="color" label="Màu sắc" type="text" value={setFieldValue(color)} />
-                                            </Col>
-                                        </Row>
-                                    </Col>
-                                    <Col md={6}>
-                                        <AvField
-                                            name="quantity"
-                                            label="Tổng số lượng"
-                                            type="number"
-                                            onChange={handleChangeQuantity}
-                                            value={productQuantity}
-                                            validate={{
-                                                required: { value: true, errorMessage: "Vui lòng nhập số lượng" },
-                                                min: { value: 1, errorMessage: 'Số lượng phải lớn hơn hoặc bằng 1' }
-                                            }}
-                                        />
-                                    </Col>
-                                    <Col md={6}>
-                                        <AvField
-                                            name="sellPrice"
-                                            label="Giá bán ra"
-                                            type="number"
-                                            value={sellPrice}
-                                            validate={{
-                                                required: { value: true, errorMessage: "Vui lòng nhập giá bán" },
-                                            }}
-                                        />
-                                    </Col>
-                                    <Col md={6}>
-                                        <AvField
-                                            name="total"
-                                            label="Thành tiền"
-                                            type="text"
-                                            value={VNDCurrencyFormatting(totalValue || 0)}
-                                            disabled={true}
-                                            style={{ fontWeight: 700 }}
-                                            required={false}
-                                        />
-                                    </Col>
-                                </Row> */}
                                 <Row>
                                     <Col md={6}>
                                         <Row>
@@ -339,25 +279,36 @@ const AddGoods = (props) => {
                                                         className="react-select"
                                                         classNamePrefix="react-select"
                                                         placeholder="Chọn loại mặt hàng"
-                                                        onChange={handleProductChange}
-                                                        value={productValue}
+                                                        onChange={handleProductTypeChange}
+                                                        value={productTypeValue}
                                                         options={formatSelectInput(productsType, "productName")}
                                                     />
                                                 </div>
                                             </Col>
                                             <Col md={12}>
-                                                <AvField
-                                                    name="warehouseProductName"
-                                                    label="Tên mặt hàng"
-                                                    type="text"
-                                                    value={setFieldValue(warehouseProductName)}
-                                                    validate={{
-                                                        required: { value: true, errorMessage: "Vui lòng nhập tên mặt hàng" },
-                                                    }}
-                                                />
+                                                <Row>
+                                                    <Col md={10}>
+                                                        <div className="form-group">
+                                                            <label className="font-weight-semibold">Tên mặt hàng</label>
+                                                            <Select
+                                                                className="react-select"
+                                                                classNamePrefix="react-select"
+                                                                placeholder="Chọn tên mặt hàng"
+                                                                onChange={handleProductChange}
+                                                                value={productValue}
+                                                                options={formatSelectInput(products, "productName")}
+                                                            />
+                                                        </div>
+                                                    </Col>
+                                                    <Col md={2} className='add-product-button'>
+                                                        <Button color="primary" type="button" onClick={() => setIsOpenDialog(true)} >
+                                                            Thêm
+                                                        </Button>
+                                                    </Col>
+                                                </Row>
                                             </Col>
                                             <Col md={12}>
-                                                <label style={{ marginTop: 32 }}>Thêm màu sắc và số lượng: <label onClick={handleAddColorAndQuantity} className='btn btn-primary'>Thêm</label></label>
+                                                <label style={{ marginTop: 32 }}>Thêm màu sắc và số lượng: <label onClick={handleAddColorAndQuantity} className='add-color-quantity-button btn-primary'>Thêm</label></label>
                                                 {renderColorAndQuantity()}
                                             </Col>
                                         </Row>
@@ -449,6 +400,38 @@ const AddGoods = (props) => {
                     </Card>
                 </Col>
             </Row>
+            <Dialog
+                visible={isOpenDialog}
+                title={"Thêm mặt hàng"}
+                onCancel={handleCancel}
+                isShowFooter={false}
+            >
+                <AvForm onSubmit={handleSubmitProduct}>
+                    <Row>
+                        <Col md={12}>
+                            <AvField
+                                name="productName"
+                                label="Tên mặt hàng"
+                                type="text"
+                                validate={{
+                                    required: { value: true, errorMessage: "Vui lòng nhập tên hàng" },
+                                }}
+                            />
+                        </Col>
+                    </Row>
+                    <div style={{ float: "right", marginTop: 20 }}>
+                        <Button
+                            color="secondary mr-2"
+                            onClick={handleCancel}
+                        >
+                            Hủy bỏ
+                        </Button>
+                        <Button color="primary" type="submit">
+                            Thêm
+                        </Button>
+                    </div>
+                </AvForm>
+            </Dialog>
         </React.Fragment>
     );
 };

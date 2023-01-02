@@ -40,6 +40,20 @@
     }
 }
 
+.add-product-button {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 10px;
+    padding-left: 0px;
+}
+
+.add-color-quantity-button {
+    padding: 5px 8px 5px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 @media (max-width: 768px) {
     .warehouse-select {
         margin-top: 0.5rem;
