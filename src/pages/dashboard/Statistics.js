@@ -12,10 +12,11 @@ const Statistics = () => {
     const dispatch = useDispatch();
     const { revenueData = {} } = useSelector(state => state.revenue);
     const {
-        totalAmountImportedProducts,
-        totalAmountImportedProductsSold,
-        totalAmountCostIncurred,
-        totalProfit
+        totalAmountImportedProducts = 0,
+        totalAmountImportedProductsSold = 0,
+        totalOtherFees = 0,
+        totalShippingFees = 0,
+        totalProfit = 0
     } = revenueData
 
     useEffect(() => {
@@ -53,7 +54,7 @@ const Statistics = () => {
                 <Col md={6} xl={4}>
                     <StatisticsChartWidget
                         description="Phí vận chuyển"
-                        title={VNDCurrencyFormatting(0)}
+                        title={VNDCurrencyFormatting(totalShippingFees)}
                         colors={['#43d39e']}
                         data={[25, 66, 41, 85, 63, 25, 44, 12, 36, 9, 54]}
                         trend={{
@@ -65,7 +66,7 @@ const Statistics = () => {
                 <Col md={4} xl={4}>
                     <StatisticsChartWidget
                         description="Chi phí khác"
-                        title={VNDCurrencyFormatting(totalAmountCostIncurred)}
+                        title={VNDCurrencyFormatting(totalOtherFees)}
                         colors={['#ffbe0b']}
                         data={[25, 66, 41, 85, 63, 25, 44, 12, 36, 9, 54]}
                         trend={{
