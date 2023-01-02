@@ -34,7 +34,7 @@ const CostsIncurred = () => {
     const [sellPrice, setSellPrice] = useState(0);
     const [costIncurredSelected, setCostIncurredSelected] = useState({});
     const [costTypeSelected, setCostTypeSelected] = useState({});
-    const { costIncurredName, id } = costIncurredSelected;
+    const { costIncurredName, id, costType } = costIncurredSelected;
     const dispatch = useDispatch();
     const { costIncurredList = [], isSuccess } = useSelector(state => state.costIncurred);
     const { costTypeList = [] } = useSelector(state => state.costType);
@@ -55,15 +55,19 @@ const CostsIncurred = () => {
         dispatch(getCostIncurred());
         setIsOpenDialog(false);
         setIsOpenDialogConfirm(false);
+        setCostIncurredSelected({});
+        setTotalValue(0);
         dispatch(resetActionSuccess());
     }, [isSuccess]);
 
     useEffect(() => {
+        if (isEmpty(costIncurredSelected)) return;
         setSellPrice(costIncurredSelected?.price);
         setQuantity(costIncurredSelected?.quantity);
         setTotalValue(costIncurredSelected?.total);
         setDateValue(costIncurredSelected?.inputDate);
-    }, [costIncurredName]);
+        setCostTypeSelected({ value: costType?._id, label: costType?.costTypeName });
+    }, [costIncurredSelected]);
 
     const columns = [
         {
@@ -132,9 +136,9 @@ const CostsIncurred = () => {
         setIsOpenDialog(true);
     }
 
-
     const handleOpenDialog = () => {
-        setIsOpenDialog(true)
+        setIsOpenDialog(true);
+        setTotalValue(0);
     }
 
     const handleChangeQuantity = (event, value = 0) => {
@@ -259,7 +263,7 @@ const CostsIncurred = () => {
                                 <label>Ngày</label> <br />
                                 <div className="form-group mb-sm-0 mr-2">
                                     <Flatpickr
-                                        value={dateValue || new Date()}
+                                        value={dateValue}
                                         onChange={date => { setDateValue(date) }}
                                         className="form-control"
                                         options={

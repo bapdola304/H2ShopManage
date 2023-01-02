@@ -138,7 +138,7 @@ const ProductsInWarehouse = () => {
     );
 
     const renderColorAndQuantity = (record) => {
-        if (record?.colorAndQuantityData.length < 2) return "";
+        if (record?.colorAndQuantityData.length < 2 && record?.colorAndQuantityData?.[0].color === "") return "";
         return record?.colorAndQuantityData.map(item => `${item.color}(${item.quantity}), `);
     }
 
