@@ -91,8 +91,9 @@ const Warehouse = () => {
     );
 
     const renderColorAndQuantity = (record) => {
-        if (record?.colorAndQuantityData.length < 2) return "";
-        return record?.colorAndQuantityData.map(item => `${item.color}(${item.quantity}), `)
+        const colorAndQuantityDataSize = record?.colorAndQuantityData.length;
+        if (colorAndQuantityDataSize < 2 && record?.colorAndQuantityData?.[0].color === "") return "";
+        return record?.colorAndQuantityData.map((item, index) => `${item.color}(${item.quantity})${(index !== (colorAndQuantityDataSize - 1)) ? `, ` : ''}`);
     }
 
     const renderTotalQuantity = (record) => {

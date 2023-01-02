@@ -138,8 +138,9 @@ const ProductsInWarehouse = () => {
     );
 
     const renderColorAndQuantity = (record) => {
-        if (record?.colorAndQuantityData.length < 2 && record?.colorAndQuantityData?.[0].color === "") return "";
-        return record?.colorAndQuantityData.map(item => `${item.color}(${item.quantity}), `);
+        const colorAndQuantityDataSize = record?.colorAndQuantityData.length;
+        if (colorAndQuantityDataSize < 2 && record?.colorAndQuantityData?.[0].color === "") return "";
+        return record?.colorAndQuantityData.map((item, index) => `${item.color}(${item.quantity})${(index !== (colorAndQuantityDataSize - 1)) ? `, ` : ''}`);
     }
 
     const renderTotalQuantity = (record) => {
@@ -220,7 +221,7 @@ const ProductsInWarehouse = () => {
                             { label: 'Tables', path: '/tables/advanced' },
                             { label: 'Advanced Tables', path: '/tables/advanced', active: true },
                         ]}
-                        title={'Kho hàng'}
+                        title={'Nhập hàng'}
                     />
                 </Col>
             </Row>

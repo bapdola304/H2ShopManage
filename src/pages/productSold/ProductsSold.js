@@ -146,7 +146,7 @@ const ProductsSold = () => {
                             { label: 'Tables', path: '/tables/advanced' },
                             { label: 'Advanced Tables', path: '/tables/advanced', active: true },
                         ]}
-                        title={'Các mặt hàng đã bán'}
+                        title={'Bán hàng'}
                     />
                 </Col>
             </Row>

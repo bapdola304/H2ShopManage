@@ -19,7 +19,7 @@ import { createProduct, getProducts, resetActionSuccess as resetProductActionSuc
 var rowId = 1;
 
 const AddGoods = (props) => {
-    const defaultColorsAndQuantity = [{ id: rowId, quantityName: `quantity${rowId}`, colorName: `color${rowId}`, quantity: 0 }];
+    const defaultColorsAndQuantity = [{ id: rowId, quantityName: `quantity${rowId}`, colorName: `color${rowId}`, quantity: '' }];
     const [warehouseValue, setWarehouseValue] = useState({});
     const [productTypeValue, setProductTypeValue] = useState({});
     const [productValue, setProductValue] = useState({});
@@ -181,8 +181,7 @@ const AddGoods = (props) => {
             }
             return item;
         });
-        const totalQuantity = newColorAndQuantity.map(item => item?.quantity).reduce((a, b) => a + b, 0);
-        setQuantity(totalQuantity);
+        const totalQuantity = setTotalQuantity(newColorAndQuantity);
         setTotalValue(totalQuantity * price);
     }
 
@@ -198,7 +197,7 @@ const AddGoods = (props) => {
                             name={item?.quantityName}
                             label="Số lượng"
                             type="number"
-                            value={item?.quantity || 0}
+                            value={item?.quantity}
                             onChange={(event, value) => handleChangeQuantity(event, value, item)}
                             validate={{
                                 required: { value: true, errorMessage: "Vui lòng nhập số lượng" },
@@ -221,6 +220,13 @@ const AddGoods = (props) => {
     const handleDeleteRow = (rowId) => {
         const newData = colorAndQuantity.filter(item => item?.id !== rowId);
         setColorAndQuantity(newData);
+        setTotalQuantity(newData);
+    }
+
+    const setTotalQuantity = (data = []) => {
+        const totalQuantity = data.map(item => item?.quantity).reduce((a, b) => a + b, 0);
+        setQuantity(totalQuantity);
+        return totalQuantity;
     }
 
     const handleSubmitProduct = (event, errors, values) => {
