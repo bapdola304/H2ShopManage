@@ -8,20 +8,20 @@ import Dialog from '../../components/Dialog';
 import DialogConfirm from '../../components/DialogConfirm';
 import { AvForm, AvField } from "availity-reactstrap-validation";
 import PageTitle from '../../components/PageTitle';
-import { dateFormat, VNDCurrencyFormatting } from '../../helpers/format';
+import { dateFormat, formatSelectInput, isEmpty, VNDCurrencyFormatting } from '../../helpers/format';
 import { DATE_FORMAT } from '../../constants/common';
 import { Vietnamese } from 'flatpickr/dist/l10n/vn.js';
 import Flatpickr from 'react-flatpickr'
 import { createCostIncurred, deleteCostIncurred, getCostIncurred, resetActionSuccess, updateCostIncurred } from '../../redux/costIncurred/actions';
+import { getCostsType } from '../../redux/costType/actions';
+import Select from 'react-select';
 
 const defaultSorted = [
     {
-        dataField: 'id',
-        order: 'asc',
+        dataField: 'inputDate',
+        order: 'desc',
     },
 ];
-
-const records = []
 
 const CostsIncurred = () => {
     const { SearchBar } = Search;
@@ -33,13 +33,22 @@ const CostsIncurred = () => {
     const [quantity, setQuantity] = useState(1);
     const [sellPrice, setSellPrice] = useState(0);
     const [costIncurredSelected, setCostIncurredSelected] = useState({});
+    const [costTypeSelected, setCostTypeSelected] = useState({});
     const { costIncurredName, id } = costIncurredSelected;
     const dispatch = useDispatch();
     const { costIncurredList = [], isSuccess } = useSelector(state => state.costIncurred);
+    const { costTypeList = [] } = useSelector(state => state.costType);
 
     useEffect(() => {
         dispatch(getCostIncurred());
+        dispatch(getCostsType());
     }, []);
+
+    useEffect(() => {
+        if (isEmpty(costTypeList)) return;
+        const firstItem = costTypeList?.[0];
+        setCostTypeSelected({ value: firstItem?.id, label: firstItem?.costTypeName });
+    }, [costTypeList]);
 
     useEffect(() => {
         if (!isSuccess) return
@@ -69,9 +78,16 @@ const CostsIncurred = () => {
             sort: false,
         },
         {
+            dataField: 'costType',
+            text: 'Loại chi phí',
+            sort: false,
+            formatter: (data) => data?.costTypeName,
+        },
+        {
             dataField: 'price',
             text: 'Đơn giá',
             sort: false,
+            formatter: (data) => VNDCurrencyFormatting(data),
         },
         {
             dataField: 'quantity',
@@ -82,6 +98,7 @@ const CostsIncurred = () => {
             dataField: 'total',
             text: 'Thành tiền',
             sort: false,
+            formatter: (data) => VNDCurrencyFormatting(data),
         },
         {
             text: "Thao tác",
@@ -135,7 +152,8 @@ const CostsIncurred = () => {
             const body = {
                 ...values,
                 total: totalValue,
-                inputDate: dateValue
+                inputDate: dateValue,
+                costTypeId: costTypeSelected?.value
             }
             if (!isEditing) {
                 dispatch(createCostIncurred(body));
@@ -157,6 +175,10 @@ const CostsIncurred = () => {
         setCostIncurredSelected({});
         setIsOpenDialog(false);
         setIsEditing(false);
+    }
+
+    const handleCostTypeChange = (option) => {
+        setCostTypeSelected(option);
     }
 
     const sizePerPageRenderer = ({ options, currSizePerPage, onSizePerPageChange }) => (
@@ -255,11 +277,24 @@ const CostsIncurred = () => {
                                 name="costIncurredName"
                                 label="Tên chi phí"
                                 type="text"
-                                value={ !isEditing ? "" : costIncurredName }
+                                value={!isEditing ? "" : costIncurredName}
                                 validate={{
                                     required: { value: true, errorMessage: "Vui lòng nhập tên chi phí" },
                                 }}
                             />
+                        </Col>
+                        <Col md={12}>
+                            <div className='form-group'>
+                                <p className="mb-1 font-weight-semibold">Loại chi phí</p>
+                                <Select
+                                    className="react-select"
+                                    classNamePrefix="react-select"
+                                    placeholder="Chọn hàng"
+                                    onChange={handleCostTypeChange}
+                                    value={costTypeSelected}
+                                    options={formatSelectInput(costTypeList, "costTypeName")}
+                                />
+                            </div>
                         </Col>
                         <Col md={12}>
                             <AvField
@@ -304,7 +339,7 @@ const CostsIncurred = () => {
                             Hủy bỏ
                         </Button>
                         <Button color="primary" type="submit">
-                            { !isEditing ? "Thêm" : "Chỉnh sửa" }
+                            {!isEditing ? "Thêm" : "Chỉnh sửa"}
                         </Button>
                     </div>
                 </AvForm>
