@@ -124,7 +124,9 @@ const AddGoods = (props) => {
     const handleProductTypeChange = (options) => {
         setProductTypeValue(options);
         dispatch(getProducts({ productTypeId: options?.value }));
-        form && form.reset();
+        if (!id) {
+            form && form.reset();
+        }
     }
 
     const handleProductChange = (options) => {
@@ -186,7 +188,7 @@ const AddGoods = (props) => {
     }
 
     const renderColorAndQuantity = () => {
-        return colorAndQuantity.map(item => {
+        return colorAndQuantity.map((item, index) => {
             return (
                 <Row>
                     <Col md={5}>
@@ -205,7 +207,7 @@ const AddGoods = (props) => {
                             }}
                         />
                     </Col>
-                    {item?.id > 1 && (
+                    {index > 0 && (
                         <Col md={2} className="clear-row-button">
                             <a onClick={() => handleDeleteRow(item?.id)} class="clear-button" title="clear" data-clear>
                                 <FeatherIcon.X />
