@@ -8,8 +8,8 @@ import { Link } from 'react-router-dom';
 import Select from 'react-select'
 import PageTitle from '../../components/PageTitle';
 import { getMyWarehouseList, resetActionSuccess } from '../../redux/myWarehouse/actions';
-import { dateFormat, formatProductData, formatSelectInput, VNDCurrencyFormatting } from '../../helpers/format';
-import { DATE_FORMAT } from '../../constants/common';
+import { dateFormat, formatProductData, formatSelectInput, isEmpty, VNDCurrencyFormatting } from '../../helpers/format';
+import { DATE_FORMAT, PAGE } from '../../constants/common';
 import DialogConfirm from '../../components/DialogConfirm';
 import { deleteProductWarehouse } from '../../redux/myWarehouse/actions';
 import { getProductsType } from '../../redux/actions';
@@ -17,15 +17,14 @@ import { Vietnamese } from 'flatpickr/dist/l10n/vn.js';
 import Flatpickr from 'react-flatpickr'
 import { getWarehouseList } from '../../redux/warehouse/actions';
 import * as FeatherIcon from 'react-feather';
-
-var firstLoad = true;
+import  { getObjectFromStorage, setObjectToStorage } from '../../helpers/storage';
 
 const ProductsInWarehouse = () => {
 
     const { myWarehouseList = [], isSuccess } = useSelector(state => state.myWarehouse);
     const { items = [] } = useSelector(state => state.productType);
     const { warehouseList = [] } = useSelector(state => state.warehouse);
-
+    var firstLoad = false;
     const dispatch = useDispatch();
     const productTypeAll = { value: null, label: 'Loại mặt hàng (Tất cả)' }
     const warehouseAll = { value: null, label: 'Loại kho (Tất cả)' }
@@ -35,22 +34,32 @@ const ProductsInWarehouse = () => {
     const [warehouseSelected, setWarehouseSelected] = useState(warehouseAll);
     const [dateValue, setDateValue] = useState(null);
 
-
     const { SearchBar } = Search;
 
     useEffect(() => {
+        firstLoad = true;
         dispatch(getProductsType());
-        dispatch(getMyWarehouseList({ isImportProduct: true }));
         dispatch(getWarehouseList());
     }, []);
 
     useEffect(() => {
-        if (firstLoad) {
-            firstLoad = false;
-            dispatch(getMyWarehouseList());
-
+        if (!isEmpty(items) && !isEmpty(warehouseList)) {
+            const selectParams = getObjectFromStorage(PAGE.PRODUCT_IN_WAREHOUSE);
+            const { productType, warehouse, inputDate } = selectParams || {};
+            setProductItemSelected(productType);
+            setWarehouseSelected(warehouse);
+            inputDate && setDateValue(new Date(inputDate));
+            if (firstLoad) {
+                dispatch(getMyWarehouseList({ 
+                    isImportProduct: true,
+                    productTypeId: productType?.value,
+                    warehouseId: warehouse?.value,
+                    inputDate
+                }));
+                firstLoad = false;
+            }
         }
-    }, [items]);
+    }, [items, warehouseList]);
 
     useEffect(() => {
         if (!isSuccess) return
@@ -175,8 +184,10 @@ const ProductsInWarehouse = () => {
         const params = {
             productTypeId: option?.value,
             warehouseId: warehouseSelected?.value,
-            inputDate: dateFormat(dateValue, DATE_FORMAT.YYYY_MM_DD)
+            inputDate: dateFormat(dateValue, DATE_FORMAT.YYYY_MM_DD),
+            isImportProduct: true,
         }
+        selectedParams(option, warehouseSelected, dateValue)
         dispatch(getMyWarehouseList(params));
     }
 
@@ -185,9 +196,20 @@ const ProductsInWarehouse = () => {
         const params = {
             productTypeId: productItemSelected?.value,
             warehouseId: option?.value,
-            inputDate: dateFormat(dateValue, DATE_FORMAT.YYYY_MM_DD)
+            inputDate: dateFormat(dateValue, DATE_FORMAT.YYYY_MM_DD),
+            isImportProduct: true,
         }
+        selectedParams(productItemSelected, option, dateValue)
         dispatch(getMyWarehouseList(params));
+    }
+
+    const selectedParams = (productType, warehouse, inputDate) => {
+        const params = {
+            productType,
+            warehouse,
+            inputDate: dateFormat(inputDate, DATE_FORMAT.YYYY_MM_DD)
+        }
+        setObjectToStorage(PAGE.PRODUCT_IN_WAREHOUSE, params);
     }
 
     const handleDateChange = (date) => {
@@ -195,8 +217,10 @@ const ProductsInWarehouse = () => {
         const params = {
             productTypeId: productItemSelected?.value,
             warehouseId: warehouseSelected?.value,
-            inputDate: dateFormat(date, DATE_FORMAT.YYYY_MM_DD)
+            inputDate: dateFormat(date, DATE_FORMAT.YYYY_MM_DD),
+            isImportProduct: true,
         }
+        selectedParams(productItemSelected, warehouseSelected, date)
         dispatch(getMyWarehouseList(params));
     }
 
@@ -206,8 +230,10 @@ const ProductsInWarehouse = () => {
         const params = {
             productTypeId: productItemSelected?.value,
             warehouseId: warehouseSelected?.value,
-            inputDate: null
+            inputDate: null,
+            isImportProduct: true,
         }
+        selectedParams(productItemSelected, warehouseSelected, null)
         dispatch(getMyWarehouseList(params));
     }
 

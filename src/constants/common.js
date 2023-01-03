@@ -7,3 +7,7 @@ export const DATE_FORMAT = {
     YYYY_MM_DD: "YYYY-MM-DD",
     d_m_Y: "d-m-Y"
 }
+
+export const PAGE = {
+    PRODUCT_IN_WAREHOUSE: 'productInWarehouse'
+}
