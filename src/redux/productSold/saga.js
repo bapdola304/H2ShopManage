@@ -8,14 +8,16 @@ import {
     UPDATE_PRODUCT_SOLD,
 } from './constants';
 import { createProductSoldSuccess, deleteProductSoldSuccess, getProductSoldDetailSuccess, getProductSoldListSuccess, updateProductSoldSuccess } from './actions';
-import { fetchJSON } from '../../helpers/api';
+import { fetchJSON, handleGetApiPath } from '../../helpers/api';
 import { DELETE, POST, PUT } from '../../constants/common';
 import { isEmpty } from '../../helpers/format';
 import { goBack } from '../../helpers/navigation';
+import { API } from '../../constants/apiPath';
 
 
-function* getProductSoldList() {
-    const response = yield call(fetchJSON, 'api/productSold');
+function* getProductSoldList({ payload }) {
+    const path = handleGetApiPath(API.PRODUCT_SOLD.GET, payload);
+    const response = yield call(fetchJSON, path);
     const { data = {} } = response;
     yield put(getProductSoldListSuccess(data));
 }

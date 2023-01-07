@@ -22,6 +22,19 @@ const API = {
         GET_ID: {
             path: 'api/product/:id'
         }
+    },
+    PRODUCT_SOLD: {
+        GET: {
+            path: 'api/productSold'
+        },
+        GET_ID: {
+            path: 'api/productSold/:id'
+        }
+    },
+    REVENUE: {
+        GET: {
+            path: 'api/revenue'
+        },
     }
 };
 

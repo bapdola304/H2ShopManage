@@ -112,7 +112,7 @@ const AddProductSold = (props) => {
             const body = {
                 ...values,
                 productWarehouseId: productWarehouseValue?.value,
-                inputDate: dateValue,
+                inputDate: dateFormat(dateValue, DATE_FORMAT.YYYY_MM_DD),
                 total: totalValue,
                 colorId: values.colorId || colorAndQuantityDataByProduct()?.colorAndQuantityData?.[0]?._id
             }

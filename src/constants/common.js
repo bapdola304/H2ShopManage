@@ -9,7 +9,8 @@ export const DATE_FORMAT = {
 }
 
 export const PAGE = {
-    PRODUCT_IN_WAREHOUSE: 'productInWarehouse'
+    PRODUCT_IN_WAREHOUSE: 'productInWarehouse',
+    PRODUCT_SOLD: 'productSold'
 }
 
 export const STORAGE_KEY_DATA = {

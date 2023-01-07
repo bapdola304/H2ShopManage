@@ -3,8 +3,8 @@ import {
     GET_REVENUE_SUCCESS,
 } from './constants';
 
-const getRevenue = () => {
-    return { type: GET_REVENUE };
+const getRevenue = (payload) => {
+    return { type: GET_REVENUE, payload };
 }
 
 const getRevenueSuccess = (data) => {

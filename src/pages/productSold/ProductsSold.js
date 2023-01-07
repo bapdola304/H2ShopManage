@@ -8,8 +8,12 @@ import { Link } from 'react-router-dom';
 import PageTitle from '../../components/PageTitle'
 import { deleteProductSold, getProductSoldList, resetActionSuccess } from '../../redux/productSold/actions';
 import { dateFormat, VNDCurrencyFormatting } from '../../helpers/format';
-import { DATE_FORMAT } from '../../constants/common';
+import { DATE_FORMAT, PAGE } from '../../constants/common';
 import DialogConfirm from '../../components/DialogConfirm';
+import { Vietnamese } from 'flatpickr/dist/l10n/vn.js';
+import Flatpickr from 'react-flatpickr';
+import * as FeatherIcon from 'react-feather';
+import { getObjectFromStorage, setObjectToStorage } from '../../helpers/storage';
 
 const ProductsSold = () => {
 
@@ -18,6 +22,7 @@ const ProductsSold = () => {
     const dispatch = useDispatch();
     const [isOpenDialogConfirm, setIsOpenDialogConfirm] = useState(false);
     const [productSoldSelected, setProductSoldSelected] = useState({});
+    const [dateValue, setDateValue] = useState(null);
 
     const { SearchBar } = Search;
 
@@ -84,7 +89,10 @@ const ProductsSold = () => {
 
 
     useEffect(() => {
-        dispatch(getProductSoldList())
+        const selectParams = getObjectFromStorage(PAGE.PRODUCT_SOLD);
+        const { inputDate } = selectParams || {};
+        inputDate && setDateValue(new Date(inputDate));
+        dispatch(getProductSoldList({ inputDate }));
     }, []);
 
     useEffect(() => {
@@ -137,6 +145,22 @@ const ProductsSold = () => {
         setIsOpenDialogConfirm(true)
     }
 
+    const selectedParams = (inputDate) => {
+        const params = {
+            inputDate: dateFormat(inputDate, DATE_FORMAT.YYYY_MM_DD)
+        }
+        setObjectToStorage(PAGE.PRODUCT_SOLD, params);
+    }
+
+    const handleDateChange = (date) => {
+        setDateValue(date);
+        const params = {
+            inputDate: dateFormat(date, DATE_FORMAT.YYYY_MM_DD),
+        }
+        selectedParams(date)
+        dispatch(getProductSoldList(params));
+    }
+
     return (
         <React.Fragment>
             <Row className="page-title">
@@ -165,10 +189,51 @@ const ProductsSold = () => {
                                 {props => (
                                     <React.Fragment>
                                         <Row>
-                                            <Col>
-                                                <SearchBar {...props.searchProps} placeholder="Tìm kiếm hàng đã bán" />
+                                            <Col md={9}>
+                                                <Row>
+                                                    <Col className='warehouse-search' md={3}>
+                                                        <SearchBar {...props.searchProps} placeholder={"Tìm kiếm tên hàng đã bán"} />
+                                                    </Col>
+                                                    {/* <Col md={3}>
+                                                        <Select
+                                                            className="react-select"
+                                                            classNamePrefix="react-select"
+                                                            value={productItemSelected}
+                                                            onChange={handleProductTypeChange}
+                                                            options={[productTypeAll, ...formatSelectInput(items, "productName")]}
+                                                        />
+                                                    </Col>
+                                                    <Col md={3}>
+                                                        <Select
+                                                            className="react-select warehouse-select"
+                                                            classNamePrefix="react-select"
+                                                            value={warehouseSelected}
+                                                            onChange={handleWarehouseChange}
+                                                            options={[warehouseAll, ...formatSelectInput(warehouseList, "warehouseName")]}
+                                                        />
+                                                    </Col> */}
+                                                    <Col md={3}>
+                                                        <div className='date-wrapper'>
+                                                            <Flatpickr
+                                                                value={dateValue}
+                                                                onChange={handleDateChange}
+                                                                className="form-control"
+                                                                placeholder='Chọn ngày'
+                                                                options={
+                                                                    {
+                                                                        dateFormat: DATE_FORMAT.d_m_Y,
+                                                                        locale: Vietnamese,
+                                                                    }
+                                                                }
+                                                            />
+                                                            <a onClick={() => handleDateChange(null)} class="clear-button" title="clear" data-clear>
+                                                                <FeatherIcon.X />
+                                                            </a>
+                                                        </div>
+                                                    </Col>
+                                                </Row>
                                             </Col>
-                                            <Col className="text-right">
+                                            <Col className="text-right" md={3}>
                                                 <Link to="/apps/productsSoldAdd">
                                                     <Button color="primary" id="btn-new-event"><i className="uil-plus mr-1"></i>Thêm hàng đã bán</Button>
                                                 </Link>

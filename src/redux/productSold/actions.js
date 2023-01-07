@@ -13,8 +13,8 @@ import {
     DELETE_PRODUCT_SOLD_SUCCESS
 } from './constants';
 
-const getProductSoldList = () => {
-    return { type: GET_PRODUCT_SOLD_LIST };
+const getProductSoldList = (payload) => {
+    return { type: GET_PRODUCT_SOLD_LIST, payload };
 }
 
 const getProductSoldListSuccess = (data) => {

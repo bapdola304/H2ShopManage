@@ -14,7 +14,7 @@ import DialogConfirm from '../../components/DialogConfirm';
 import { deleteProductWarehouse } from '../../redux/myWarehouse/actions';
 import { getProductsType } from '../../redux/actions';
 import { Vietnamese } from 'flatpickr/dist/l10n/vn.js';
-import Flatpickr from 'react-flatpickr'
+import Flatpickr from 'react-flatpickr';
 import { getWarehouseList } from '../../redux/warehouse/actions';
 import * as FeatherIcon from 'react-feather';
 import { getObjectFromStorage, setObjectToStorage } from '../../helpers/storage';
