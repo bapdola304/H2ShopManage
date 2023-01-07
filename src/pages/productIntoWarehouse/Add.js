@@ -179,7 +179,7 @@ const AddGoods = (props) => {
     const handleChangeQuantity = (event, value, rowChange) => {
         const newColorAndQuantity = colorAndQuantity.map(item => {
             if (item?.id == rowChange?.id) {
-                item.quantity = parseInt(value == '' ? 0 : value)
+                item.quantity = parseInt(value);
             }
             return item;
         });
@@ -226,7 +226,7 @@ const AddGoods = (props) => {
     }
 
     const setTotalQuantity = (data = []) => {
-        const totalQuantity = data.map(item => item?.quantity).reduce((a, b) => a + b, 0);
+        const totalQuantity = data.map(item => (isNaN(item?.quantity) ? 0 : item?.quantity)).reduce((a, b) => a + b, 0);
         setQuantity(totalQuantity);
         return totalQuantity;
     }
