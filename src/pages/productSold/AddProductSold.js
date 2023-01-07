@@ -5,18 +5,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import Flatpickr from 'react-flatpickr'
 import PageTitle from '../../components/PageTitle';
-import { dateFormat, isEmpty, VNDCurrencyFormatting } from '../../helpers/format';
+import { dateFormat, formatSelectInput, isEmpty, VNDCurrencyFormatting } from '../../helpers/format';
 import { goBack } from '../../helpers/navigation';
 import { getMyWarehouseList } from '../../redux/myWarehouse/actions';
 import { createProductSold, getProductSoldDetail, resetActionSuccess, resetProductSoldDetail, updateProductSold } from '../../redux/productSold/actions';
 import { DATE_FORMAT } from '../../constants/common';
 import { Vietnamese } from 'flatpickr/dist/l10n/vn.js';
+import { getProductsType } from '../../redux/actions';
 
 const AddProductSold = (props) => {
 
     const dispatch = useDispatch();
     const { myWarehouseList = [] } = useSelector(state => state.myWarehouse);
     const { productSold = {}, isSuccess } = useSelector(state => state.productSold);
+    const { items: productsType = [] } = useSelector(state => state.productType);
 
     const [productWarehouseValue, setProductWarehouseValue] = useState({});
     const [dateValue, setDateValue] = useState(new Date());
@@ -24,6 +26,7 @@ const AddProductSold = (props) => {
     const [quantity, setQuantity] = useState(1);
     const [sellPrice, setSellPrice] = useState(0);
     const [maxQuantity, setMaxQuantity] = useState(99);
+    const [productTypeValue, setProductTypeValue] = useState({});
 
     let form = null;
     const { match } = props;
@@ -34,12 +37,19 @@ const AddProductSold = (props) => {
         if (id) {
             dispatch(getProductSoldDetail(id));
         }
-        const isSelecteInput = true
-        dispatch(getMyWarehouseList(isSelecteInput));
+        dispatch(getProductsType());
         return function cleanup() {
             dispatch(resetProductSoldDetail());
         };
     }, []);
+
+    useEffect(() => {
+        if (id) return
+        const firstItem = productsType?.[0];
+        setProductTypeValue({ value: firstItem?.id, label: firstItem?.productName });
+        dispatch(getMyWarehouseList({ productTypeId: firstItem?.id }));
+    }, [productsType]);
+
 
     useEffect(() => {
         if (id) return
@@ -49,12 +59,14 @@ const AddProductSold = (props) => {
     }, [myWarehouseList]);
 
     useEffect(() => {
-        if (!id) return
+        if (!id || isEmpty(productSold)) return
         setProductWarehouseValue({ value: productWarehouseId?._id, label: productWarehouseId?.product?.productName });
         setTotalValue(total);
         setSellPrice(productSellPrice);
         setQuantity(productQuantity);
         setDateValue(inputDate);
+        setProductTypeValue({ value: productWarehouseId?.productType?._id, label: productWarehouseId?.productType?.productName  })
+        dispatch(getMyWarehouseList({ productTypeId: productWarehouseId?.productType?._id }));
     }, [productSold]);
 
     useEffect(() => {
@@ -150,6 +162,11 @@ const AddProductSold = (props) => {
        )
     }
 
+    const handleProductTypeChange = (options) => {
+        setProductTypeValue(options);
+        dispatch(getMyWarehouseList({ productTypeId: options?.value }));
+    }
+
     return (
         <React.Fragment>
             <Row className="page-title">
@@ -172,8 +189,21 @@ const AddProductSold = (props) => {
                                 <Row>
                                     <Col md={6}>
                                         <Row>
+                                        <Col md={12}>
+                                                <div className="form-group">
+                                                    <label className="font-weight-semibold">Loại mặt hàng</label>
+                                                    <Select
+                                                        className="react-select"
+                                                        classNamePrefix="react-select"
+                                                        placeholder="Chọn loại mặt hàng"
+                                                        onChange={handleProductTypeChange}
+                                                        value={productTypeValue}
+                                                        options={formatSelectInput(productsType, "productName")}
+                                                    />
+                                                </div>
+                                            </Col>
                                             <Col md={12} style={{ marginBottom: 19 }}>
-                                                <p className="mb-1 font-weight-semibold">Tên hàng</p>
+                                                <p className="mb-1 font-weight-semibold">Tên mặt hàng</p>
                                                 <Select
                                                     className="react-select"
                                                     classNamePrefix="react-select"
@@ -199,7 +229,11 @@ const AddProductSold = (props) => {
                                                     </AvRadioGroup>
                                                 </Col>
                                             )}
-                                            <Col md={12}>
+                                        </Row>
+                                    </Col>
+                                    <Col md={6}>
+                                        <Row>
+                                        <Col md={12}>
                                                 <Row>
                                                     <Col md={6}>
                                                         <AvField
@@ -222,12 +256,7 @@ const AddProductSold = (props) => {
                                                         />
                                                     </Col>
                                                 </Row>
-
                                             </Col>
-                                        </Row>
-                                    </Col>
-                                    <Col md={6}>
-                                        <Row>
                                             <Col md={12}>
                                                 <div className="form-group">
                                                     <label>Ngày</label> <br />
