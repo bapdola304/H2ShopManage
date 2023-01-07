@@ -16,7 +16,8 @@ const Statistics = () => {
         totalAmountImportedProductsSold = 0,
         totalOtherFees = 0,
         totalShippingFees = 0,
-        totalProfit = 0
+        totalProfit = 0,
+        currentMoney = 0
     } = revenueData
 
     useEffect(() => {
@@ -65,7 +66,7 @@ const Statistics = () => {
                 </Col>
                 <Col md={6} xl={4}>
                     <StatisticsChartWidget
-                        description="Chi phí khác"
+                        description="Vốn ban đầu"
                         title={VNDCurrencyFormatting(totalOtherFees)}
                         colors={['#ffbe0b']}
                         data={[25, 66, 41, 85, 63, 25, 44, 12, 36, 9, 54]}
@@ -75,10 +76,23 @@ const Statistics = () => {
                             value: '5.05%'
                         }}></StatisticsChartWidget>
                 </Col>
-                <Col md={12} xl={8}>
+                <Col md={12} xl={4}>
                     <StatisticsChartWidget
-                        description="Tổng lợi nhuận"
+                        description="Tổng lợi nhuận bán hàng"
                         title={VNDCurrencyFormatting(totalProfit)}
+                        colors={['#ffbe0b']}
+                        isTotal={true}
+                        data={[25, 66, 41, 85, 63, 25, 44, 12, 36, 9, 54]}
+                        trend={{
+                            textClass: 'text-danger',
+                            icon: 'uil uil-arrow-down',
+                            value: '5.05%'
+                        }}></StatisticsChartWidget>
+                </Col>
+                <Col md={12} xl={4}>
+                    <StatisticsChartWidget
+                        description="Số tiền mặt hiện có"
+                        title={VNDCurrencyFormatting(currentMoney)}
                         colors={['#ffbe0b']}
                         isTotal={true}
                         data={[25, 66, 41, 85, 63, 25, 44, 12, 36, 9, 54]}
