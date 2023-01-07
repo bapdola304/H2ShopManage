@@ -11,3 +11,8 @@ export const DATE_FORMAT = {
 export const PAGE = {
     PRODUCT_IN_WAREHOUSE: 'productInWarehouse'
 }
+
+export const STORAGE_KEY_DATA = {
+    WAREHOUSE_LIST: 'WAREHOUSE_LIST',
+    PRODUCT_TYPE: 'PRODUCT_TYPE',
+}

@@ -17,14 +17,13 @@ import { Vietnamese } from 'flatpickr/dist/l10n/vn.js';
 import Flatpickr from 'react-flatpickr'
 import { getWarehouseList } from '../../redux/warehouse/actions';
 import * as FeatherIcon from 'react-feather';
-import  { getObjectFromStorage, setObjectToStorage } from '../../helpers/storage';
+import { getObjectFromStorage, setObjectToStorage } from '../../helpers/storage';
 
 const ProductsInWarehouse = () => {
 
     const { myWarehouseList = [], isSuccess } = useSelector(state => state.myWarehouse);
     const { items = [] } = useSelector(state => state.productType);
     const { warehouseList = [] } = useSelector(state => state.warehouse);
-    var firstLoad = false;
     const dispatch = useDispatch();
     const productTypeAll = { value: null, label: 'Loại mặt hàng (Tất cả)' }
     const warehouseAll = { value: null, label: 'Loại kho (Tất cả)' }
@@ -37,29 +36,10 @@ const ProductsInWarehouse = () => {
     const { SearchBar } = Search;
 
     useEffect(() => {
-        firstLoad = true;
         dispatch(getProductsType());
         dispatch(getWarehouseList());
+        getMyWarehouseListData()
     }, []);
-
-    useEffect(() => {
-        if (!isEmpty(items) && !isEmpty(warehouseList)) {
-            const selectParams = getObjectFromStorage(PAGE.PRODUCT_IN_WAREHOUSE);
-            const { productType, warehouse, inputDate } = selectParams || {};
-            setProductItemSelected(productType);
-            setWarehouseSelected(warehouse);
-            inputDate && setDateValue(new Date(inputDate));
-            if (firstLoad) {
-                dispatch(getMyWarehouseList({ 
-                    isImportProduct: true,
-                    productTypeId: productType?.value,
-                    warehouseId: warehouse?.value,
-                    inputDate
-                }));
-                firstLoad = false;
-            }
-        }
-    }, [items, warehouseList]);
 
     useEffect(() => {
         if (!isSuccess) return
@@ -67,6 +47,20 @@ const ProductsInWarehouse = () => {
         setIsOpenDialogConfirm(false)
         dispatch(resetActionSuccess())
     }, [isSuccess]);
+
+    const getMyWarehouseListData = () => {
+        const selectParams = getObjectFromStorage(PAGE.PRODUCT_IN_WAREHOUSE);
+        const { productType, warehouse, inputDate } = selectParams || {};
+        setProductItemSelected(productType);
+        setWarehouseSelected(warehouse);
+        inputDate && setDateValue(new Date(inputDate));
+        dispatch(getMyWarehouseList({
+            isImportProduct: true,
+            productTypeId: productType?.value,
+            warehouseId: warehouse?.value,
+            inputDate
+        }));
+    }
 
     const defaultSorted = [
         {
