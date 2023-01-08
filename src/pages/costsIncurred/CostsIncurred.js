@@ -55,8 +55,11 @@ const CostsIncurred = () => {
         dispatch(getCostIncurred());
         setIsOpenDialog(false);
         setIsOpenDialogConfirm(false);
+        setIsEditing(false);
         setCostIncurredSelected({});
         setTotalValue(0);
+        setQuantity(0);
+        setSellPrice(0);
         dispatch(resetActionSuccess());
     }, [isSuccess]);
 

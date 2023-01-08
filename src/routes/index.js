@@ -117,7 +117,7 @@ const dashboardRoutes = {
 
 const costsIncurredAppRoutes = {
     path: '/apps/costsIncurred',
-    name: 'Chi phí phát sinh',
+    name: 'Các chi phí',
     icon: FeatherIcon.Activity,
     component: CostsIncurred,
     route: PrivateRoute,
